@@ -9,6 +9,8 @@
 
 namespace IvoPetkov;
 
+use IvoPetkov\DataList;
+
 /**
  * 
  */
@@ -255,7 +257,7 @@ class DataObject implements \ArrayAccess
         $result = [];
         foreach ($this->properties as $name => $temp) {
             $value = $this->getPropertyValue($name);
-            if ($value instanceof \IvoPetkov\DataObject || $value instanceof \IvoPetkov\DataList) {
+            if ($value instanceof \IvoPetkov\DataObject || $value instanceof DataList) {
                 $result[$name] = $value->toArray();
             } else {
                 $result[$name] = $value;
@@ -263,7 +265,7 @@ class DataObject implements \ArrayAccess
         }
         foreach ($this->data as $name => $value) {
             if (array_key_exists($name, $result) === false) {
-                if ($value instanceof \IvoPetkov\DataObject || $value instanceof \IvoPetkov\DataList) {
+                if ($value instanceof \IvoPetkov\DataObject || $value instanceof DataList) {
                     $result[$name] = $value->toArray();
                 } else {
                     $result[$name] = $value;

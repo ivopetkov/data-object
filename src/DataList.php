@@ -9,11 +9,20 @@
 
 namespace IvoPetkov;
 
+use IvoPetkov\DataObject;
+
 /**
  * @property-read int $length The number of objects in the list
  */
 class DataList implements \ArrayAccess, \Iterator
 {
+
+    /**
+     * The data source passed to the constructor
+     * 
+     * @var array 
+     */
+    private $dataSource = null;
 
     /**
      * The list data objects
@@ -37,21 +46,17 @@ class DataList implements \ArrayAccess, \Iterator
     private $actions = [];
 
     /**
-     * Constructs a new Data Object
+     * Constructs a new Data objects list
      * 
-     * @param iterable $data An array containing DataObjects or arrays that will be converted into DataObjects
-     * @throws \Exception
+     * @param array|iterable|callback $dataSource An array containing DataObjects or arrays that will be converted into DataObjects
+     * @throws \InvalidArgumentException
      */
-    public function __construct(iterable $data = [])
+    public function __construct($dataSource = null)
     {
-        foreach ($data as $object) {
-            $object = $this->getDataObject($object);
-            if ($object === null) {
-                $this->data = [];
-                throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
-            }
-            $this->data[] = $object;
+        if ($dataSource !== null && !is_array($dataSource) && !($dataSource instanceof \Traversable) && !is_callable($dataSource)) {
+            throw new \InvalidArgumentException('The data argument must be iterable or a callback that returns such data.');
         }
+        $this->dataSource = $dataSource;
     }
 
     /**
@@ -59,15 +64,16 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param \IvoPetkov\DataObject|array $object The data to be converted into a DataObject if needed
      * @return \IvoPetkov\DataObject|null Returns a DataObject or null if the argument is not valid
+     * @throws \Exception
      */
-    private function getDataObject($object): ?\IvoPetkov\DataObject
+    private function makeDataObject($data): \IvoPetkov\DataObject
     {
-        if ($object instanceof DataObject) {
-            return $object;
-        } elseif (is_array($object)) {
-            return new DataObject($object);
+        if ($data instanceof DataObject) {
+            return $data;
+        } elseif (is_array($data)) {
+            return new DataObject($data);
         }
-        return null;
+        throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
     }
 
     /**
@@ -83,10 +89,7 @@ class DataList implements \ArrayAccess, \Iterator
             throw new \Exception('The offset must be of type int or null');
         }
         $this->update();
-        $object = $this->getDataObject($value);
-        if ($object === null) {
-            throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
-        }
+        $object = $this->makeDataObject($value);
         if (is_null($offset)) {
             $this->data[] = $object;
             return;
@@ -186,6 +189,41 @@ class DataList implements \ArrayAccess, \Iterator
      */
     private function update(): void
     {
+        if ($this->dataSource !== null) {
+            if (is_callable($this->dataSource)) {
+                $context = new class {
+
+                    public $filters = [];
+                    public $requestedProperties = [];
+                };
+                foreach ($this->actions as $action) {
+                    if ($action[0] === 'filterBy') {
+                        $context->filters[] = new DataObject([
+                            'property' => $action[1],
+                            'value' => $action[2],
+                            'operator' => $action[3],
+                        ]);
+                    }
+                }
+                $dataSource = call_user_func($this->dataSource, $context);
+                if (!is_array($dataSource) && !($dataSource instanceof \Traversable)) {
+                    throw new \InvalidArgumentException('The data source callback result is not array, nor iterable');
+                }
+                $this->dataSource = $dataSource;
+                unset($dataSource);
+            }
+            if (is_array($this->dataSource) || $this->dataSource instanceof \Traversable) {
+                foreach ($this->dataSource as $object) {
+                    $object = $this->makeDataObject($object);
+                    if ($object === null) {
+                        $this->data = [];
+                        throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
+                    }
+                    $this->data[] = $object;
+                }
+            }
+            $this->dataSource = null;
+        }
         if (isset($this->actions[0])) {
             foreach ($this->actions as $action) {
                 if ($action[0] === 'filter') {
@@ -203,24 +241,24 @@ class DataList implements \ArrayAccess, \Iterator
                         $value = $object[$action[1]];
                         $targetValue = $action[2];
                         $operator = $action[3];
-                        if($operator === 'equal'){
+                        if ($operator === 'equal') {
                             $add = $value === $targetValue;
-                        } elseif ($operator === 'notEqual'){
+                        } elseif ($operator === 'notEqual') {
                             $add = $value !== $targetValue;
-                        } elseif ($operator === 'regExp'){
+                        } elseif ($operator === 'regExp') {
                             $add = preg_match('/' . $targetValue . '/', $value) === 1;
-                        } elseif ($operator === 'notRegExp'){
+                        } elseif ($operator === 'notRegExp') {
                             $add = preg_match('/' . $targetValue . '/', $value) === 0;
-                        } elseif ($operator === 'startWith'){
+                        } elseif ($operator === 'startWith') {
                             $add = substr($value, 0, strlen($targetValue)) === $targetValue;
-                        } elseif ($operator === 'notStartWith'){
+                        } elseif ($operator === 'notStartWith') {
                             $add = substr($value, 0, strlen($targetValue)) !== $targetValue;
-                        } elseif ($operator === 'endWith'){
+                        } elseif ($operator === 'endWith') {
                             $add = substr($value, -strlen($targetValue)) === $targetValue;
-                        } elseif ($operator === 'notEndWith'){
+                        } elseif ($operator === 'notEndWith') {
                             $add = substr($value, -strlen($targetValue)) !== $targetValue;
                         }
-                        if($add){
+                        if ($add) {
                             $temp[] = $object;
                         }
                     }
@@ -330,8 +368,8 @@ class DataList implements \ArrayAccess, \Iterator
      */
     public function filterBy(string $property, $value, $operator = 'equal'): \IvoPetkov\DataList
     {
-        if(array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith']) === false){
-            throw new \Exception('Invalid operator ('.$operator.')');
+        if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith']) === false) {
+            throw new \Exception('Invalid operator (' . $operator . ')');
         }
         $this->actions[] = ['filterBy', $property, $value, $operator];
         return $this;
@@ -401,10 +439,7 @@ class DataList implements \ArrayAccess, \Iterator
     public function unshift($object): \IvoPetkov\DataList
     {
         $this->update();
-        $object = $this->getDataObject($object);
-        if ($object === null) {
-            throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
-        }
+        $object = $this->makeDataObject($object);
         array_unshift($this->data, $object);
         return $this;
     }
@@ -430,10 +465,7 @@ class DataList implements \ArrayAccess, \Iterator
     public function push($object): \IvoPetkov\DataList
     {
         $this->update();
-        $object = $this->getDataObject($object);
-        if ($object === null) {
-            throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
-        }
+        $object = $this->makeDataObject($object);
         array_push($this->data, $object);
         return $this;
     }

@@ -19,7 +19,7 @@ class DataListTest extends DataListTestCase
     /**
      *
      */
-    public function testConstructor()
+    public function testConstructor1()
     {
         $data = [
             ['value' => 'a'],
@@ -34,6 +34,25 @@ class DataListTest extends DataListTestCase
         foreach ($list as $i => $object) {
             $this->assertTrue($object->value === $data[$i]['value']);
         }
+    }
+
+    /**
+     *
+     */
+    public function testConstructor2()
+    {
+        $function = function() {
+            return [
+                ['value' => 'a'],
+                ['value' => 'b'],
+                ['value' => 'c']
+            ];
+        };
+        $list = new DataList($function);
+        $this->assertTrue($list[0]->value === 'a');
+        $this->assertTrue($list[1]->value === 'b');
+        $this->assertTrue($list[2]->value === 'c');
+        $this->assertTrue($list->length === 3);
     }
 
     /**
@@ -190,6 +209,36 @@ class DataListTest extends DataListTestCase
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'notEndWith');
         $this->assertTrue($list[0]->value === 'aac');
+        $this->assertTrue($list->length === 1);
+    }
+
+    /**
+     *
+     */
+    public function testFilterContext()
+    {
+        $list = new DataList(function($context) {
+            $requiresOnlyC = false;
+            foreach ($context->filters as $filter) {
+                if ($filter->property === 'value' && $filter->value === 'c' && $filter->operator === 'equal') {
+                    $requiresOnlyC = true;
+                }
+            }
+            if ($requiresOnlyC) {
+                return [
+                    ['value' => 'c', 'filtered' => 1]
+                ];
+            } else {
+                return [
+                    ['value' => 'a'],
+                    ['value' => 'b'],
+                    ['value' => 'c', 'filtered' => 0]
+                ];
+            }
+        });
+        $list->filterBy('value', 'c');
+        $this->assertTrue($list[0]->value === 'c');
+        $this->assertTrue($list[0]->filtered === 1);
         $this->assertTrue($list->length === 1);
     }
 
@@ -376,8 +425,9 @@ class DataListTest extends DataListTestCase
      */
     public function testExceptions1()
     {
+        $dataList = new DataList([1, 2, 3]);
         $this->setExpectedException('Exception');
-        new DataList([1, 2, 3]);
+        echo $dataList->length;
     }
 
     /**

@@ -69,6 +69,8 @@ class DataObjectTest extends DataListTestCase
         $this->assertTrue(isset($object->property1));
         $this->assertTrue(isset($object->property2));
         $this->assertFalse(isset($object->property3));
+        $object->property2 = null;
+        $this->assertTrue($object->property2 === null);
     }
 
     /**
