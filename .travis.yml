@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - 7.1
+  
+install:
+  - composer install
+  
+script:
+  - vendor/bin/phpunit --coverage-clover=coverage.xml --configuration phpunit.xml
+  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
