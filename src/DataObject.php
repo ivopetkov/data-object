@@ -34,10 +34,12 @@ class DataObject implements \ArrayAccess
      * 
      * @param array $data
      */
-    public function __construct($data = [])
+    public function __construct(array $data = [])
     {
         $this->initialize();
-        $this->data = $data;
+        foreach ($data as $name => $value) {
+            $this->setPropertyValue($name, $value);
+        }
     }
 
     /**
@@ -162,8 +164,17 @@ class DataObject implements \ArrayAccess
             }
             if (isset($this->properties[$name][2])) { // set exists
                 $this->data[$name] = call_user_func($this->properties[$name][2], $value);
+                if ($this->data[$name] === null) {
+                    unset($this->data[$name]);
+                }
                 return;
             }
+        }
+        if ($value === null) {
+            if (array_key_exists($name, $this->data)) {
+                unset($this->data[$name]);
+            }
+            return;
         }
         $this->data[$name] = $value;
     }
