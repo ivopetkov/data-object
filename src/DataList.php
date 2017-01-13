@@ -200,7 +200,27 @@ class DataList implements \ArrayAccess, \Iterator
                 } else if ($action[0] === 'filterBy') {
                     $temp = [];
                     foreach ($this->data as $object) {
-                        if ($object[$action[1]] === $action[2]) {
+                        $value = $object[$action[1]];
+                        $targetValue = $action[2];
+                        $operator = $action[3];
+                        if($operator === 'equal'){
+                            $add = $value === $targetValue;
+                        } elseif ($operator === 'notEqual'){
+                            $add = $value !== $targetValue;
+                        } elseif ($operator === 'regExp'){
+                            $add = preg_match($targetValue, $value) === 1;
+                        } elseif ($operator === 'notRegExp'){
+                            $add = preg_match($targetValue, $value) === 0;
+                        } elseif ($operator === 'startWith'){
+                            $add = substr($value, 0, strlen($targetValue)) === $targetValue;
+                        } elseif ($operator === 'notStartWith'){
+                            $add = substr($value, 0, strlen($targetValue)) !== $targetValue;
+                        } elseif ($operator === 'endWith'){
+                            $add = substr($value, -strlen($targetValue)) === $targetValue;
+                        } elseif ($operator === 'notEndWith'){
+                            $add = substr($value, -strlen($targetValue)) !== $targetValue;
+                        }
+                        if($add){
                             $temp[] = $object;
                         }
                     }
@@ -304,12 +324,16 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param string $property The property name
      * @param mixed $value The value of the property
+     * @param string $operator equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith
      * @return \IvoPetkov\DataList Returns a reference to the list
      * @throws \Exception
      */
-    public function filterBy(string $property, $value): \IvoPetkov\DataList
+    public function filterBy(string $property, $value, $operator = 'equal'): \IvoPetkov\DataList
     {
-        $this->actions[] = ['filterBy', $property, $value];
+        if(array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith']) === false){
+            throw new \Exception('Invalid operator ('.$operator.')');
+        }
+        $this->actions[] = ['filterBy', $property, $value, $operator];
         return $this;
     }
 

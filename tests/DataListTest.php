@@ -116,6 +116,81 @@ class DataListTest extends DataListTestCase
         $list = new DataList($data);
         $list->filterBy('value', 'c');
         $this->assertTrue($list[0]->value === 'c');
+        $this->assertTrue($list->length === 1);
+
+        $data = [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            ['value' => 'c']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', 'c', 'notEqual');
+        $this->assertTrue($list[0]->value === 'a');
+        $this->assertTrue($list[1]->value === 'b');
+        $this->assertTrue($list->length === 2);
+
+        $data = [
+            ['value' => 'a1'],
+            ['value' => 'b2'],
+            ['value' => 'c']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', '/[0-9]{1}/', 'regExp');
+        $this->assertTrue($list[0]->value === 'a1');
+        $this->assertTrue($list[1]->value === 'b2');
+        $this->assertTrue($list->length === 2);
+
+        $data = [
+            ['value' => 'a1'],
+            ['value' => 'b2'],
+            ['value' => 'c']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', '/[0-9]{1}/', 'notRegExp');
+        $this->assertTrue($list[0]->value === 'c');
+        $this->assertTrue($list->length === 1);
+
+        $data = [
+            ['value' => 'aaa'],
+            ['value' => 'baaa'],
+            ['value' => 'caaa']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', 'aa', 'startWith');
+        $this->assertTrue($list[0]->value === 'aaa');
+        $this->assertTrue($list->length === 1);
+
+        $data = [
+            ['value' => 'aaa'],
+            ['value' => 'baaa'],
+            ['value' => 'caaa']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', 'aa', 'notStartWith');
+        $this->assertTrue($list[0]->value === 'baaa');
+        $this->assertTrue($list[1]->value === 'caaa');
+        $this->assertTrue($list->length === 2);
+
+        $data = [
+            ['value' => 'aaa'],
+            ['value' => 'baa'],
+            ['value' => 'aac']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', 'aa', 'endWith');
+        $this->assertTrue($list[0]->value === 'aaa');
+        $this->assertTrue($list[1]->value === 'baa');
+        $this->assertTrue($list->length === 2);
+
+        $data = [
+            ['value' => 'aaa'],
+            ['value' => 'baa'],
+            ['value' => 'aac']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', 'aa', 'notEndWith');
+        $this->assertTrue($list[0]->value === 'aac');
+        $this->assertTrue($list->length === 1);
     }
 
     /**
@@ -383,6 +458,16 @@ class DataListTest extends DataListTestCase
         $dataList = new DataList();
         $this->setExpectedException('Exception');
         $dataList->push(5);
+    }
+
+    /**
+     *
+     */
+    public function testExceptions10()
+    {
+        $dataList = new DataList();
+        $this->setExpectedException('Exception');
+        $dataList->filterBy('name', 'John', 'invalidOperator');
     }
 
     /**
