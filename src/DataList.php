@@ -208,9 +208,9 @@ class DataList implements \ArrayAccess, \Iterator
                         } elseif ($operator === 'notEqual'){
                             $add = $value !== $targetValue;
                         } elseif ($operator === 'regExp'){
-                            $add = preg_match($targetValue, $value) === 1;
+                            $add = preg_match('/' . $targetValue . '/', $value) === 1;
                         } elseif ($operator === 'notRegExp'){
-                            $add = preg_match($targetValue, $value) === 0;
+                            $add = preg_match('/' . $targetValue . '/', $value) === 0;
                         } elseif ($operator === 'startWith'){
                             $add = substr($value, 0, strlen($targetValue)) === $targetValue;
                         } elseif ($operator === 'notStartWith'){

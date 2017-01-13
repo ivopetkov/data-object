@@ -135,7 +135,7 @@ class DataListTest extends DataListTestCase
             ['value' => 'c']
         ];
         $list = new DataList($data);
-        $list->filterBy('value', '/[0-9]{1}/', 'regExp');
+        $list->filterBy('value', '[0-9]{1}', 'regExp');
         $this->assertTrue($list[0]->value === 'a1');
         $this->assertTrue($list[1]->value === 'b2');
         $this->assertTrue($list->length === 2);
@@ -146,7 +146,7 @@ class DataListTest extends DataListTestCase
             ['value' => 'c']
         ];
         $list = new DataList($data);
-        $list->filterBy('value', '/[0-9]{1}/', 'notRegExp');
+        $list->filterBy('value', '[0-9]{1}', 'notRegExp');
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list->length === 1);
 
