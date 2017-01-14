@@ -10,6 +10,7 @@
 namespace IvoPetkov;
 
 use IvoPetkov\DataObject;
+use IvoPetkov\DataListContext;
 
 /**
  * @property-read int $length The number of objects in the list
@@ -191,17 +192,18 @@ class DataList implements \ArrayAccess, \Iterator
     {
         if ($this->dataSource !== null) {
             if (is_callable($this->dataSource)) {
-                $context = new class {
-
-                    public $filters = [];
-                    public $requestedProperties = [];
-                };
+                $context = new DataListContext();
                 foreach ($this->actions as $action) {
                     if ($action[0] === 'filterBy') {
-                        $context->filters[] = new DataObject([
+                        $context->filterByProperties[] = new DataObject([
                             'property' => $action[1],
                             'value' => $action[2],
                             'operator' => $action[3],
+                        ]);
+                    }elseif ($action[0] === 'sortBy') {
+                        $context->sortByProperties[] = new DataObject([
+                            'property' => $action[1],
+                            'order' => $action[2]
                         ]);
                     }
                 }

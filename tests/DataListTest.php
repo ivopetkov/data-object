@@ -219,7 +219,7 @@ class DataListTest extends DataListTestCase
     {
         $list = new DataList(function($context) {
             $requiresOnlyC = false;
-            foreach ($context->filters as $filter) {
+            foreach ($context->filterByProperties as $filter) {
                 if ($filter->property === 'value' && $filter->value === 'c' && $filter->operator === 'equal') {
                     $requiresOnlyC = true;
                 }
@@ -236,7 +236,9 @@ class DataListTest extends DataListTestCase
                 ];
             }
         });
-        $list->filterBy('value', 'c');
+        $list
+                ->filterBy('value', 'c')
+                ->sortBy('value');
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list[0]->filtered === 1);
         $this->assertTrue($list->length === 1);

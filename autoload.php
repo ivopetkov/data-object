@@ -9,6 +9,7 @@
 
 $classes = array(
     'IvoPetkov\DataList' => 'src/DataList.php',
+    'IvoPetkov\DataListContext' => 'src/DataListContext.php',
     'IvoPetkov\DataObject' => 'src/DataObject.php'
 );
 
