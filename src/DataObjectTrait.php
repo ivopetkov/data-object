@@ -217,9 +217,6 @@ trait DataObjectTrait
             }
             if (isset($this->internalDataObjectData['properties'][$name][3])) { // unset exists
                 $this->internalDataObjectData['data'][$name] = call_user_func($this->internalDataObjectData['properties'][$name][3]);
-                if ($this->internalDataObjectData['data'][$name] === null) {
-                    unset($this->internalDataObjectData['data'][$name]);
-                }
                 return;
             }
         }

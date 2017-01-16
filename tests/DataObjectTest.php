@@ -295,7 +295,7 @@ class DataObjectTest extends DataListTestCase
                         return $value * 2;
                     },
                     'unset' => function() {
-                        
+                        return 1;
                     }
                 ]);
             }
