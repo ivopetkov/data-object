@@ -10,7 +10,8 @@
 $classes = array(
     'IvoPetkov\DataList' => 'src/DataList.php',
     'IvoPetkov\DataListContext' => 'src/DataListContext.php',
-    'IvoPetkov\DataObject' => 'src/DataObject.php'
+    'IvoPetkov\DataObject' => 'src/DataObject.php',
+    'IvoPetkov\DataObjectTrait' => 'src/DataObjectTrait.php'
 );
 
 spl_autoload_register(function ($class) use ($classes) {
