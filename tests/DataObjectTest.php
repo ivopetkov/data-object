@@ -30,7 +30,8 @@ class DataObjectTest extends DataListTestCase
         $this->assertTrue($object->property1 === 'a');
         $this->assertTrue($object->property2 === 'b');
         $this->assertTrue($object->property3 === 'c');
-        $this->assertTrue($object->property4 === null);
+        $this->setExpectedException('Exception');
+        echo $object->property4;
     }
 
     /**
@@ -38,7 +39,15 @@ class DataObjectTest extends DataListTestCase
      */
     public function testProperties()
     {
-        $object = new DataObject();
+        $object = new class extends DataObject {
+
+            protected function initialize()
+            {
+                $this->defineProperty('property1');
+                $this->defineProperty('property2');
+                $this->defineProperty('property3');
+            }
+        };
         $this->assertTrue($object->property1 === null);
         $this->assertTrue($object->property2 === null);
         $this->assertTrue($object->property3 === null);
@@ -78,7 +87,15 @@ class DataObjectTest extends DataListTestCase
      */
     public function testArrayAccess()
     {
-        $object = new DataObject();
+        $object = new class extends DataObject {
+
+            protected function initialize()
+            {
+                $this->defineProperty('property1');
+                $this->defineProperty('property2');
+                $this->defineProperty('property3');
+            }
+        };
         $this->assertTrue($object['property1'] === null);
         $this->assertTrue($object['property2'] === null);
         $this->assertTrue($object['property3'] === null);
@@ -114,16 +131,57 @@ class DataObjectTest extends DataListTestCase
     /**
      *
      */
+    public function testUndefinedProperties()
+    {
+        $object = new DataObject();
+        $this->assertFalse(isset($object->property1));
+
+        $object->property1 = 1;
+        $this->assertTrue(isset($object->property1));
+
+        $object->property1 = null;
+        $this->assertFalse(isset($object->property1));
+
+        unset($object->property1);
+        $this->assertFalse(isset($object->property1));
+
+        $this->setExpectedException('Exception');
+        echo $object->property1;
+    }
+
+    /**
+     *
+     */
+    public function testUndefinedIndexes()
+    {
+        $object = new DataObject();
+        $this->assertFalse(isset($object['property1']));
+
+        $object['property1'] = 1;
+        $this->assertTrue(isset($object['property1']));
+
+        $object['property1'] = null;
+        $this->assertFalse(isset($object['property1']));
+
+        unset($object['property1']);
+        $this->assertFalse(isset($object['property1']));
+
+        $this->setExpectedException('Exception');
+        echo $object['property1'];
+    }
+
+    /**
+     *
+     */
     public function testDefineProperty1()
     {
         $object = new class extends DataObject {
 
-            protected
-                    function initialize()
+            protected function initialize()
             {
                 $this->defineProperty('property1', [
                     'get' => function() {
-                        if ($this->property1raw === null) {
+                        if (!isset($this->property1raw)) {
                             return 'unknown';
                         } else {
                             return $this->property1raw;

@@ -59,7 +59,12 @@ class DataObject implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->getPropertyValue($offset);
+        $exists = null;
+        $value = $this->getPropertyValue($offset, $exists);
+        if (!$exists) {
+            throw new \Exception('Undefined index: ' . $offset);
+        }
+        return $value;
     }
 
     /**
@@ -100,7 +105,12 @@ class DataObject implements \ArrayAccess
      */
     public function __get($name)
     {
-        return $this->getPropertyValue($name);
+        $exists = null;
+        $value = $this->getPropertyValue($name, $exists);
+        if (!$exists) {
+            throw new \Exception('Undefined property: ' . get_class($this) . '::$' . $name);
+        }
+        return $value;
     }
 
     /**
@@ -135,22 +145,30 @@ class DataObject implements \ArrayAccess
     /**
      * 
      * @param string $name
+     * @param bool $exists
      * @return mixed
      */
-    private function getPropertyValue($name)
+    private function getPropertyValue($name, &$exists)
     {
-        if (isset($this->properties[$name]) && isset($this->properties[$name][1])) { // get exists
-            return call_user_func($this->properties[$name][1]);
-        }
-        if (array_key_exists($name, $this->data)) {
-            return $this->data[$name];
-        } else {
-            if (isset($this->properties[$name]) && isset($this->properties[$name][0])) { // init exists
+        $exists = true;
+        if (isset($this->properties[$name])) {
+            if (isset($this->properties[$name][1])) { // get exists
+                return call_user_func($this->properties[$name][1]);
+            }
+            if (array_key_exists($name, $this->data)) {
+                return $this->data[$name];
+            }
+            if (isset($this->properties[$name][0])) { // init exists
                 $this->data[$name] = call_user_func($this->properties[$name][0]);
                 return $this->data[$name];
             }
             return null;
         }
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+        }
+        $exists = false;
+        return null;
     }
 
     /**
@@ -172,12 +190,6 @@ class DataObject implements \ArrayAccess
                 return;
             }
         }
-        if ($value === null) {
-            if (array_key_exists($name, $this->data)) {
-                unset($this->data[$name]);
-            }
-            return;
-        }
         $this->data[$name] = $value;
     }
 
@@ -188,7 +200,12 @@ class DataObject implements \ArrayAccess
      */
     private function isPropertyValueSet($name): bool
     {
-        return isset($this->properties[$name]) || array_key_exists($name, $this->data);
+        if (isset($this->properties[$name])) {
+            $exists = null;
+            $value = $this->getPropertyValue($name, $exists);
+            return $value !== null;
+        }
+        return isset($this->data[$name]);
     }
 
     /**
@@ -256,7 +273,8 @@ class DataObject implements \ArrayAccess
     {
         $result = [];
         foreach ($this->properties as $name => $temp) {
-            $value = $this->getPropertyValue($name);
+            $exists = null;
+            $value = $this->getPropertyValue($name, $exists);
             if ($value instanceof \IvoPetkov\DataObject || $value instanceof DataList) {
                 $result[$name] = $value->toArray();
             } else {
