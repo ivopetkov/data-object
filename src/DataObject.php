@@ -12,7 +12,7 @@ namespace IvoPetkov;
 /**
  * 
  */
-class DataObject implements \ArrayAccess
+class DataObject implements \ArrayAccess, \IvoPetkov\DataObjectInterface
 {
 
     use DataObjectTrait;

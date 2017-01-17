@@ -11,6 +11,7 @@ namespace IvoPetkov;
 
 use IvoPetkov\DataObject;
 use IvoPetkov\DataListContext;
+use IvoPetkov\DataObjectInterface;
 
 /**
  * @property-read int $length The number of objects in the list
@@ -69,7 +70,7 @@ class DataList implements \ArrayAccess, \Iterator
      */
     private function makeDataObject($data): \IvoPetkov\DataObject
     {
-        if ($data instanceof DataObject) {
+        if ($data instanceof DataObjectInterface) {
             return $data;
         } elseif (is_array($data)) {
             return new DataObject($data);

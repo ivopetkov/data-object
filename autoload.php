@@ -11,6 +11,7 @@ $classes = array(
     'IvoPetkov\DataList' => 'src/DataList.php',
     'IvoPetkov\DataListContext' => 'src/DataListContext.php',
     'IvoPetkov\DataObject' => 'src/DataObject.php',
+    'IvoPetkov\DataObjectInterface' => 'src/DataObjectInterface.php',
     'IvoPetkov\DataObjectTrait' => 'src/DataObjectTrait.php'
 );
 
