@@ -68,14 +68,14 @@ class DataList implements \ArrayAccess, \Iterator
      * @return \IvoPetkov\DataObject|null Returns a DataObject or null if the argument is not valid
      * @throws \Exception
      */
-    private function makeDataObject($data): \IvoPetkov\DataObject
+    private function makeDataObject($data)
     {
         if ($data instanceof DataObjectInterface) {
             return $data;
         } elseif (is_array($data)) {
             return new DataObject($data);
         }
-        throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
+        throw new \Exception('The data argument is not valid. It must be an instance of \IvoPetkov\DataObjectInterface or array.');
     }
 
     /**
@@ -135,7 +135,7 @@ class DataList implements \ArrayAccess, \Iterator
      * @return \IvoPetkov\DataObject|null
      * @throws \Exception
      */
-    public function offsetGet($offset): ?\IvoPetkov\DataObject
+    public function offsetGet($offset)
     {
         $this->update();
         return isset($this->data[$offset]) ? $this->data[$offset] : null;
@@ -153,7 +153,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @return \IvoPetkov\DataObject|null
      */
-    public function current(): ?\IvoPetkov\DataObject
+    public function current()
     {
         $this->update();
         return isset($this->data[$this->pointer]) ? $this->data[$this->pointer] : null;
@@ -201,7 +201,7 @@ class DataList implements \ArrayAccess, \Iterator
                             'value' => $action[2],
                             'operator' => $action[3],
                         ]);
-                    }elseif ($action[0] === 'sortBy') {
+                    } elseif ($action[0] === 'sortBy') {
                         $context->sortByProperties[] = new DataObject([
                             'property' => $action[1],
                             'order' => $action[2]
@@ -220,7 +220,7 @@ class DataList implements \ArrayAccess, \Iterator
                     $object = $this->makeDataObject($object);
                     if ($object === null) {
                         $this->data = [];
-                        throw new \Exception('The data argument is not valid. It must be of type \IvoPetkov\DataObject or array.');
+                        throw new \Exception('The data argument is not valid. It must be an intance of \IvoPetkov\DataObjectInterface or array.');
                     }
                     $this->data[] = $object;
                 }
@@ -452,7 +452,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @return \IvoPetkov\DataObject|null Returns the shifted object or null if the list is empty
      */
-    public function shift(): ?\IvoPetkov\DataObject
+    public function shift()
     {
         $this->update();
         return array_shift($this->data);
@@ -478,7 +478,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @return \IvoPetkov\DataObject|null Returns the poped object or null if the list is empty
      */
-    public function pop(): ?\IvoPetkov\DataObject
+    public function pop()
     {
         $this->update();
         return array_pop($this->data);
