@@ -351,6 +351,47 @@ class DataObjectTest extends DataListTestCase
     /**
      *
      */
+    public function testEmptyObject1()
+    {
+        $object = new DataObject();
+        $object->property1 = 1;
+        $this->assertEquals($object->property1, 1);
+    }
+
+    /**
+     *
+     */
+    public function testEmptyObject2()
+    {
+        $object = new DataObject();
+        $this->setExpectedException('Exception');
+        echo $object->property1;
+    }
+
+    /**
+     *
+     */
+    public function testEmptyObject3()
+    {
+        $object = new DataObject();
+        $this->setExpectedException('Exception');
+        echo $object['property1'];
+    }
+
+    /**
+     *
+     */
+    public function testEmptyObject4()
+    {
+        $object = new DataObject();
+        unset($object->property1);
+        $this->setExpectedException('Exception');
+        echo $object->property1;
+    }
+
+    /**
+     *
+     */
     public function testToArray()
     {
         $data = [
@@ -496,6 +537,282 @@ class DataObjectTest extends DataListTestCase
                 ]);
             }
         };
+    }
+
+    /**
+     * 
+     */
+    private function getDataObjectWithPropertyType($type)
+    {
+        return new class($type) extends DataObject {
+
+            public $type;
+
+            function __construct($type)
+            {
+                $this->type = $type;
+                parent::__construct([]);
+            }
+
+            protected function initialize()
+            {
+                $this->defineProperty('property1', [
+                    'type' => $this->type
+                ]);
+            }
+        };
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes1a()
+    {
+        $object = $this->getDataObjectWithPropertyType('string');
+        $object->property1 = 'value';
+        $this->assertEquals($object->property1, 'value');
+
+        $object = $this->getDataObjectWithPropertyType('?string');
+        $object->property1 = null;
+        $this->assertEquals($object->property1, null);
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes1b()
+    {
+        $object = $this->getDataObjectWithPropertyType('string');
+        $this->setExpectedException('Exception');
+        $object->property1 = null;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes1c()
+    {
+        $object = $this->getDataObjectWithPropertyType('?string');
+        $this->setExpectedException('Exception');
+        $object->property1 = 1;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes2a()
+    {
+        $object = $this->getDataObjectWithPropertyType('int');
+        $object->property1 = 1;
+        $this->assertEquals($object->property1, 1);
+
+        $object = $this->getDataObjectWithPropertyType('?int');
+        $object->property1 = null;
+        $this->assertEquals($object->property1, null);
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes2b()
+    {
+        $object = $this->getDataObjectWithPropertyType('int');
+        $this->setExpectedException('Exception');
+        $object->property1 = null;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes2c()
+    {
+        $object = $this->getDataObjectWithPropertyType('?int');
+        $this->setExpectedException('Exception');
+        $object->property1 = 'value';
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes3a()
+    {
+        $object = $this->getDataObjectWithPropertyType('array');
+        $object->property1 = [];
+        $this->assertEquals($object->property1, []);
+
+        $object = $this->getDataObjectWithPropertyType('?array');
+        $object->property1 = null;
+        $this->assertEquals($object->property1, null);
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes3b()
+    {
+        $object = $this->getDataObjectWithPropertyType('array');
+        $this->setExpectedException('Exception');
+        $object->property1 = null;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes3c()
+    {
+        $object = $this->getDataObjectWithPropertyType('?array');
+        $this->setExpectedException('Exception');
+        $object->property1 = 'value';
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes4a()
+    {
+        $object = $this->getDataObjectWithPropertyType('callable');
+        $temp = function() {
+            
+        };
+        $object->property1 = $temp;
+        $this->assertEquals($object->property1, $temp);
+
+        $object = $this->getDataObjectWithPropertyType('?callable');
+        $object->property1 = null;
+        $this->assertEquals($object->property1, null);
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes4b()
+    {
+        $object = $this->getDataObjectWithPropertyType('callable');
+        $this->setExpectedException('Exception');
+        $object->property1 = null;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes4c()
+    {
+        $object = $this->getDataObjectWithPropertyType('?callable');
+        $this->setExpectedException('Exception');
+        $object->property1 = 'value';
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes5a()
+    {
+        $object = $this->getDataObjectWithPropertyType('float');
+        $object->property1 = 1.2;
+        $this->assertEquals($object->property1, 1.2);
+
+        $object = $this->getDataObjectWithPropertyType('?float');
+        $object->property1 = null;
+        $this->assertEquals($object->property1, null);
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes5b()
+    {
+        $object = $this->getDataObjectWithPropertyType('float');
+        $this->setExpectedException('Exception');
+        $object->property1 = null;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes5c()
+    {
+        $object = $this->getDataObjectWithPropertyType('?float');
+        $this->setExpectedException('Exception');
+        $object->property1 = 'value';
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes6a()
+    {
+        $object = $this->getDataObjectWithPropertyType('bool');
+        $object->property1 = false;
+        $this->assertEquals($object->property1, false);
+
+        $object = $this->getDataObjectWithPropertyType('?bool');
+        $object->property1 = null;
+        $this->assertEquals($object->property1, null);
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes6b()
+    {
+        $object = $this->getDataObjectWithPropertyType('bool');
+        $this->setExpectedException('Exception');
+        $object->property1 = null;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes6c()
+    {
+        $object = $this->getDataObjectWithPropertyType('?bool');
+        $this->setExpectedException('Exception');
+        $object->property1 = 'value';
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes7a()
+    {
+        $object = $this->getDataObjectWithPropertyType('DateTime');
+        $temp = new DateTime();
+        $object->property1 = $temp;
+        $this->assertEquals($object->property1, $temp);
+
+        $object = $this->getDataObjectWithPropertyType('?DateTime');
+        $object->property1 = null;
+        $this->assertEquals($object->property1, null);
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes7b()
+    {
+        $object = $this->getDataObjectWithPropertyType('DateTime');
+        $this->setExpectedException('Exception');
+        $object->property1 = null;
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes7c()
+    {
+        $object = $this->getDataObjectWithPropertyType('?DateTime');
+        $this->setExpectedException('Exception');
+        $object->property1 = 'value';
+    }
+
+    /**
+     *
+     */
+    public function testPropertyTypes7d()
+    {
+        $object = $this->getDataObjectWithPropertyType('DateTime');
+        $this->setExpectedException('Exception');
+        $object->property1 = new stdClass();
     }
 
 }

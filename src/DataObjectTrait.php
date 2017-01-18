@@ -136,7 +136,7 @@ trait DataObjectTrait
     private function internalDataObjectMethodGetPropertyValue($name, &$exists)
     {
         if ($this->internalDataObjectData === null) {
-            $this->internalDataObjectInitialize();
+            return null;
         }
         $exists = true;
         if (isset($this->internalDataObjectData['properties'][$name])) {
@@ -170,8 +170,57 @@ trait DataObjectTrait
             $this->internalDataObjectInitialize();
         }
         if (isset($this->internalDataObjectData['properties'][$name])) {
-            if ($this->internalDataObjectData['properties'][$name][4]) { // readonly
+            if (isset($this->internalDataObjectData['properties'][$name][4])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
+            }
+            if (isset($this->internalDataObjectData['properties'][$name][5])) { // type exists
+                $type = $this->internalDataObjectData['properties'][$name][5];
+                $nullable = false;
+                $ok = false;
+                if (substr($type, 0, 1) === '?') {
+                    if ($value === null) {
+                        $ok = true;
+                    }
+                    $type = substr($type, 1);
+                    $nullable = true;
+                }
+                if (!$ok) {
+                    switch ($type) {
+                        case 'array':
+                            $ok = is_array($value);
+                            break;
+                        case 'callable':
+                            $ok = is_callable($value);
+                            break;
+                        case 'bool':
+                            $ok = is_bool($value);
+                            break;
+                        case 'float':
+                            $ok = is_float($value);
+                            break;
+                        case 'int':
+                            $ok = is_int($value);
+                            break;
+                        case 'string':
+                            $ok = is_string($value);
+                            break;
+                    }
+                }
+                if (!$ok) {
+                    $ok = class_exists($type) && is_a($value, $type);
+                }
+                if (!$ok) {
+                    $valueType = gettype($value);
+                    if (array_search($type, ['array', 'callable', 'bool', 'float', 'int', 'string']) === false) {
+                        if ($valueType === 'object') {
+                            throw new \Exception('The value of \'' . $name . '\' must be an instance of ' . $type . ($nullable ? ' or null' : '') . ', instance of ' . get_class($value) . ' given');
+                        } else {
+                            throw new \Exception('The value of \'' . $name . '\' must be an instance of ' . $type . ($nullable ? ' or null' : '') . ', ' . $valueType . ' given');
+                        }
+                    } else {
+                        throw new \Exception('The value of \'' . $name . '\' must be of type ' . $type . ($nullable ? ' or null' : '') . ', ' . $valueType . ' given');
+                    }
+                }
             }
             if (isset($this->internalDataObjectData['properties'][$name][2])) { // set exists
                 $this->internalDataObjectData['data'][$name] = call_user_func($this->internalDataObjectData['properties'][$name][2], $value);
@@ -209,10 +258,10 @@ trait DataObjectTrait
     private function internalDataObjectMethodUnsetPropertyValue($name): void
     {
         if ($this->internalDataObjectData === null) {
-            $this->internalDataObjectInitialize();
+            return;
         }
         if (isset($this->internalDataObjectData['properties'][$name])) {
-            if ($this->internalDataObjectData['properties'][$name][4]) { // readonly
+            if (isset($this->internalDataObjectData['properties'][$name][4])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
             }
             if (isset($this->internalDataObjectData['properties'][$name][3])) { // unset exists
@@ -234,31 +283,49 @@ trait DataObjectTrait
      */
     protected function defineProperty(string $name, array $options = [])
     {
-        if (isset($options['init']) && !is_callable($options['init'])) {
-            throw new \Exception('The options init attribute must be of type callable');
-        }
-        if (isset($options['get']) && !is_callable($options['get'])) {
-            throw new \Exception('The options get attribute must be of type callable');
-        }
-        if (isset($options['set']) && !is_callable($options['set'])) {
-            throw new \Exception('The options set attribute must be of type callable');
-        }
-        if (isset($options['unset']) && !is_callable($options['unset'])) {
-            throw new \Exception('The options unset attribute must be of type callable');
-        }
-        if (isset($options['readonly']) && !is_bool($options['readonly'])) {
-            throw new \Exception('The options readonly attribute must be of type boolean');
-        }
         if ($this->internalDataObjectData === null) {
             $this->internalDataObjectInitialize();
         }
-        $this->internalDataObjectData['properties'][$name] = [
-            isset($options['init']) ? \Closure::bind($options['init'], $this) : null,
-            isset($options['get']) ? \Closure::bind($options['get'], $this) : null,
-            isset($options['set']) ? \Closure::bind($options['set'], $this) : null,
-            isset($options['unset']) ? \Closure::bind($options['unset'], $this) : null,
-            isset($options['readonly']) && $options['readonly'] === true, // readonly
-        ];
+        $data = [];
+        if (isset($options['init'])) {
+            if (!is_callable($options['init'])) {
+                throw new \Exception('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
+            }
+            $data[0] = \Closure::bind($options['init'], $this);
+        }
+        if (isset($options['get'])) {
+            if (!is_callable($options['get'])) {
+                throw new \Exception('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
+            }
+            $data[1] = \Closure::bind($options['get'], $this);
+        }
+        if (isset($options['set'])) {
+            if (!is_callable($options['set'])) {
+                throw new \Exception('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
+            }
+            $data[2] = \Closure::bind($options['set'], $this);
+        }
+        if (isset($options['unset'])) {
+            if (!is_callable($options['unset'])) {
+                throw new \Exception('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
+            }
+            $data[3] = \Closure::bind($options['unset'], $this);
+        }
+        if (isset($options['readonly'])) {
+            if (!is_bool($options['readonly'])) {
+                throw new \Exception('The \'readonly\' option must be of type bool, ' . gettype($options['readonly']) . ' given');
+            }
+            if ($options['readonly']) {
+                $data[4] = true;
+            }
+        }
+        if (isset($options['type'])) {
+            if (!is_string($options['type'])) {
+                throw new \Exception('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
+            }
+            $data[5] = $options['type'];
+        }
+        $this->internalDataObjectData['properties'][$name] = $data;
     }
 
     /**
