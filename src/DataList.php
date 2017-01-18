@@ -241,7 +241,11 @@ class DataList implements \ArrayAccess, \Iterator
                 } else if ($action[0] === 'filterBy') {
                     $temp = [];
                     foreach ($this->data as $object) {
-                        $value = $object[$action[1]];
+                        $propertyName = $action[1];
+                        if (!isset($object->$propertyName)) {
+                            return;
+                        }
+                        $value = $object->$propertyName;
                         $targetValue = $action[2];
                         $operator = $action[3];
                         if ($operator === 'equal') {
