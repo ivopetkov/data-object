@@ -25,6 +25,57 @@ trait DataObjectTrait
     private $internalDataObjectData = [];
 
     /**
+     * Defines a new property
+     * 
+     * @param string $name The property name
+     * @param array $options The property options ['get'=>callable, 'set'=>callable]
+     * @throws \Exception
+     */
+    protected function defineProperty(string $name, array $options = [])
+    {
+        $data = [];
+        if (isset($options['init'])) {
+            if (!is_callable($options['init'])) {
+                throw new \Exception('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
+            }
+            $data[0] = \Closure::bind($options['init'], $this);
+        }
+        if (isset($options['get'])) {
+            if (!is_callable($options['get'])) {
+                throw new \Exception('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
+            }
+            $data[1] = \Closure::bind($options['get'], $this);
+        }
+        if (isset($options['set'])) {
+            if (!is_callable($options['set'])) {
+                throw new \Exception('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
+            }
+            $data[2] = \Closure::bind($options['set'], $this);
+        }
+        if (isset($options['unset'])) {
+            if (!is_callable($options['unset'])) {
+                throw new \Exception('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
+            }
+            $data[3] = \Closure::bind($options['unset'], $this);
+        }
+        if (isset($options['readonly'])) {
+            if (!is_bool($options['readonly'])) {
+                throw new \Exception('The \'readonly\' option must be of type bool, ' . gettype($options['readonly']) . ' given');
+            }
+            if ($options['readonly']) {
+                $data[4] = true;
+            }
+        }
+        if (isset($options['type'])) {
+            if (!is_string($options['type'])) {
+                throw new \Exception('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
+            }
+            $data[5] = $options['type'];
+        }
+        $this->internalDataObjectData['p' . $name] = $data;
+    }
+
+    /**
      * 
      * @param string $name
      * @return mixed
@@ -152,57 +203,6 @@ trait DataObjectTrait
         if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
             unset($this->internalDataObjectData['d' . $name]);
         }
-    }
-
-    /**
-     * Defines a new property
-     * 
-     * @param string $name The property name
-     * @param array $options The property options ['get'=>callable, 'set'=>callable]
-     * @throws \Exception
-     */
-    protected function defineProperty(string $name, array $options = [])
-    {
-        $data = [];
-        if (isset($options['init'])) {
-            if (!is_callable($options['init'])) {
-                throw new \Exception('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
-            }
-            $data[0] = \Closure::bind($options['init'], $this);
-        }
-        if (isset($options['get'])) {
-            if (!is_callable($options['get'])) {
-                throw new \Exception('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
-            }
-            $data[1] = \Closure::bind($options['get'], $this);
-        }
-        if (isset($options['set'])) {
-            if (!is_callable($options['set'])) {
-                throw new \Exception('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
-            }
-            $data[2] = \Closure::bind($options['set'], $this);
-        }
-        if (isset($options['unset'])) {
-            if (!is_callable($options['unset'])) {
-                throw new \Exception('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
-            }
-            $data[3] = \Closure::bind($options['unset'], $this);
-        }
-        if (isset($options['readonly'])) {
-            if (!is_bool($options['readonly'])) {
-                throw new \Exception('The \'readonly\' option must be of type bool, ' . gettype($options['readonly']) . ' given');
-            }
-            if ($options['readonly']) {
-                $data[4] = true;
-            }
-        }
-        if (isset($options['type'])) {
-            if (!is_string($options['type'])) {
-                throw new \Exception('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
-            }
-            $data[5] = $options['type'];
-        }
-        $this->internalDataObjectData['p' . $name] = $data;
     }
 
 }
