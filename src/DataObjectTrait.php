@@ -9,8 +9,6 @@
 
 namespace IvoPetkov;
 
-use IvoPetkov\DataList;
-
 /**
  * 
  */

@@ -197,7 +197,7 @@ class DataList implements \ArrayAccess, \Iterator
                     $this->data[] = (object) $object;
                 }
             } else {
-                throw new \InvalidArgumentException('The data source callback result is not array, nor iterable');
+                throw new \InvalidArgumentException('The data source callback result is not iterable');
             }
         }
         if (isset($this->actions[0])) {

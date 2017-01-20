@@ -12,7 +12,6 @@ $classes = array(
     'IvoPetkov\DataListContext' => 'src/DataListContext.php',
     'IvoPetkov\DataObject' => 'src/DataObject.php',
     'IvoPetkov\DataObjectArrayAccessTrait' => 'src/DataObjectArrayAccessTrait.php',
-    'IvoPetkov\DataObjectInterface' => 'src/DataObjectInterface.php',
     'IvoPetkov\DataObjectToArrayTrait' => 'src/DataObjectToArrayTrait.php',
     'IvoPetkov\DataObjectToJSONTrait' => 'src/DataObjectToJSONTrait.php',
     'IvoPetkov\DataObjectTrait' => 'src/DataObjectTrait.php'
