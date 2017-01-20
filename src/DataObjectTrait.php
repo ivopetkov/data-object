@@ -22,7 +22,7 @@ trait DataObjectTrait
      * 
      * @var array 
      */
-    private $internalDataObjectData = null;
+    private $internalDataObjectData = [];
 
     /**
      * 
@@ -46,7 +46,7 @@ trait DataObjectTrait
      */
     public function offsetSet($offset, $value): void
     {
-        if (!is_null($offset)) {
+        if ($offset !== null) {
             $this->internalDataObjectMethodSetPropertyValue($offset, $value);
         }
     }
@@ -116,44 +116,28 @@ trait DataObjectTrait
 
     /**
      * 
-     */
-    private function internalDataObjectInitialize(): void
-    {
-        if (!isset($this->internalDataObjectData['properties'])) {
-            $this->internalDataObjectData['properties'] = [];
-        }
-        if (!isset($this->internalDataObjectData['data'])) {
-            $this->internalDataObjectData['data'] = [];
-        }
-    }
-
-    /**
-     * 
      * @param string $name
      * @param bool $exists
      * @return mixed
      */
     private function internalDataObjectMethodGetPropertyValue($name, &$exists)
     {
-        if ($this->internalDataObjectData === null) {
-            return null;
-        }
         $exists = true;
-        if (isset($this->internalDataObjectData['properties'][$name])) {
-            if (isset($this->internalDataObjectData['properties'][$name][1])) { // get exists
-                return call_user_func($this->internalDataObjectData['properties'][$name][1]);
+        if (isset($this->internalDataObjectData['p' . $name])) {
+            if (isset($this->internalDataObjectData['p' . $name][1])) { // get exists
+                return call_user_func($this->internalDataObjectData['p' . $name][1]);
             }
-            if (array_key_exists($name, $this->internalDataObjectData['data'])) {
-                return $this->internalDataObjectData['data'][$name];
+            if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
+                return $this->internalDataObjectData['d' . $name];
             }
-            if (isset($this->internalDataObjectData['properties'][$name][0])) { // init exists
-                $this->internalDataObjectData['data'][$name] = call_user_func($this->internalDataObjectData['properties'][$name][0]);
-                return $this->internalDataObjectData['data'][$name];
+            if (isset($this->internalDataObjectData['p' . $name][0])) { // init exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][0]);
+                return $this->internalDataObjectData['d' . $name];
             }
             return null;
         }
-        if (array_key_exists($name, $this->internalDataObjectData['data'])) {
-            return $this->internalDataObjectData['data'][$name];
+        if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
+            return $this->internalDataObjectData['d' . $name];
         }
         $exists = false;
         return null;
@@ -166,18 +150,15 @@ trait DataObjectTrait
      */
     private function internalDataObjectMethodSetPropertyValue($name, $value)
     {
-        if ($this->internalDataObjectData === null) {
-            $this->internalDataObjectInitialize();
-        }
-        if (isset($this->internalDataObjectData['properties'][$name])) {
-            if (isset($this->internalDataObjectData['properties'][$name][4])) { // readonly
+        if (isset($this->internalDataObjectData['p' . $name])) {
+            if (isset($this->internalDataObjectData['p' . $name][4])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
             }
-            if (isset($this->internalDataObjectData['properties'][$name][5])) { // type exists
-                $type = $this->internalDataObjectData['properties'][$name][5];
+            if (isset($this->internalDataObjectData['p' . $name][5])) { // type exists
+                $type = $this->internalDataObjectData['p' . $name][5];
                 $nullable = false;
                 $ok = false;
-                if (substr($type, 0, 1) === '?') {
+                if ($type[0] === '?') {
                     if ($value === null) {
                         $ok = true;
                     }
@@ -222,15 +203,15 @@ trait DataObjectTrait
                     }
                 }
             }
-            if (isset($this->internalDataObjectData['properties'][$name][2])) { // set exists
-                $this->internalDataObjectData['data'][$name] = call_user_func($this->internalDataObjectData['properties'][$name][2], $value);
-                if ($this->internalDataObjectData['data'][$name] === null) {
-                    unset($this->internalDataObjectData['data'][$name]);
+            if (isset($this->internalDataObjectData['p' . $name][2])) { // set exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][2], $value);
+                if ($this->internalDataObjectData['d' . $name] === null) {
+                    unset($this->internalDataObjectData['d' . $name]);
                 }
                 return;
             }
         }
-        $this->internalDataObjectData['data'][$name] = $value;
+        $this->internalDataObjectData['d' . $name] = $value;
     }
 
     /**
@@ -240,15 +221,12 @@ trait DataObjectTrait
      */
     private function internalDataObjectMethodIsPropertyValueSet($name): bool
     {
-        if ($this->internalDataObjectData === null) {
-            $this->internalDataObjectInitialize();
-        }
-        if (isset($this->internalDataObjectData['properties'][$name])) {
+        if (isset($this->internalDataObjectData['p' . $name])) {
             $exists = null;
             $value = $this->internalDataObjectMethodGetPropertyValue($name, $exists);
             return $value !== null;
         }
-        return isset($this->internalDataObjectData['data'][$name]);
+        return isset($this->internalDataObjectData['d' . $name]);
     }
 
     /**
@@ -257,20 +235,17 @@ trait DataObjectTrait
      */
     private function internalDataObjectMethodUnsetPropertyValue($name): void
     {
-        if ($this->internalDataObjectData === null) {
-            return;
-        }
-        if (isset($this->internalDataObjectData['properties'][$name])) {
-            if (isset($this->internalDataObjectData['properties'][$name][4])) { // readonly
+        if (isset($this->internalDataObjectData['p' . $name])) {
+            if (isset($this->internalDataObjectData['p' . $name][4])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
             }
-            if (isset($this->internalDataObjectData['properties'][$name][3])) { // unset exists
-                $this->internalDataObjectData['data'][$name] = call_user_func($this->internalDataObjectData['properties'][$name][3]);
+            if (isset($this->internalDataObjectData['p' . $name][3])) { // unset exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][3]);
                 return;
             }
         }
-        if (array_key_exists($name, $this->internalDataObjectData['data'])) {
-            unset($this->internalDataObjectData['data'][$name]);
+        if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
+            unset($this->internalDataObjectData['d' . $name]);
         }
     }
 
@@ -283,9 +258,6 @@ trait DataObjectTrait
      */
     protected function defineProperty(string $name, array $options = [])
     {
-        if ($this->internalDataObjectData === null) {
-            $this->internalDataObjectInitialize();
-        }
         $data = [];
         if (isset($options['init'])) {
             if (!is_callable($options['init'])) {
@@ -325,7 +297,7 @@ trait DataObjectTrait
             }
             $data[5] = $options['type'];
         }
-        $this->internalDataObjectData['properties'][$name] = $data;
+        $this->internalDataObjectData['p' . $name] = $data;
     }
 
     /**
@@ -336,8 +308,9 @@ trait DataObjectTrait
     public function toArray(): array
     {
         $result = [];
-        if ($this->internalDataObjectData !== null) {
-            foreach ($this->internalDataObjectData['properties'] as $name => $temp) {
+        foreach ($this->internalDataObjectData as $name => $temp) {
+            $name = substr($name, 1);
+            if (array_key_exists($name, $result) === false) {
                 $exists = null;
                 $value = $this->internalDataObjectMethodGetPropertyValue($name, $exists);
                 if ($value instanceof \IvoPetkov\DataObject || $value instanceof DataList) {
@@ -346,18 +319,8 @@ trait DataObjectTrait
                     $result[$name] = $value;
                 }
             }
-            foreach ($this->internalDataObjectData['data'] as $name => $value) {
-                if (array_key_exists($name, $result) === false) {
-                    if ($value instanceof \IvoPetkov\DataObject || $value instanceof DataList) {
-                        $result[$name] = $value->toArray();
-                    } else {
-                        $result[$name] = $value;
-                    }
-                }
-            }
-            ksort($result);
         }
-
+        ksort($result);
         return $result;
     }
 
