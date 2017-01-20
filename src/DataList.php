@@ -62,23 +62,6 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Converts the data argument into a DataObject if needed
-     * 
-     * @param \IvoPetkov\DataObject|array $object The data to be converted into a DataObject if needed
-     * @return \IvoPetkov\DataObject|null Returns a DataObject or null if the argument is not valid
-     * @throws \Exception
-     */
-    private function makeDataObject($data)
-    {
-        if ($data instanceof DataObjectInterface) {
-            return $data;
-        } elseif (is_array($data)) {
-            return new DataObject($data);
-        }
-        throw new \Exception('The data argument is not valid. It must be an instance of \IvoPetkov\DataObjectInterface or array.');
-    }
-
-    /**
      * 
      * @param int $offset
      * @param \IvoPetkov\DataObject|null $value
@@ -91,13 +74,12 @@ class DataList implements \ArrayAccess, \Iterator
             throw new \Exception('The offset must be of type int or null');
         }
         $this->update();
-        $object = $this->makeDataObject($value);
         if (is_null($offset)) {
-            $this->data[] = $object;
+            $this->data[] = (object) $value;
             return;
         }
         if (is_int($offset) && $offset >= 0 && (isset($this->data[$offset]) || $offset === sizeof($this->data))) {
-            $this->data[$offset] = $object;
+            $this->data[$offset] = (object) $value;
             return;
         }
         throw new \Exception('The offset is not valid.');
@@ -217,12 +199,7 @@ class DataList implements \ArrayAccess, \Iterator
             }
             if (is_array($this->dataSource) || $this->dataSource instanceof \Traversable) {
                 foreach ($this->dataSource as $object) {
-                    $object = $this->makeDataObject($object);
-                    if ($object === null) {
-                        $this->data = [];
-                        throw new \Exception('The data argument is not valid. It must be an intance of \IvoPetkov\DataObjectInterface or array.');
-                    }
-                    $this->data[] = $object;
+                    $this->data[] = (object) $object;
                 }
             }
             $this->dataSource = null;
@@ -242,28 +219,37 @@ class DataList implements \ArrayAccess, \Iterator
                     $temp = [];
                     foreach ($this->data as $object) {
                         $propertyName = $action[1];
-                        if (!isset($object->$propertyName)) {
-                            return;
-                        }
-                        $value = $object->$propertyName;
                         $targetValue = $action[2];
                         $operator = $action[3];
-                        if ($operator === 'equal') {
-                            $add = $value === $targetValue;
-                        } elseif ($operator === 'notEqual') {
-                            $add = $value !== $targetValue;
-                        } elseif ($operator === 'regExp') {
-                            $add = preg_match('/' . $targetValue . '/', $value) === 1;
-                        } elseif ($operator === 'notRegExp') {
-                            $add = preg_match('/' . $targetValue . '/', $value) === 0;
-                        } elseif ($operator === 'startWith') {
-                            $add = substr($value, 0, strlen($targetValue)) === $targetValue;
-                        } elseif ($operator === 'notStartWith') {
-                            $add = substr($value, 0, strlen($targetValue)) !== $targetValue;
-                        } elseif ($operator === 'endWith') {
-                            $add = substr($value, -strlen($targetValue)) === $targetValue;
-                        } elseif ($operator === 'notEndWith') {
-                            $add = substr($value, -strlen($targetValue)) !== $targetValue;
+                        $add = false;
+                        if (!isset($object->$propertyName)) {
+                            if ($operator === 'equal' && $targetValue === null) {
+                                $add = true;
+                            } elseif ($operator === 'notEqual' && $targetValue !== null) {
+                                $add = true;
+                            } else {
+                                continue;
+                            }
+                        }
+                        if (!$add) {
+                            $value = $object->$propertyName;
+                            if ($operator === 'equal') {
+                                $add = $value === $targetValue;
+                            } elseif ($operator === 'notEqual') {
+                                $add = $value !== $targetValue;
+                            } elseif ($operator === 'regExp') {
+                                $add = preg_match('/' . $targetValue . '/', $value) === 1;
+                            } elseif ($operator === 'notRegExp') {
+                                $add = preg_match('/' . $targetValue . '/', $value) === 0;
+                            } elseif ($operator === 'startWith') {
+                                $add = substr($value, 0, strlen($targetValue)) === $targetValue;
+                            } elseif ($operator === 'notStartWith') {
+                                $add = substr($value, 0, strlen($targetValue)) !== $targetValue;
+                            } elseif ($operator === 'endWith') {
+                                $add = substr($value, -strlen($targetValue)) === $targetValue;
+                            } elseif ($operator === 'notEndWith') {
+                                $add = substr($value, -strlen($targetValue)) !== $targetValue;
+                            }
                         }
                         if ($add) {
                             $temp[] = $object;
@@ -275,7 +261,13 @@ class DataList implements \ArrayAccess, \Iterator
                     usort($this->data, $action[1]);
                 } elseif ($action[0] === 'sortBy') {
                     usort($this->data, function($object1, $object2) use ($action) {
-                        return strcmp($object1[$action[1]], $object2[$action[1]]) * ($action[2] === 'asc' ? 1 : -1);
+                        if (!isset($object1->{$action[1]})) {
+                            return $action[2] === 'asc' ? -1 : 1;
+                        }
+                        if (!isset($object2->{$action[1]})) {
+                            return $action[2] === 'asc' ? 1 : -1;
+                        }
+                        return strcmp($object1->{$action[1]}, $object2->{$action[1]}) * ($action[2] === 'asc' ? 1 : -1);
                     });
                 } elseif ($action[0] === 'reverse') {
                     $this->data = array_reverse($this->data);
@@ -446,8 +438,7 @@ class DataList implements \ArrayAccess, \Iterator
     public function unshift($object): \IvoPetkov\DataList
     {
         $this->update();
-        $object = $this->makeDataObject($object);
-        array_unshift($this->data, $object);
+        array_unshift($this->data, (object) $object);
         return $this;
     }
 
@@ -472,8 +463,7 @@ class DataList implements \ArrayAccess, \Iterator
     public function push($object): \IvoPetkov\DataList
     {
         $this->update();
-        $object = $this->makeDataObject($object);
-        array_push($this->data, $object);
+        array_push($this->data, (object) $object);
         return $this;
     }
 
@@ -511,7 +501,11 @@ class DataList implements \ArrayAccess, \Iterator
         $this->update();
         $result = [];
         foreach ($this->data as $object) {
-            $result[] = $object->toArray();
+            if (method_exists($object, 'toArray')) {
+                $result[] = $object->toArray();
+            } else {
+                $result[] = get_object_vars($object);
+            }
         }
         return $result;
     }

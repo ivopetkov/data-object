@@ -130,7 +130,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            ['value' => 'c'],
+            ['value' => null],
+            ['other' => 1]
         ];
         $list = new DataList($data);
         $list->filterBy('value', 'c');
@@ -140,13 +142,17 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            ['value' => 'c'],
+            ['value' => null],
+            ['other' => 1]
         ];
         $list = new DataList($data);
         $list->filterBy('value', 'c', 'notEqual');
         $this->assertTrue($list[0]->value === 'a');
         $this->assertTrue($list[1]->value === 'b');
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue($list[2]->value === null);
+        $this->assertTrue($list[3]->other === 1);
+        $this->assertTrue($list->length === 4);
 
         $data = [
             ['value' => 'a1'],
@@ -210,6 +216,17 @@ class DataListTest extends DataListTestCase
         $list->filterBy('value', 'aa', 'notEndWith');
         $this->assertTrue($list[0]->value === 'aac');
         $this->assertTrue($list->length === 1);
+
+        $data = [
+            ['value' => null, 'other' => 1],
+            ['other' => 2],
+            ['value' => 'aac']
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', null, 'equal');
+        $this->assertTrue($list[0]->other === 1);
+        $this->assertTrue($list[1]->other === 2);
+        $this->assertTrue($list->length === 2);
     }
 
     /**
@@ -278,17 +295,23 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            ['value' => 'c'],
+            ['value' => null],
+            ['other' => '1'],
         ];
         $list = new DataList($data);
         $list->sortBy('value');
-        $this->assertTrue($list[0]->value === 'a');
-        $this->assertTrue($list[1]->value === 'b');
-        $this->assertTrue($list[2]->value === 'c');
+        $this->assertTrue($list[0]->value === null);
+        $this->assertTrue($list[1]->other === '1');
+        $this->assertTrue($list[2]->value === 'a');
+        $this->assertTrue($list[3]->value === 'b');
+        $this->assertTrue($list[4]->value === 'c');
         $list->sortBy('value', 'desc');
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list[1]->value === 'b');
         $this->assertTrue($list[2]->value === 'a');
+        $this->assertTrue($list[3]->other === '1');
+        $this->assertTrue($list[4]->value === null);
     }
 
     /**
@@ -399,11 +422,15 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            new \IvoPetkov\DataObject(['value' => 'c'])
         ];
         $list = new DataList($data);
         $array = $list->toArray();
-        $this->assertTrue($array === $data);
+        $this->assertTrue($array === [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            ['value' => 'c']
+        ]);
     }
 
     /**
@@ -425,31 +452,11 @@ class DataListTest extends DataListTestCase
     /**
      *
      */
-    public function testExceptions1()
-    {
-        $dataList = new DataList([1, 2, 3]);
-        $this->setExpectedException('Exception');
-        echo $dataList->length;
-    }
-
-    /**
-     *
-     */
     public function testExceptions2()
     {
         $dataList = new DataList();
         $this->setExpectedException('Exception');
         $dataList[false] = ['key' => 'value'];
-    }
-
-    /**
-     *
-     */
-    public function testExceptions3()
-    {
-        $dataList = new DataList();
-        $this->setExpectedException('Exception');
-        $dataList[0] = 5;
     }
 
     /**
@@ -490,26 +497,6 @@ class DataListTest extends DataListTestCase
         $dataList = new DataList();
         $this->setExpectedException('Exception');
         $dataList->sortBy('name', 1);
-    }
-
-    /**
-     *
-     */
-    public function testExceptions8()
-    {
-        $dataList = new DataList();
-        $this->setExpectedException('Exception');
-        $dataList->unshift(5);
-    }
-
-    /**
-     *
-     */
-    public function testExceptions9()
-    {
-        $dataList = new DataList();
-        $this->setExpectedException('Exception');
-        $dataList->push(5);
     }
 
     /**
