@@ -296,9 +296,9 @@ class DataList implements \ArrayAccess, \Iterator
     public function __set(string $name, $value): void
     {
         if ($name === 'length') {
-            throw new \Exception('The length property is readonly');
+            throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
         }
-        throw new \Exception('Invalid property (' . (string) $name . ')');
+        throw new \Exception('Undefined property: ' . get_class($this) . '::$' . $name);
     }
 
     /**
@@ -313,7 +313,7 @@ class DataList implements \ArrayAccess, \Iterator
             $this->update();
             return sizeof($this->data);
         }
-        throw new \Exception('Invalid property (' . (string) $name . ')');
+        throw new \Exception('Undefined property: ' . get_class($this) . '::$' . $name);
     }
 
     /**
@@ -337,9 +337,9 @@ class DataList implements \ArrayAccess, \Iterator
     public function __unset(string $name): void
     {
         if ($name === 'length') {
-            throw new \Exception('Cannot unset the length property');
+            throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
         }
-        throw new \Exception('Invalid property (' . (string) $name . ')');
+        throw new \Exception('Undefined property: ' . get_class($this) . '::$' . $name);
     }
 
     /**
