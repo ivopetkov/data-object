@@ -12,10 +12,13 @@ namespace IvoPetkov;
 /**
  * 
  */
-class DataObject implements \ArrayAccess, \IvoPetkov\DataObjectInterface
+class DataObject implements \ArrayAccess, \IvoPetkov\DataObjectInterface//, \Iterator
 {
 
     use DataObjectTrait;
+    use DataObjectArrayAccessTrait;
+    use DataObjectToArrayTrait;
+    use DataObjectToJSONTrait;
 
     /**
      * Constructs a new data object
@@ -26,7 +29,7 @@ class DataObject implements \ArrayAccess, \IvoPetkov\DataObjectInterface
     {
         $this->initialize();
         foreach ($data as $name => $value) {
-            $this[$name] = $value;
+            $this->$name = $value;
         }
     }
 
@@ -38,4 +41,33 @@ class DataObject implements \ArrayAccess, \IvoPetkov\DataObjectInterface
         
     }
 
+//    public function rewind()
+//    {
+//        reset($this->internalDataObjectData);
+//    }
+//
+//    public function current()
+//    {
+//        $var = current($this->internalDataObjectData);
+//        return $var;
+//    }
+//
+//    public function key()
+//    {
+//        $var = key($this->internalDataObjectData);
+//        return $var;
+//    }
+//
+//    public function next()
+//    {
+//        $var = next($this->internalDataObjectData);
+//        return $var;
+//    }
+//
+//    public function valid()
+//    {
+//        $key = key($this->internalDataObjectData);
+//        $var = ($key !== NULL && $key !== FALSE);
+//        return $var;
+//    }
 }

@@ -26,47 +26,6 @@ trait DataObjectTrait
 
     /**
      * 
-     * @param string $offset
-     * @return mixed
-     */
-    public function offsetGet($offset)
-    {
-        return $this->$offset;
-    }
-
-    /**
-     * 
-     * @param string $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value): void
-    {
-        if ($offset !== null) {
-            $this->$offset = $value;
-        }
-    }
-
-    /**
-     * 
-     * @param string $offset
-     * @return boolean
-     */
-    public function offsetExists($offset): bool
-    {
-        return isset($this->$offset);
-    }
-
-    /**
-     * 
-     * @param string $offset
-     */
-    public function offsetUnset($offset): void
-    {
-        unset($this->$offset);
-    }
-
-    /**
-     * 
      * @param string $name
      * @return mixed
      */
@@ -244,39 +203,6 @@ trait DataObjectTrait
             $data[5] = $options['type'];
         }
         $this->internalDataObjectData['p' . $name] = $data;
-    }
-
-    /**
-     * Returns the object data converted as an array
-     * 
-     * @return array The object data converted as an array
-     */
-    public function toArray(): array
-    {
-        $result = [];
-        foreach ($this->internalDataObjectData as $name => $temp) {
-            $name = substr($name, 1);
-            if (array_key_exists($name, $result) === false) {
-                $value = $this->$name;
-                if ($value instanceof \IvoPetkov\DataObject || $value instanceof DataList) {
-                    $result[$name] = $value->toArray();
-                } else {
-                    $result[$name] = $value;
-                }
-            }
-        }
-        ksort($result);
-        return $result;
-    }
-
-    /**
-     * Returns the object data converted as JSON
-     * 
-     * @return string The object data converted as JSON
-     */
-    public function toJSON(): string
-    {
-        return json_encode($this->toArray());
     }
 
 }
