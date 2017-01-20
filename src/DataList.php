@@ -11,20 +11,12 @@ namespace IvoPetkov;
 
 use IvoPetkov\DataObject;
 use IvoPetkov\DataListContext;
-use IvoPetkov\DataObjectInterface;
 
 /**
  * @property-read int $length The number of objects in the list
  */
 class DataList implements \ArrayAccess, \Iterator
 {
-
-    /**
-     * The data source passed to the constructor
-     * 
-     * @var array 
-     */
-    private $dataSource = null;
 
     /**
      * The list data objects
@@ -50,15 +42,24 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * Constructs a new Data objects list
      * 
-     * @param array|iterable|callback $dataSource An array containing DataObjects or arrays that will be converted into DataObjects
+     * @param array|iterable|callback $dataSource An array containing object or arrays that will be converted into objects
      * @throws \InvalidArgumentException
      */
     public function __construct($dataSource = null)
     {
-        if ($dataSource !== null && !is_array($dataSource) && !($dataSource instanceof \Traversable) && !is_callable($dataSource)) {
+        if ($dataSource !== null) {
+            if (is_array($dataSource) || $dataSource instanceof \Traversable) {
+                foreach ($dataSource as $object) {
+                    $this->data[] = (object) $object;
+                }
+                return;
+            }
+            if (is_callable($dataSource)) {
+                $this->data = $dataSource;
+                return;
+            }
             throw new \InvalidArgumentException('The data argument must be iterable or a callback that returns such data.');
         }
-        $this->dataSource = $dataSource;
     }
 
     /**
@@ -173,42 +174,37 @@ class DataList implements \ArrayAccess, \Iterator
      */
     private function update(): void
     {
-        if ($this->dataSource !== null) {
-            if (is_callable($this->dataSource)) {
-                $context = new DataListContext();
-                foreach ($this->actions as $action) {
-                    if ($action[0] === 'filterBy') {
-                        $context->filterByProperties[] = new DataObject([
-                            'property' => $action[1],
-                            'value' => $action[2],
-                            'operator' => $action[3],
-                        ]);
-                    } elseif ($action[0] === 'sortBy') {
-                        $context->sortByProperties[] = new DataObject([
-                            'property' => $action[1],
-                            'order' => $action[2]
-                        ]);
-                    }
+        if (is_callable($this->data)) {
+            $context = new DataListContext();
+            foreach ($this->actions as $action) {
+                if ($action[0] === 'filterBy') {
+                    $context->filterByProperties[] = new DataObject([
+                        'property' => $action[1],
+                        'value' => $action[2],
+                        'operator' => $action[3],
+                    ]);
+                } elseif ($action[0] === 'sortBy') {
+                    $context->sortByProperties[] = new DataObject([
+                        'property' => $action[1],
+                        'order' => $action[2]
+                    ]);
                 }
-                $dataSource = call_user_func($this->dataSource, $context);
-                if (!is_array($dataSource) && !($dataSource instanceof \Traversable)) {
-                    throw new \InvalidArgumentException('The data source callback result is not array, nor iterable');
-                }
-                $this->dataSource = $dataSource;
-                unset($dataSource);
             }
-            if (is_array($this->dataSource) || $this->dataSource instanceof \Traversable) {
-                foreach ($this->dataSource as $object) {
+            $dataSource = call_user_func($this->data, $context);
+            if (is_array($dataSource) || $dataSource instanceof \Traversable) {
+                $this->data = [];
+                foreach ($dataSource as $object) {
                     $this->data[] = (object) $object;
                 }
+            } else {
+                throw new \InvalidArgumentException('The data source callback result is not array, nor iterable');
             }
-            $this->dataSource = null;
         }
         if (isset($this->actions[0])) {
             foreach ($this->actions as $action) {
                 if ($action[0] === 'filter') {
                     $temp = [];
-                    foreach ($this->data as $index => $object) {
+                    foreach ($this->data as $object) {
                         if (call_user_func($action[1], $object) === true) {
                             $temp[] = $object;
                         }
