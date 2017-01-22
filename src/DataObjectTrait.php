@@ -36,25 +36,25 @@ trait DataObjectTrait
             if (!is_callable($options['init'])) {
                 throw new \Exception('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
             }
-            $data[0] = \Closure::bind($options['init'], $this);
+            $data[0] = $options['init'];
         }
         if (isset($options['get'])) {
             if (!is_callable($options['get'])) {
                 throw new \Exception('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
             }
-            $data[1] = \Closure::bind($options['get'], $this);
+            $data[1] = $options['get'];
         }
         if (isset($options['set'])) {
             if (!is_callable($options['set'])) {
                 throw new \Exception('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
             }
-            $data[2] = \Closure::bind($options['set'], $this);
+            $data[2] = $options['set'];
         }
         if (isset($options['unset'])) {
             if (!is_callable($options['unset'])) {
                 throw new \Exception('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
             }
-            $data[3] = \Closure::bind($options['unset'], $this);
+            $data[3] = $options['unset'];
         }
         if (isset($options['readonly'])) {
             if (!is_bool($options['readonly'])) {
