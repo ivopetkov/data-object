@@ -542,23 +542,23 @@ class DataObjectTest extends DataListTestCase
     /**
      * 
      */
-    private function getDataObjectWithPropertyType($type)
+    private function getDataObjectWithPropertyType($type, $options = [])
     {
-        return new class($type) extends DataObject {
+        return new class($type, $options) extends DataObject {
 
             public $type;
+            public $options;
 
-            function __construct($type)
+            function __construct($type, $options)
             {
                 $this->type = $type;
+                $this->options = $options;
                 parent::__construct([]);
             }
 
             protected function initialize()
             {
-                $this->defineProperty('property1', [
-                    'type' => $this->type
-                ]);
+                $this->defineProperty('property1', array_merge(['type' => $this->type], $this->options));
             }
         };
     }
@@ -670,7 +670,13 @@ class DataObjectTest extends DataListTestCase
      */
     public function testPropertyTypes4a()
     {
-        $object = $this->getDataObjectWithPropertyType('callable');
+        $object = $this->getDataObjectWithPropertyType('callable', [
+            'init' => function() {
+                return function() {
+                            
+                        };
+            }
+        ]);
         $temp = function() {
             
         };
@@ -687,7 +693,13 @@ class DataObjectTest extends DataListTestCase
      */
     public function testPropertyTypes4b()
     {
-        $object = $this->getDataObjectWithPropertyType('callable');
+        $object = $this->getDataObjectWithPropertyType('callable', [
+            'init' => function() {
+                return function() {
+                            
+                        };
+            }
+        ]);
         $this->setExpectedException('Exception');
         $object->property1 = null;
     }
@@ -741,7 +753,11 @@ class DataObjectTest extends DataListTestCase
      */
     public function testPropertyTypes6a()
     {
-        $object = $this->getDataObjectWithPropertyType('bool');
+        $object = $this->getDataObjectWithPropertyType('bool', [
+            'init' => function() {
+                return true;
+            }
+        ]);
         $object->property1 = false;
         $this->assertEquals($object->property1, false);
 
@@ -755,7 +771,11 @@ class DataObjectTest extends DataListTestCase
      */
     public function testPropertyTypes6b()
     {
-        $object = $this->getDataObjectWithPropertyType('bool');
+        $object = $this->getDataObjectWithPropertyType('bool', [
+            'init' => function() {
+                return true;
+            }
+        ]);
         $this->setExpectedException('Exception');
         $object->property1 = null;
     }
@@ -775,7 +795,11 @@ class DataObjectTest extends DataListTestCase
      */
     public function testPropertyTypes7a()
     {
-        $object = $this->getDataObjectWithPropertyType('DateTime');
+        $object = $this->getDataObjectWithPropertyType('DateTime', [
+            'init' => function() {
+                return new DateTime();
+            }
+        ]);
         $temp = new DateTime();
         $object->property1 = $temp;
         $this->assertEquals($object->property1, $temp);
@@ -790,7 +814,11 @@ class DataObjectTest extends DataListTestCase
      */
     public function testPropertyTypes7b()
     {
-        $object = $this->getDataObjectWithPropertyType('DateTime');
+        $object = $this->getDataObjectWithPropertyType('DateTime', [
+            'init' => function() {
+                return new DateTime();
+            }
+        ]);
         $this->setExpectedException('Exception');
         $object->property1 = null;
     }
@@ -810,7 +838,11 @@ class DataObjectTest extends DataListTestCase
      */
     public function testPropertyTypes7d()
     {
-        $object = $this->getDataObjectWithPropertyType('DateTime');
+        $object = $this->getDataObjectWithPropertyType('DateTime', [
+            'init' => function() {
+                return new DateTime();
+            }
+        ]);
         $this->setExpectedException('Exception');
         $object->property1 = new stdClass();
     }

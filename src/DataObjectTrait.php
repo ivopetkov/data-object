@@ -68,7 +68,30 @@ trait DataObjectTrait
             if (!is_string($options['type'])) {
                 throw new \Exception('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
             }
-            $data[5] = $options['type'];
+            $type = $data[5] = $options['type'];
+            if ($type{0} !== '?') {
+                if (isset($data[0]) || isset($data[1], $data[3])) {
+                    // has init or get and unset callbacks
+                } elseif ($type === 'array') {
+                    $data[0] = function() {
+                        return [];
+                    };
+                } elseif ($type === 'float') {
+                    $data[0] = function() {
+                        return 0.0;
+                    };
+                } elseif ($type === 'int') {
+                    $data[0] = function() {
+                        return 0;
+                    };
+                } elseif ($type === 'string') {
+                    $data[0] = function() {
+                        return '';
+                    };
+                } else {
+                    throw new \Exception('The property \'' . $name . '\' has a specified not nullable type but is missing an init callback or get and unset callbacks.');
+                }
+            }
         }
         $this->internalDataObjectData['p' . $name] = $data;
     }
