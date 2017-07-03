@@ -49,8 +49,8 @@ class DataList implements \ArrayAccess, \Iterator
     {
         if ($dataSource !== null) {
             if (is_array($dataSource) || $dataSource instanceof \Traversable) {
-                foreach ($dataSource as $object) {
-                    $this->data[] = (object) $object;
+                foreach ($dataSource as $value) {
+                    $this->data[] = $value;
                 }
                 return;
             }
@@ -59,6 +59,35 @@ class DataList implements \ArrayAccess, \Iterator
                 return;
             }
             throw new \InvalidArgumentException('The data argument must be iterable or a callback that returns such data.');
+        }
+    }
+
+    /**
+     * Converts the value into object if needed
+     * @param int $index
+     */
+    private function updateValueIfNeeded($index)
+    {
+        $value = $this->data[$index];
+        if (is_callable($value)) {
+            $value = call_user_func($value);
+            $this->data[$index] = $value;
+        }
+        if (is_object($value)) {
+            return $value;
+        }
+        $value = (object) $value;
+        $this->data[$index] = $value;
+        return $value;
+    }
+
+    /**
+     * Converts all values into objects if needed
+     */
+    private function updateAllValuesIfNeeded()
+    {
+        foreach ($this->data as $index => $value) {
+            $this->updateValueIfNeeded($index);
         }
     }
 
@@ -76,11 +105,11 @@ class DataList implements \ArrayAccess, \Iterator
         }
         $this->update();
         if (is_null($offset)) {
-            $this->data[] = (object) $value;
+            $this->data[] = $value;
             return;
         }
         if (is_int($offset) && $offset >= 0 && (isset($this->data[$offset]) || $offset === sizeof($this->data))) {
-            $this->data[$offset] = (object) $value;
+            $this->data[$offset] = $value;
             return;
         }
         throw new \Exception('The offset is not valid.');
@@ -121,7 +150,10 @@ class DataList implements \ArrayAccess, \Iterator
     public function offsetGet($offset)
     {
         $this->update();
-        return isset($this->data[$offset]) ? $this->data[$offset] : null;
+        if (isset($this->data[$offset])) {
+            return $this->updateValueIfNeeded($offset);
+        }
+        return null;
     }
 
     /**
@@ -139,7 +171,10 @@ class DataList implements \ArrayAccess, \Iterator
     public function current()
     {
         $this->update();
-        return isset($this->data[$this->pointer]) ? $this->data[$this->pointer] : null;
+        if (isset($this->data[$this->pointer])) {
+            return $this->updateValueIfNeeded($this->pointer);
+        }
+        return null;
     }
 
     /**
@@ -193,8 +228,8 @@ class DataList implements \ArrayAccess, \Iterator
             $dataSource = call_user_func($this->data, $context);
             if (is_array($dataSource) || $dataSource instanceof \Traversable) {
                 $this->data = [];
-                foreach ($dataSource as $object) {
-                    $this->data[] = (object) $object;
+                foreach ($dataSource as $value) {
+                    $this->data[] = $value;
                 }
             } else {
                 throw new \InvalidArgumentException('The data source callback result is not iterable');
@@ -203,8 +238,9 @@ class DataList implements \ArrayAccess, \Iterator
         if (isset($this->actions[0])) {
             foreach ($this->actions as $action) {
                 if ($action[0] === 'filter') {
+                    $this->updateAllValuesIfNeeded();
                     $temp = [];
-                    foreach ($this->data as $object) {
+                    foreach ($this->data as $index => $object) {
                         if (call_user_func($action[1], $object) === true) {
                             $temp[] = $object;
                         }
@@ -212,6 +248,7 @@ class DataList implements \ArrayAccess, \Iterator
                     $this->data = $temp;
                     unset($temp);
                 } else if ($action[0] === 'filterBy') {
+                    $this->updateAllValuesIfNeeded();
                     $temp = [];
                     foreach ($this->data as $object) {
                         $propertyName = $action[1];
@@ -254,8 +291,10 @@ class DataList implements \ArrayAccess, \Iterator
                     $this->data = $temp;
                     unset($temp);
                 } elseif ($action[0] === 'sort') {
+                    $this->updateAllValuesIfNeeded();
                     usort($this->data, $action[1]);
                 } elseif ($action[0] === 'sortBy') {
+                    $this->updateAllValuesIfNeeded();
                     usort($this->data, function($object1, $object2) use ($action) {
                         if (!isset($object1->{$action[1]})) {
                             return $action[2] === 'asc' ? -1 : 1;
@@ -268,6 +307,7 @@ class DataList implements \ArrayAccess, \Iterator
                 } elseif ($action[0] === 'reverse') {
                     $this->data = array_reverse($this->data);
                 } elseif ($action[0] === 'map') {
+                    $this->updateAllValuesIfNeeded();
                     $this->data = array_map($action[1], $this->data);
                 }
             }
@@ -434,7 +474,7 @@ class DataList implements \ArrayAccess, \Iterator
     public function unshift($object): \IvoPetkov\DataList
     {
         $this->update();
-        array_unshift($this->data, (object) $object);
+        array_unshift($this->data, $object);
         return $this;
     }
 
@@ -446,7 +486,11 @@ class DataList implements \ArrayAccess, \Iterator
     public function shift()
     {
         $this->update();
-        return array_shift($this->data);
+        if (isset($this->data[0])) {
+            $this->updateValueIfNeeded(0);
+            return array_shift($this->data);
+        }
+        return null;
     }
 
     /**
@@ -459,7 +503,7 @@ class DataList implements \ArrayAccess, \Iterator
     public function push($object): \IvoPetkov\DataList
     {
         $this->update();
-        array_push($this->data, (object) $object);
+        array_push($this->data, $object);
         return $this;
     }
 
@@ -471,7 +515,11 @@ class DataList implements \ArrayAccess, \Iterator
     public function pop()
     {
         $this->update();
-        return array_pop($this->data);
+        if (isset($this->data[0])) {
+            $this->updateValueIfNeeded(sizeof($this->data) - 1);
+            return array_pop($this->data);
+        }
+        return null;
     }
 
     /**
@@ -482,6 +530,11 @@ class DataList implements \ArrayAccess, \Iterator
     public function slice(int $offset, $length = null): \IvoPetkov\DataList
     {
         $this->update();
+//        for ($i = $offset; $i < $offset + $length; $i++) {
+//            if (isset($this->data[$i])) {
+//                $this->updateValueIfNeeded($i);
+//            }
+//        }
         $slice = array_slice($this->data, $offset, $length);
         $className = get_class($this);
         return new $className($slice);
@@ -496,7 +549,8 @@ class DataList implements \ArrayAccess, \Iterator
     {
         $this->update();
         $result = [];
-        foreach ($this->data as $object) {
+        foreach ($this->data as $index => $object) {
+            $object = $this->updateValueIfNeeded($index);
             if (method_exists($object, 'toArray')) {
                 $result[] = $object->toArray();
             } else {

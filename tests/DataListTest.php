@@ -24,15 +24,22 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
+        ];
+        $expectedData = [
+            'a',
+            'b',
+            'c'
         ];
         $list = new DataList($data);
-        $this->assertTrue($list[0]->value === 'a');
-        $this->assertTrue($list[1]->value === 'b');
-        $this->assertTrue($list[2]->value === 'c');
+        $this->assertTrue($list[0]->value === $expectedData[0]);
+        $this->assertTrue($list[1]->value === $expectedData[1]);
+        $this->assertTrue($list[2]->value === $expectedData[2]);
         $this->assertTrue($list->length === 3);
         foreach ($list as $i => $object) {
-            $this->assertTrue($object->value === $data[$i]['value']);
+            $this->assertTrue($object->value === $expectedData[$i]);
         }
     }
 
@@ -45,7 +52,9 @@ class DataListTest extends DataListTestCase
             return [
                 ['value' => 'a'],
                 ['value' => 'b'],
-                ['value' => 'c']
+                function() {
+                    return ['value' => 'c'];
+                }
             ];
         };
         $list = new DataList($function);
@@ -63,15 +72,19 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $this->assertTrue($list[0]->value === 'a');
         $this->assertTrue($list[1]->value === 'b');
         $this->assertTrue($list[2]->value === 'c');
-        $list[2] = new DataObject(['value' => 'cc']);
+        $list[2] = function () {
+            return ['value' => 'cc'];
+        };
         $this->assertTrue($list[2]->value === 'cc');
-        $list[3] = new DataObject(['value' => 'dd']);
+        $list[3] = ['value' => 'dd'];
         $this->assertTrue($list[3]->value === 'dd');
         $list[4] = new DataObject(['value' => 'ee']);
         $this->assertTrue($list[4]->value === 'ee');
@@ -93,7 +106,12 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            },
+            function() {
+                return ['value' => 'd'];
+            }
         ];
         $list = new DataList($data);
         $this->assertTrue($list[0]->value === 'a');
@@ -102,6 +120,9 @@ class DataListTest extends DataListTestCase
         unset($list[1]);
         $this->assertTrue($list[0]->value === 'a');
         $this->assertTrue($list[1]->value === 'c');
+        unset($list[1]);
+        unset($list[3]);
+        $this->assertTrue($list[0]->value === 'a');
     }
 
     /**
@@ -112,7 +133,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $list->filter(function($object) {
@@ -130,7 +153,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c'],
+            function() {
+                return ['value' => 'c'];
+            },
             ['value' => null],
             ['other' => 1]
         ];
@@ -142,7 +167,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c'],
+            function() {
+                return ['value' => 'c'];
+            },
             ['value' => null],
             ['other' => 1]
         ];
@@ -157,7 +184,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a1'],
             ['value' => 'b2'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $list->filterBy('value', '[0-9]{1}', 'regExp');
@@ -168,7 +197,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a1'],
             ['value' => 'b2'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $list->filterBy('value', '[0-9]{1}', 'notRegExp');
@@ -178,7 +209,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baaa'],
-            ['value' => 'caaa']
+            function() {
+                return ['value' => 'caaa'];
+            }
         ];
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'startWith');
@@ -188,7 +221,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baaa'],
-            ['value' => 'caaa']
+            function() {
+                return ['value' => 'caaa'];
+            }
         ];
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'notStartWith');
@@ -199,7 +234,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baa'],
-            ['value' => 'aac']
+            function() {
+                return ['value' => 'aac'];
+            }
         ];
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'endWith');
@@ -210,7 +247,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baa'],
-            ['value' => 'aac']
+            function() {
+                return ['value' => 'aac'];
+            }
         ];
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'notEndWith');
@@ -220,7 +259,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => null, 'other' => 1],
             ['other' => 2],
-            ['value' => 'aac']
+            function() {
+                return ['value' => 'aac'];
+            }
         ];
         $list = new DataList($data);
         $list->filterBy('value', null, 'equal');
@@ -269,7 +310,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $list->sort(function($object1, $object2) {
@@ -295,7 +338,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c'],
+            function() {
+                return ['value' => 'c'];
+            },
             ['value' => null],
             ['other' => '1'],
         ];
@@ -322,7 +367,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $this->assertTrue(isset($list->length));
@@ -338,7 +385,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $this->assertTrue($list->length === 3);
@@ -358,7 +407,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $this->assertTrue($list->length === 3);
@@ -368,6 +419,11 @@ class DataListTest extends DataListTestCase
         $list->push(['value' => 'c']);
         $this->assertTrue($list[2]->value === 'c');
         $this->assertTrue($list->length === 3);
+        $list->push(function() {
+            return ['value' => 'd'];
+        });
+        $this->assertTrue($list[3]->value === 'd');
+        $this->assertTrue($list->length === 4);
     }
 
     /**
@@ -378,7 +434,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $list->reverse();
@@ -402,7 +460,9 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            function() {
+                return ['value' => 'c'];
+            }
         ];
         $list = new DataList($data);
         $list->map(function($object) {
@@ -422,14 +482,18 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            new \IvoPetkov\DataObject(['value' => 'c'])
+            new \IvoPetkov\DataObject(['value' => 'c']),
+            function() {
+                return ['value' => 'd'];
+            }
         ];
         $list = new DataList($data);
         $array = $list->toArray();
         $this->assertTrue($array === [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            ['value' => 'c'],
+            ['value' => 'd']
         ]);
     }
 
@@ -441,11 +505,14 @@ class DataListTest extends DataListTestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            ['value' => 'c']
+            new \IvoPetkov\DataObject(['value' => 'c']),
+            function() {
+                return ['value' => 'd'];
+            }
         ];
         $list = new DataList($data);
         $json = $list->toJSON();
-        $expectedResult = '[{"value":"a"},{"value":"b"},{"value":"c"}]';
+        $expectedResult = '[{"value":"a"},{"value":"b"},{"value":"c"},{"value":"d"}]';
         $this->assertTrue($json === $expectedResult);
     }
 
