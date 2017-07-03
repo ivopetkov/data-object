@@ -273,13 +273,14 @@ class DataListTest extends DataListTestCase
     /**
      *
      */
-    public function testFilterContext()
+    public function testFilterByContext()
     {
         $list = new DataList(function($context) {
             $requiresOnlyC = false;
             foreach ($context->filterByProperties as $filter) {
                 if ($filter->property === 'value' && $filter->value === 'c' && $filter->operator === 'equal') {
                     $requiresOnlyC = true;
+                    $filter->applied = true;
                 }
             }
             if ($requiresOnlyC) {
@@ -295,8 +296,7 @@ class DataListTest extends DataListTestCase
             }
         });
         $list
-                ->filterBy('value', 'c')
-                ->sortBy('value');
+                ->filterBy('value', 'c');
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list[0]->filtered === 1);
         $this->assertTrue($list->length === 1);
@@ -357,6 +357,49 @@ class DataListTest extends DataListTestCase
         $this->assertTrue($list[2]->value === 'a');
         $this->assertTrue($list[3]->other === '1');
         $this->assertTrue($list[4]->value === null);
+    }
+
+    /**
+     *
+     */
+    public function testSortByContext()
+    {
+        $getList = function() {
+            return new DataList(function($context) {
+                $sortByValue = null;
+                foreach ($context->sortByProperties as $sort) {
+                    if ($sort->property === 'value') {
+                        $sortByValue = $sort->order;
+                        $sort->applied = true;
+                    }
+                }
+                if ($sortByValue === 'asc') {
+                    return [
+                        ['value' => 'a', 'sorted' => 1],
+                        ['value' => 'b'],
+                        ['value' => 'c']
+                    ];
+                } else {
+                    return [
+                        ['value' => 'c', 'sorted' => 2],
+                        ['value' => 'b'],
+                        ['value' => 'a']
+                    ];
+                }
+            });
+        };
+
+        $list = $getList();
+        $list->sortBy('value', 'desc');
+        $this->assertTrue($list[0]->value === 'c');
+        $this->assertTrue($list[0]->sorted === 2);
+        $this->assertTrue($list->length === 3);
+
+        $list = $getList();
+        $list->sortBy('value', 'asc');
+        $this->assertTrue($list[0]->value === 'a');
+        $this->assertTrue($list[0]->sorted === 1);
+        $this->assertTrue($list->length === 3);
     }
 
     /**

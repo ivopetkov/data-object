@@ -211,21 +211,48 @@ class DataList implements \ArrayAccess, \Iterator
     {
         if (is_callable($this->data)) {
             $context = new DataListContext();
-            foreach ($this->actions as $action) {
+            $contextActionsIndexes = [];
+            foreach ($this->actions as $index => $action) {
                 if ($action[0] === 'filterBy') {
+                    $contextActionsIndexes[$index] = 'filterBy' . sizeof($context->filterByProperties);
                     $context->filterByProperties[] = new DataObject([
                         'property' => $action[1],
                         'value' => $action[2],
                         'operator' => $action[3],
+                        'applied' => false
                     ]);
                 } elseif ($action[0] === 'sortBy') {
+                    $contextActionsIndexes[$index] = 'sortBy' . sizeof($context->sortByProperties);
                     $context->sortByProperties[] = new DataObject([
                         'property' => $action[1],
-                        'order' => $action[2]
+                        'order' => $action[2],
+                        'applied' => false
                     ]);
                 }
             }
             $dataSource = call_user_func($this->data, $context);
+            $hasRemovedActions = false;
+            foreach ($context->filterByProperties as $index => $object) {
+                if ($object->applied) {
+                    $actionIndex = array_search('filterBy' . $index, $contextActionsIndexes);
+                    if ($actionIndex !== false) {
+                        unset($this->actions[$actionIndex]);
+                        $hasRemovedActions = true;
+                    }
+                }
+            }
+            foreach ($context->sortByProperties as $index => $object) {
+                if ($object->applied) {
+                    $actionIndex = array_search('sortBy' . $index, $contextActionsIndexes);
+                    if ($actionIndex !== false) {
+                        unset($this->actions[$actionIndex]);
+                        $hasRemovedActions = true;
+                    }
+                }
+            }
+            if ($hasRemovedActions) {
+                $this->actions = array_values($this->actions);
+            }
             if (is_array($dataSource) || $dataSource instanceof \Traversable) {
                 $this->data = [];
                 foreach ($dataSource as $value) {
