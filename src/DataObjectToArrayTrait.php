@@ -27,7 +27,7 @@ trait DataObjectToArrayTrait
             $name = substr($name, 1);
             if (array_key_exists($name, $result) === false) {
                 $value = $this->$name;
-                if ($value instanceof \IvoPetkov\DataObject || $value instanceof DataList) {
+                if (method_exists($value, 'toArray')) {
                     $result[$name] = $value->toArray();
                 } else {
                     $result[$name] = $value;
