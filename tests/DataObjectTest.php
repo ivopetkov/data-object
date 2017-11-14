@@ -395,27 +395,34 @@ class DataObjectTest extends DataListTestCase
     public function testToArray()
     {
         $data = [
-            'property1' => 1,
-            'property2' => new DataList([
+            'property4' => 4,
+            'property5' => new DataList([
                 [
-                    'property2.1' => '2.1'
+                    'property5.1' => '5.1'
                 ]
                     ])
         ];
         $object = new class($data) extends DataObject {
 
+            public $property1 = 1;
+            private $property2 = 2;
+            protected $property3 = 3;
+
             protected function initialize()
             {
-                $this->defineProperty('property3', [
+                $this->defineProperty('property6', [
                     'get' => function() {
-                        return 3;
+                        return 6;
                     }
                 ]);
-                $this->defineProperty('property4', [
+                $this->defineProperty('property7', [
                     'init' => function() {
                         return new DataList([
                             [
-                                'property4.1' => '4.1'
+                                'property7.1' => '7.1'
+                            ],
+                            [
+                                'property7.2' => '7.2'
                             ]
                         ]);
                     }
@@ -425,9 +432,23 @@ class DataObjectTest extends DataListTestCase
         $array = $object->toArray();
         $this->assertTrue($array === [
             'property1' => 1,
-            'property2' => [['property2.1' => '2.1']],
-            'property3' => 3,
-            'property4' => [['property4.1' => '4.1']]
+            'property4' => 4,
+            'property5' =>
+            [
+                [
+                    'property5.1' => '5.1',
+                ]
+            ],
+            'property6' => 6,
+            'property7' =>
+            [
+                [
+                    'property7.1' => '7.1',
+                ],
+                [
+                    'property7.2' => '7.2',
+                ],
+            ],
         ]);
     }
 
@@ -436,22 +457,63 @@ class DataObjectTest extends DataListTestCase
      */
     public function testToJSON()
     {
-        $data = ['property1' => 1];
+        $data = [
+            'property4' => 4,
+            'property5' => new DataList([
+                [
+                    'property5.1' => '5.1'
+                ]
+                    ])
+        ];
         $object = new class($data) extends DataObject {
+
+            public $property1 = 1;
+            private $property2 = 2;
+            protected $property3 = 3;
 
             protected function initialize()
             {
-                $this->defineProperty('property2', [
+                $this->defineProperty('property6', [
                     'get' => function() {
-                        return 2;
+                        return 6;
+                    }
+                ]);
+                $this->defineProperty('property7', [
+                    'init' => function() {
+                        return new DataList([
+                            [
+                                'property7.1' => '7.1'
+                            ],
+                            [
+                                'property7.2' => '7.2'
+                            ]
+                        ]);
                     }
                 ]);
             }
         };
-
         $json = $object->toJSON();
-        $expectedResult = '{"property1":1,"property2":2}';
-        $this->assertTrue($json === $expectedResult);
+        $array = json_decode($json, true);
+        $this->assertTrue($array === [
+            'property1' => 1,
+            'property4' => 4,
+            'property5' =>
+            [
+                [
+                    'property5.1' => '5.1',
+                ]
+            ],
+            'property6' => 6,
+            'property7' =>
+            [
+                [
+                    'property7.1' => '7.1',
+                ],
+                [
+                    'property7.2' => '7.2',
+                ],
+            ],
+        ]);
     }
 
     /**

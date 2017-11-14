@@ -23,18 +23,33 @@ trait DataObjectToArrayTrait
     public function toArray(): array
     {
         $result = [];
-        foreach ($this->internalDataObjectData as $name => $unknown) {
-            $name = substr($name, 1);
-            if (array_key_exists($name, $result) === false) {
-                $value = $this->$name;
-                if (method_exists($value, 'toArray')) {
-                    $result[$name] = $value->toArray();
-                } else {
-                    $result[$name] = $value;
+
+        $objectProperties = get_object_vars($this);
+        foreach ($objectProperties as $name => $value) {
+            if ($name !== 'internalDataObjectData') {
+                $reflectionProperty = new \ReflectionProperty($this, $name);
+                if ($reflectionProperty->isPublic()) {
+                    $result[$name] = null;
                 }
             }
         }
+
+        if (isset($this->internalDataObjectData)) {
+            foreach ($this->internalDataObjectData as $name => $value) {
+                $result[substr($name, 1)] = null;
+            }
+        }
+
         ksort($result);
+        foreach ($result as $name => $null) {
+            $value = $this->$name;
+            if (method_exists($value, 'toArray')) {
+                $result[$name] = $value->toArray();
+            } else {
+                $result[$name] = $value;
+            }
+        }
+
         return $result;
     }
 
