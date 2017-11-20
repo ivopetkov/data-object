@@ -24,8 +24,8 @@ trait DataObjectToJSONTrait
     {
         $result = [];
 
-        $objectProperties = get_object_vars($this);
-        foreach ($objectProperties as $name => $value) {
+        $vars = get_object_vars($this);
+        foreach ($vars as $name => $value) {
             if ($name !== 'internalDataObjectData') {
                 $reflectionProperty = new \ReflectionProperty($this, $name);
                 if ($reflectionProperty->isPublic()) {

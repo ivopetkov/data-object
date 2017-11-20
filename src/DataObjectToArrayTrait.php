@@ -22,35 +22,45 @@ trait DataObjectToArrayTrait
      */
     public function toArray(): array
     {
-        $result = [];
 
-        $objectProperties = get_object_vars($this);
-        foreach ($objectProperties as $name => $value) {
-            if ($name !== 'internalDataObjectData') {
-                $reflectionProperty = new \ReflectionProperty($this, $name);
-                if ($reflectionProperty->isPublic()) {
-                    $result[$name] = null;
+        $toArray = function($object) use (&$toArray) {
+            $result = [];
+            $vars = get_object_vars($object);
+            foreach ($vars as $name => $value) {
+                if ($name !== 'internalDataObjectData') {
+                    $reflectionProperty = new \ReflectionProperty($object, $name);
+                    if ($reflectionProperty->isPublic()) {
+                        $result[$name] = null;
+                    }
                 }
             }
-        }
-
-        if (isset($this->internalDataObjectData)) {
-            foreach ($this->internalDataObjectData as $name => $value) {
-                $result[substr($name, 1)] = null;
+            if (isset($object->internalDataObjectData)) {
+                foreach ($object->internalDataObjectData as $name => $value) {
+                    $result[substr($name, 1)] = null;
+                }
             }
-        }
-
-        ksort($result);
-        foreach ($result as $name => $null) {
-            $value = $this->$name;
-            if (method_exists($value, 'toArray')) {
-                $result[$name] = $value->toArray();
-            } else {
-                $result[$name] = $value;
+            ksort($result);
+            foreach ($result as $name => $null) {
+                $value = $object->$name;
+                if (is_object($value)) {
+                    if (method_exists($value, 'toArray')) {
+                        $result[$name] = $value->toArray();
+                    } else {
+                        $propertyVars = $toArray($value);
+                        foreach ($propertyVars as $propertyVarName => $propertyVarValue) {
+                            if (is_object($propertyVarValue)) {
+                                $propertyVars[$propertyVarName] = $toArray($propertyVarValue);
+                            }
+                        }
+                        $result[$name] = $propertyVars;
+                    }
+                } else {
+                    $result[$name] = $value;
+                }
             }
-        }
-
-        return $result;
+            return $result;
+        };
+        return $toArray($this);
     }
 
 }
