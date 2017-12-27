@@ -157,6 +157,50 @@ class DataListTest extends DataListTestCase
     /**
      *
      */
+    public function testConcat()
+    {
+        $list1 = new DataList([
+            ['value' => 1],
+            ['value' => 2],
+        ]);
+        $list2 = new DataList([
+            ['value' => 3],
+            ['value' => 4],
+        ]);
+        $list1->concat($list2);
+        $this->assertTrue($list1[0]->value === 1);
+        $this->assertTrue($list1[1]->value === 2);
+        $this->assertTrue($list1[2]->value === 3);
+        $this->assertTrue($list1[3]->value === 4);
+        $this->assertTrue($list1->length === 4);
+        $this->assertTrue($list2[0]->value === 3);
+        $this->assertTrue($list2[1]->value === 4);
+        $this->assertTrue($list2->length === 2);
+    }
+
+    /**
+     * 
+     */
+    public function testSlice()
+    {
+        $list = new DataList();
+        $dataObject = new DataObject();
+        $dataObject->value = 1;
+        $list[] = $dataObject;
+        $dataObject = new DataObject();
+        $dataObject->value = 2;
+        $list[] = $dataObject;
+        $dataObject = new DataObject();
+        $dataObject->value = 3;
+        $list[] = $dataObject;
+        $slice = $list->slice(1, 1);
+        $this->assertTrue($slice[0]->value === 2);
+        $this->assertTrue($slice->length === 1);
+    }
+
+    /**
+     *
+     */
     public function testFilter()
     {
         $data = [
