@@ -201,6 +201,43 @@ class DataListTest extends DataListTestCase
     /**
      *
      */
+    public function testSliceProperties()
+    {
+        $data = [
+            ['id' => 1, 'value' => 'a', 'other' => 1],
+            ['id' => 2, 'value' => 'b'],
+            function() {
+                return ['id' => 3, 'value' => 'c', 'other' => 3];
+            },
+            function() {
+                return ['id' => 4];
+            }
+        ];
+        $list = new DataList($data);
+        $result = $list->sliceProperties(['id', 'value']);
+        $this->assertTrue($result->toArray() === [
+            [
+                'id' => 1,
+                'value' => 'a'
+            ],
+            [
+                'id' => 2,
+                'value' => 'b'
+            ],
+            [
+                'id' => 3,
+                'value' => 'c'
+            ],
+            [
+                'id' => 4,
+                'value' => null
+            ]
+        ]);
+    }
+
+    /**
+     *
+     */
     public function testFilter()
     {
         $data = [
