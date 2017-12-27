@@ -349,6 +349,10 @@ class DataList implements \ArrayAccess, \Iterator
                                 $add = true;
                             } elseif ($operator === 'notEqual' && $targetValue !== null) {
                                 $add = true;
+                            } elseif ($operator === 'inArray' && is_array($targetValue) && array_search(null, $targetValue) !== false) {
+                                $add = true;
+                            } elseif ($operator === 'notInArray' && !(is_array($targetValue) && array_search(null, $targetValue) !== false)) {
+                                $add = true;
                             } else {
                                 continue;
                             }
@@ -371,6 +375,10 @@ class DataList implements \ArrayAccess, \Iterator
                                 $add = substr($value, -strlen($targetValue)) === $targetValue;
                             } elseif ($operator === 'notEndWith') {
                                 $add = substr($value, -strlen($targetValue)) !== $targetValue;
+                            } elseif ($operator === 'inArray') {
+                                $add = is_array($targetValue) && array_search($value, $targetValue) !== false;
+                            } elseif ($operator === 'notInArray') {
+                                $add = !(is_array($targetValue) && array_search($value, $targetValue) !== false);
                             }
                         }
                         if ($add) {
@@ -488,13 +496,13 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param string $property The property name
      * @param mixed $value The value of the property
-     * @param string $operator equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith
+     * @param string $operator equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray
      * @return \IvoPetkov\DataList Returns a reference to the list
      * @throws \Exception
      */
     public function filterBy(string $property, $value, $operator = 'equal'): \IvoPetkov\DataList
     {
-        if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith']) === false) {
+        if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray']) === false) {
             throw new \Exception('Invalid operator (' . $operator . ')');
         }
         $this->actions[] = ['filterBy', $property, $value, $operator];

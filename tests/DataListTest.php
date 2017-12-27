@@ -297,6 +297,50 @@ class DataListTest extends DataListTestCase
         $this->assertTrue($list[0]->other === 1);
         $this->assertTrue($list[1]->other === 2);
         $this->assertTrue($list->length === 2);
+
+
+        $data = [
+            ['value' => null, 'other' => 1],
+            ['other' => 2],
+            function() {
+                return ['value' => 'aac'];
+            }
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', ['aac'], 'inArray');
+        $this->assertTrue($list[0]->value === 'aac');
+        $this->assertTrue($list->length === 1);
+        $list = new DataList($data);
+        $list->filterBy('value', [null], 'inArray');
+        $this->assertTrue($list[0]->other === 1);
+        $this->assertTrue($list[1]->other === 2);
+        $this->assertTrue($list->length === 2);
+        $list = new DataList($data);
+        $list->filterBy('other', [2, 3], 'inArray');
+        $this->assertTrue($list[0]->other === 2);
+        $this->assertTrue($list->length === 1);
+
+        $data = [
+            ['value' => null, 'other' => 1],
+            ['other' => 2],
+            function() {
+                return ['value' => 'aac'];
+            }
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', ['aac'], 'notInArray');
+        $this->assertTrue($list[0]->other === 1);
+        $this->assertTrue($list[1]->other === 2);
+        $this->assertTrue($list->length === 2);
+        $list = new DataList($data);
+        $list->filterBy('value', [null], 'notInArray');
+        $this->assertTrue($list[0]->value === 'aac');
+        $this->assertTrue($list->length === 1);
+        $list = new DataList($data);
+        $list->filterBy('other', [2, 3], 'notInArray');
+        $this->assertTrue($list[0]->other === 1);
+        $this->assertTrue($list[1]->value === 'aac');
+        $this->assertTrue($list->length === 2);
     }
 
     /**
