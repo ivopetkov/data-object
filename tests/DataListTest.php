@@ -99,6 +99,35 @@ class DataListTest extends DataListTestCase
     }
 
     /**
+     * 
+     */
+    public function testGet1()
+    {
+        $data = [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            ['value' => 'c'],
+        ];
+        $list = new DataList($data);
+        $this->assertTrue($list->getFirst()->value === 'a');
+        $this->assertTrue($list->get(1)->value === 'b');
+        $this->assertTrue($list->getLast()->value === 'c');
+        $this->assertTrue(in_array($list->getRandom()->value, ['a', 'b', 'c']));
+    }
+
+    /**
+     * 
+     */
+    public function testGet2()
+    {
+        $list = new DataList();
+        $this->assertTrue($list->getFirst() === null);
+        $this->assertTrue($list->get(1) === null);
+        $this->assertTrue($list->getLast() === null);
+        $this->assertTrue($list->getRandom() === null);
+    }
+
+    /**
      *
      */
     public function testUnset()
@@ -493,6 +522,42 @@ class DataListTest extends DataListTestCase
         $this->assertTrue($list[1]->value === 'a');
         $this->assertTrue($list[2]->value === 'b');
         $this->assertTrue($list[3]->value === 'c');
+    }
+
+    /**
+     *
+     */
+    public function testShuffle()
+    {
+        $data = [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            function() {
+                return ['value' => 'c'];
+            }
+        ];
+        $list = new DataList($data);
+        $list->shuffle();
+
+        $valueExists = function($value) use (&$list) {
+            foreach ($list as $object) {
+                if ($object->value === $value) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        $this->assertTrue($valueExists('a'));
+        $this->assertTrue($valueExists('b'));
+        $this->assertTrue($valueExists('c'));
+
+        $list->push(['value' => 'd']);
+        $list->shuffle();
+        $this->assertTrue($valueExists('a'));
+        $this->assertTrue($valueExists('b'));
+        $this->assertTrue($valueExists('c'));
+        $this->assertTrue($valueExists('d'));
     }
 
     /**

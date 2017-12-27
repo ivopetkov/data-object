@@ -158,6 +158,68 @@ class DataList implements \ArrayAccess, \Iterator
 
     /**
      * 
+     * @param int $index
+     * @return \IvoPetkov\DataObject|null
+     * @throws \Exception
+     */
+    public function get($index)
+    {
+        $this->update();
+        if (isset($this->data[$index])) {
+            return $this->updateValueIfNeeded($index);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return \IvoPetkov\DataObject|null
+     * @throws \Exception
+     */
+    public function getFirst()
+    {
+        $this->update();
+        if (isset($this->data[0])) {
+            return $this->updateValueIfNeeded(0);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return \IvoPetkov\DataObject|null
+     * @throws \Exception
+     */
+    public function getLast()
+    {
+        $this->update();
+        $count = sizeof($this->data);
+        if (isset($this->data[$count - 1])) {
+            return $this->updateValueIfNeeded($count - 1);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return \IvoPetkov\DataObject|null
+     * @throws \Exception
+     */
+    public function getRandom()
+    {
+        $this->update();
+        $count = sizeof($this->data);
+        if ($count > 0) {
+            $index = rand(0, $count - 1);
+            if (isset($this->data[$index])) {
+                return $this->updateValueIfNeeded($index);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 
      */
     public function rewind(): void
     {
@@ -333,6 +395,8 @@ class DataList implements \ArrayAccess, \Iterator
                     });
                 } elseif ($action[0] === 'reverse') {
                     $this->data = array_reverse($this->data);
+                } elseif ($action[0] === 'shuffle') {
+                    shuffle($this->data);
                 } elseif ($action[0] === 'map') {
                     $this->updateAllValuesIfNeeded();
                     $this->data = array_map($action[1], $this->data);
@@ -479,6 +543,17 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
+     * Randomly reorders the objects in the list
+     * 
+     * @return \IvoPetkov\DataList Returns a reference to the list
+     */
+    public function shuffle(): \IvoPetkov\DataList
+    {
+        $this->actions[] = ['shuffle'];
+        return $this;
+    }
+
+    /**
      * Applies the callback to the objects of the list
      * 
      * @param callable $callback The callback function to use
@@ -537,7 +612,7 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * Pops an object off the end of the list
      * 
-     * @return \IvoPetkov\DataObject|null Returns the poped object or null if the list is empty
+     * @return \IvoPetkov\DataObject|null Returns the popped object or null if the list is empty
      */
     public function pop()
     {
@@ -550,6 +625,20 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
+     * Appends the items of the list provides to the current list
+     * 
+     * @return \IvoPetkov\DataList Returns a reference to the list
+     */
+    public function concat($list): \IvoPetkov\DataList
+    {
+        $this->update();
+        foreach ($list as $object) {
+            array_push($this->data, $object);
+        }
+        return $this;
+    }
+
+    /**
      * Extract a slice of the list
      * 
      * @return \IvoPetkov\DataList Returns a slice of the list
@@ -557,11 +646,6 @@ class DataList implements \ArrayAccess, \Iterator
     public function slice(int $offset, $length = null): \IvoPetkov\DataList
     {
         $this->update();
-//        for ($i = $offset; $i < $offset + $length; $i++) {
-//            if (isset($this->data[$i])) {
-//                $this->updateValueIfNeeded($i);
-//            }
-//        }
         $slice = array_slice($this->data, $offset, $length);
         $className = get_class($this);
         return new $className($slice);
