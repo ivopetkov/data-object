@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <phpunit bootstrap="tests/bootstrap.php"
-         colors="false"
+         colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          stopOnFailure="true">
     <testsuites>
-        <testsuite>
+        <testsuite name="DataObject testing">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+        <whitelist>
             <directory>./src/</directory>
         </whitelist>
     </filter>

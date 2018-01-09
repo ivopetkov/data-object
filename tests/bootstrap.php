@@ -7,7 +7,7 @@
  * Free to use under the MIT license.
  */
 
-class DataListTestCase extends PHPUnit_Framework_TestCase
+class DataListTestCase extends PHPUnit\Framework\TestCase
 {
 
     function setUp()
@@ -17,7 +17,7 @@ class DataListTestCase extends PHPUnit_Framework_TestCase
 
 }
 
-class DataListAutoloaderTestCase extends PHPUnit_Framework_TestCase
+class DataListAutoloaderTestCase extends PHPUnit\Framework\TestCase
 {
 
     function setUp()
