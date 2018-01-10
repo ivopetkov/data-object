@@ -175,6 +175,46 @@ class DataListTest extends DataListTestCase
     /**
      *
      */
+    public function testUnsetWithInvalidProperty()
+    {
+        $this->expectException('Exception');
+        $data = [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            function() {
+                return ['value' => 'c'];
+            },
+            function() {
+                return ['value' => 'd'];
+            }
+        ];
+        $list = new DataList($data);
+        unset($list->invalid_property);
+    }
+
+    /**
+     *
+     */
+    public function testUnsetWithReadonlyProperty()
+    {
+        $this->expectException('Exception');
+        $data = [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            function() {
+                return ['value' => 'c'];
+            },
+            function() {
+                return ['value' => 'd'];
+            }
+        ];
+        $list = new DataList($data);
+        unset($list->length);
+    }
+
+    /**
+     *
+     */
     public function testConcat()
     {
         $list1 = new DataList([
