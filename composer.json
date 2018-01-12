@@ -12,14 +12,19 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0"
+        "php": ">=7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^6"
     },
     "autoload": {
         "psr-4": {
             "IvoPetkov\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IvoPetkov\\": "tests/"
+        }   
     }
 }

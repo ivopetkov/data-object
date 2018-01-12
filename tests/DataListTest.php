@@ -94,7 +94,7 @@ class DataListTest extends DataListTestCase
 
         $this->assertFalse(isset($list[6]));
 
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         $list[7] = new DataObject(['value' => 'gg']);
     }
 
@@ -128,6 +128,24 @@ class DataListTest extends DataListTestCase
     }
 
     /**
+     * 
+     */
+    public function testOffsetGetShouldReturnNull()
+    {
+        $list = new DataList();
+        $this->assertNull($list->offsetGet(0));
+    }
+
+    /**
+     * 
+     */
+    public function testCurrentShouldReturnNull()
+    {
+        $list = new DataList();
+        $this->assertNull($list->current());
+    }
+
+    /**
      *
      */
     public function testUnset()
@@ -152,6 +170,46 @@ class DataListTest extends DataListTestCase
         unset($list[1]);
         unset($list[3]);
         $this->assertTrue($list[0]->value === 'a');
+    }
+
+    /**
+     *
+     */
+    public function testUnsetWithInvalidProperty()
+    {
+        $this->expectException('Exception');
+        $data = [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            function() {
+                return ['value' => 'c'];
+            },
+            function() {
+                return ['value' => 'd'];
+            }
+        ];
+        $list = new DataList($data);
+        unset($list->invalid_property);
+    }
+
+    /**
+     *
+     */
+    public function testUnsetWithReadonlyProperty()
+    {
+        $this->expectException('Exception');
+        $data = [
+            ['value' => 'a'],
+            ['value' => 'b'],
+            function() {
+                return ['value' => 'c'];
+            },
+            function() {
+                return ['value' => 'd'];
+            }
+        ];
+        $list = new DataList($data);
+        unset($list->length);
     }
 
     /**
@@ -599,6 +657,15 @@ class DataListTest extends DataListTestCase
     /**
      *
      */
+    public function testShiftShouldReturnNull()
+    {
+        $list = new DataList();
+        $this->assertNull($list->shift());
+    }
+
+    /**
+     *
+     */
     public function testPopAndPush()
     {
         $data = [
@@ -621,6 +688,15 @@ class DataListTest extends DataListTestCase
         });
         $this->assertTrue($list[3]->value === 'd');
         $this->assertTrue($list->length === 4);
+    }
+
+    /**
+     *
+     */
+    public function testPopShouldReturnNull()
+    {
+        $list = new DataList();
+        $this->assertNull($list->pop());
     }
 
     /**
@@ -755,7 +831,7 @@ class DataListTest extends DataListTestCase
     public function testExceptions2()
     {
         $dataList = new DataList();
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $dataList[false] = ['key' => 'value'];
     }
 
@@ -765,7 +841,7 @@ class DataListTest extends DataListTestCase
     public function testExceptions4()
     {
         $dataList = new DataList();
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $dataList->missing = 5;
     }
 
@@ -775,7 +851,7 @@ class DataListTest extends DataListTestCase
     public function testExceptions5()
     {
         $dataList = new DataList();
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         echo $dataList->missing;
     }
 
@@ -785,7 +861,7 @@ class DataListTest extends DataListTestCase
     public function testExceptions6()
     {
         $dataList = new DataList();
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $dataList->length = 5;
     }
 
@@ -795,7 +871,7 @@ class DataListTest extends DataListTestCase
     public function testExceptions7()
     {
         $dataList = new DataList();
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $dataList->sortBy('name', 1);
     }
 
@@ -805,8 +881,17 @@ class DataListTest extends DataListTestCase
     public function testExceptions10()
     {
         $dataList = new DataList();
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $dataList->filterBy('name', 'John', 'invalidOperator');
+    }
+
+    /**
+     *
+     */
+    public function testDataListInstanceWithInvalidConstructor()
+    {
+        $this->expectException('InvalidArgumentException');
+        $dataList = new DataList('invalid_data_source');
     }
 
     /**
