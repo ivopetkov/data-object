@@ -162,7 +162,7 @@ class DataList implements \ArrayAccess, \Iterator
      * @return \IvoPetkov\DataObject|null
      * @throws \Exception
      */
-    public function get($index)
+    public function get(int $index)
     {
         $this->update();
         if (isset($this->data[$index])) {
@@ -522,7 +522,7 @@ class DataList implements \ArrayAccess, \Iterator
      * @return \IvoPetkov\DataList Returns a reference to the list
      * @throws \Exception
      */
-    public function filterBy(string $property, $value, $operator = 'equal'): \IvoPetkov\DataList
+    public function filterBy(string $property, $value, string $operator = 'equal'): \IvoPetkov\DataList
     {
         if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray']) === false) {
             throw new \Exception('Invalid operator (' . $operator . ')');
@@ -673,7 +673,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @return \IvoPetkov\DataList Returns a slice of the list
      */
-    public function slice(int $offset, $length = null): \IvoPetkov\DataList
+    public function slice(int $offset, int $length = null): \IvoPetkov\DataList
     {
         $this->update();
         $slice = array_slice($this->data, $offset, $length);
@@ -687,7 +687,7 @@ class DataList implements \ArrayAccess, \Iterator
      * @param array $properties
      * @return \IvoPetkov\DataList
      */
-    public function sliceProperties($properties)
+    public function sliceProperties(array $properties)
     {
         $actions = $this->actions;
         $actions[] = ['sliceProperties', $properties];
