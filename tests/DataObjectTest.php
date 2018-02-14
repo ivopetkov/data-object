@@ -517,6 +517,36 @@ class DataObjectTest extends DataListTestCase
     }
 
     /**
+     * 
+     */
+    public function testPropertiesWithArrayAccessOnly()
+    {
+        $object = new \IvoPetkov\DataObject();
+        $object->property1 = new ArrayObject(['value1' => 1]);
+
+        $expectedResult = [
+            'property1' => [
+                'value1' => 1
+            ]
+        ];
+        $this->assertTrue(json_decode($object->toJSON(), true) === $expectedResult);
+        $this->assertTrue($object->toArray() === $expectedResult);
+
+        $list = new IvoPetkov\DataList();
+        $list[] = $object;
+
+        $expectedResult = [
+            [
+                'property1' => [
+                    'value1' => 1
+                ]
+            ]
+        ];
+        $this->assertTrue(json_decode($list->toJSON(), true) === $expectedResult);
+        $this->assertTrue($list->toArray() === $expectedResult);
+    }
+
+    /**
      *
      */
     public function testExceptions1()

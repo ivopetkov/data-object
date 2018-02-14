@@ -732,7 +732,7 @@ class DataList implements \ArrayAccess, \Iterator
             }
             ksort($result);
             foreach ($result as $name => $null) {
-                $value = $object->$name;
+                $value = $object instanceof \ArrayAccess ? $object[$name] : (isset($object->$name) ? $object->$name : null);
                 if (is_object($value)) {
                     if (method_exists($value, 'toArray')) {
                         $result[$name] = $value->toArray();
