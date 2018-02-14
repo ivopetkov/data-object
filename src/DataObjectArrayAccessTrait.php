@@ -20,7 +20,7 @@ trait DataObjectArrayAccessTrait
      * @param string $offset
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function &offsetGet($offset)
     {
         return $this->$offset;
     }

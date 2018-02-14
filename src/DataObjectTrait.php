@@ -101,11 +101,12 @@ trait DataObjectTrait
      * @param string $name
      * @return mixed
      */
-    public function __get($name)
+    public function &__get($name)
     {
         if (isset($this->internalDataObjectData['p' . $name])) {
             if (isset($this->internalDataObjectData['p' . $name][1])) { // get exists
-                return call_user_func($this->internalDataObjectData['p' . $name][1]);
+                $value = call_user_func($this->internalDataObjectData['p' . $name][1]);
+                return $value;
             }
             if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
                 return $this->internalDataObjectData['d' . $name];
@@ -114,7 +115,8 @@ trait DataObjectTrait
                 $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][0]);
                 return $this->internalDataObjectData['d' . $name];
             }
-            return null;
+            $value = null;
+            return $value;
         }
         if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
             return $this->internalDataObjectData['d' . $name];
