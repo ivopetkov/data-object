@@ -42,7 +42,7 @@ trait DataObjectToJSONTrait
 
         ksort($result);
         foreach ($result as $name => $null) {
-            $value = $this->$name;
+            $value = $this instanceof \ArrayAccess ? $this[$name] : (isset($this->$name) ? $this->$name : null);
             if (method_exists($value, 'toJSON')) {
                 $result[$name] = $value->toJSON();
             } else {
