@@ -547,6 +547,26 @@ class DataObjectTest extends DataListTestCase
     }
 
     /**
+     * 
+     */
+    public function testPropertiesReferenceAccess()
+    {
+        $object = new \IvoPetkov\DataObject();
+        $object->property1 = ['value1' => 1];
+        $object->property1['value1'] = 11;
+        $object['property1']['value2'] = 22;
+
+        $expectedResult = [
+            'property1' => [
+                'value1' => 11,
+                'value2' => 22,
+            ]
+        ];
+        $this->assertTrue(json_decode($object->toJSON(), true) === $expectedResult);
+        $this->assertTrue($object->toArray() === $expectedResult);
+    }
+
+    /**
      *
      */
     public function testExceptions1()
