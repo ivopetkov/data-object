@@ -455,6 +455,49 @@ class DataObjectTest extends DataListTestCase
     /**
      *
      */
+    public function testFromArrayAndFromJSON()
+    {
+        $object1 = new SampleObject1();
+        $object1->prop1 = '1.1';
+        $object1->prop2 = '2.1';
+        $object1->prop3 = ['3.1', '3.2', '3.3'];
+        $object1->prop4['prop4.1'] = '4.1';
+        $object1->prop4['prop4.2'] = new stdClass(['prop4.2.1' => '4.2.1']);
+        $object1->prop4['prop4.3'] = new ArrayObject(['prop4.3.1' => '4.3.1']);
+        $object1->prop5->prop2 = '2.1';
+        $object1->prop7->prop1['prop1.1'] = '1.1';
+        $object1->prop7->prop2 = '2';
+        $object1->prop8['prop8.1'] = '8.1';
+
+        $object1Array = $object1->toArray();
+        $object1JSON = $object1->toJSON();
+
+        for ($i = 1; $i <= 2; $i++) {
+            if ($i === 1) {
+                $object2 = SampleObject1::fromArray($object1Array);
+            } else {
+                $object2 = SampleObject1::fromJSON($object1JSON);
+            }
+            $array1asJSON = json_encode($object1Array);
+            $array2asJSON = str_replace('!!!', '', json_encode($object2->toArray())); // SampleObject2 has added "!!!" to one property to test the fromArray() and fromJSON() methods.
+            $this->assertTrue($array1asJSON === $array2asJSON);
+            $this->assertTrue(get_class($object2->prop4) === 'ArrayObject');
+            $this->assertTrue(gettype($object2->prop4['prop4.1']) === 'string');
+            $this->assertTrue(gettype($object2->prop4['prop4.2']) === 'array'); // Cannot convert back to stdClass, because it's custom property
+            $this->assertTrue(gettype($object2->prop4['prop4.3']) === 'array'); // Cannot convert back to ArrayObject, because it's custom property
+            $this->assertTrue(get_class($object2->prop5) === 'SampleObject2');
+            $this->assertTrue(get_class($object2->prop5->prop1) === 'ArrayObject');
+            $this->assertTrue(get_class($object2->prop7) === 'SampleObject3');
+            $this->assertTrue(get_class($object2->prop7->prop1) === 'ArrayObject');
+            $this->assertTrue(get_class($object2->prop8) === 'SampleObject3');
+            $this->assertTrue(get_class($object2->prop8->prop1) === 'ArrayObject');
+            $this->assertTrue(gettype($object1->prop9) === 'array');
+        }
+    }
+
+    /**
+     *
+     */
     public function testToJSON()
     {
         $data = [
@@ -490,6 +533,11 @@ class DataObjectTest extends DataListTestCase
                         ]);
                     }
                 ]);
+                $this->defineProperty('property8', [
+                    'init' => function() {
+                        return new SampleObject4();
+                    }
+                ]);
             }
         };
         $json = $object->toJSON();
@@ -512,6 +560,10 @@ class DataObjectTest extends DataListTestCase
                 [
                     'property7.2' => '7.2',
                 ],
+            ],
+            'property8' =>
+            [
+                'sampleObjectProperty1' => ['1', "'", '"'],
             ],
         ]);
     }

@@ -13,6 +13,7 @@ class DataListTestCase extends PHPUnit\Framework\TestCase
     function setUp()
     {
         require __DIR__ . '/../vendor/autoload.php';
+        require __DIR__ . '/SampleClasses.php';
     }
 
 }
@@ -23,6 +24,7 @@ class DataListAutoloaderTestCase extends PHPUnit\Framework\TestCase
     function setUp()
     {
         require __DIR__ . '/../autoload.php';
+        require __DIR__ . '/SampleClasses.php';
     }
 
 }

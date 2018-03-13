@@ -25,8 +25,8 @@ trait DataObjectTrait
     /**
      * Defines a new property
      * 
-     * @param string $name The property name
-     * @param array $options The property options ['get'=>callable, 'set'=>callable]
+     * @param string $name The property name.
+     * @param array $options The property options. Available values: 'init' (callable), 'get' (callable), 'set' (callable), 'set' (callable), readonly (boolean), type (boolean)
      * @throws \Exception
      */
     protected function defineProperty(string $name, array $options = [])
@@ -73,23 +73,29 @@ trait DataObjectTrait
                 if (isset($data[0]) || isset($data[1], $data[3])) {
                     // has init or get and unset callbacks
                 } elseif ($type === 'array') {
-                    $data[0] = function() {
+                    $data[-1] = function() {
                         return [];
                     };
                 } elseif ($type === 'float') {
-                    $data[0] = function() {
+                    $data[-1] = function() {
                         return 0.0;
                     };
                 } elseif ($type === 'int') {
-                    $data[0] = function() {
+                    $data[-1] = function() {
                         return 0;
                     };
                 } elseif ($type === 'string') {
-                    $data[0] = function() {
+                    $data[-1] = function() {
                         return '';
                     };
                 } else {
-                    throw new \Exception('The property \'' . $name . '\' has a specified not nullable type but is missing an init callback or get and unset callbacks.');
+                    $data[-1] = function() use ($type, $name) {
+                        if (class_exists($type)) {
+                            return new $type();
+                        } else {
+                            throw new \Exception('Cannot find a class named \'' . $type . '\' for the default value of \'' . $name . '\'.');
+                        }
+                    };
                 }
             }
         }
@@ -113,6 +119,10 @@ trait DataObjectTrait
             }
             if (isset($this->internalDataObjectData['p' . $name][0])) { // init exists
                 $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][0]);
+                return $this->internalDataObjectData['d' . $name];
+            }
+            if (isset($this->internalDataObjectData['p' . $name][-1])) { // default init exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][-1]);
                 return $this->internalDataObjectData['d' . $name];
             }
             $value = null;

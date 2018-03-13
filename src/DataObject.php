@@ -18,7 +18,9 @@ class DataObject implements \ArrayAccess//, \Iterator
     use DataObjectTrait;
     use DataObjectArrayAccessTrait;
     use DataObjectToArrayTrait;
+    use DataObjectFromArrayTrait;
     use DataObjectToJSONTrait;
+    use DataObjectFromJSONTrait;
 
     /**
      * Constructs a new data object
