@@ -42,11 +42,14 @@ trait DataObjectFromJSONTrait
         foreach ($data as $name => $value) {
             $currentValue = null;
             $currentValueIsSet = false;
+            $isReadOnly = false;
             if (isset($this->internalDataObjectData['p' . $name])) {
                 $valueIsSet = false;
                 $propertyData = $this->internalDataObjectData['p' . $name];
                 if (isset($propertyData[5])) { // readonly
-                    continue;
+                    $currentValue = $this->$name;
+                    $currentValueIsSet = true;
+                    $isReadOnly = true;
                 } elseif (isset($propertyData[1])) { // init
                     $currentValue = $this->$name;
                     $currentValueIsSet = true;
@@ -89,10 +92,12 @@ trait DataObjectFromJSONTrait
                     $value = $currentValue;
                 }
             }
-            if ($hasArrayAccess) {
-                $this[$name] = $value;
-            } else {
-                $this->$name = $value;
+            if (!$isReadOnly) {
+                if ($hasArrayAccess) {
+                    $this[$name] = $value;
+                } else {
+                    $this->$name = $value;
+                }
             }
         }
     }
