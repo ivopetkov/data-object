@@ -45,13 +45,13 @@ trait DataObjectFromJSONTrait
             if (isset($this->internalDataObjectData['p' . $name])) {
                 $valueIsSet = false;
                 $propertyData = $this->internalDataObjectData['p' . $name];
-                if (isset($propertyData[4])) { // readonly
+                if (isset($propertyData[5])) { // readonly
                     continue;
-                } elseif (isset($propertyData[0])) { // init
+                } elseif (isset($propertyData[1])) { // init
                     $currentValue = $this->$name;
                     $currentValueIsSet = true;
-                } elseif (isset($propertyData[5])) { // type
-                    $type = $propertyData[5];
+                } elseif (isset($propertyData[6])) { // type
+                    $type = $propertyData[6];
                     if (class_exists($type)) {
                         if (is_callable([$type, 'fromJSON'])) {
                             if (is_array($value)) {
@@ -66,7 +66,7 @@ trait DataObjectFromJSONTrait
                         }
                     }
                 }
-                if (!$currentValueIsSet && isset($propertyData[-1])) { // default init
+                if (!$currentValueIsSet && isset($propertyData[0])) { // default init
                     $currentValue = $this->$name;
                 }
                 if (!$valueIsSet && is_object($currentValue)) {

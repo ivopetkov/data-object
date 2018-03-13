@@ -36,60 +36,60 @@ trait DataObjectTrait
             if (!is_callable($options['init'])) {
                 throw new \Exception('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
             }
-            $data[0] = $options['init'];
+            $data[1] = $options['init'];
         }
         if (isset($options['get'])) {
             if (!is_callable($options['get'])) {
                 throw new \Exception('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
             }
-            $data[1] = $options['get'];
+            $data[2] = $options['get'];
         }
         if (isset($options['set'])) {
             if (!is_callable($options['set'])) {
                 throw new \Exception('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
             }
-            $data[2] = $options['set'];
+            $data[3] = $options['set'];
         }
         if (isset($options['unset'])) {
             if (!is_callable($options['unset'])) {
                 throw new \Exception('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
             }
-            $data[3] = $options['unset'];
+            $data[4] = $options['unset'];
         }
         if (isset($options['readonly'])) {
             if (!is_bool($options['readonly'])) {
                 throw new \Exception('The \'readonly\' option must be of type bool, ' . gettype($options['readonly']) . ' given');
             }
             if ($options['readonly']) {
-                $data[4] = true;
+                $data[5] = true;
             }
         }
         if (isset($options['type'])) {
             if (!is_string($options['type'])) {
                 throw new \Exception('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
             }
-            $type = $data[5] = $options['type'];
+            $type = $data[6] = $options['type'];
             if ($type{0} !== '?') {
-                if (isset($data[0]) || isset($data[1], $data[3])) {
+                if (isset($data[1]) || isset($data[2], $data[4])) {
                     // has init or get and unset callbacks
                 } elseif ($type === 'array') {
-                    $data[-1] = function() {
+                    $data[0] = function() {
                         return [];
                     };
                 } elseif ($type === 'float') {
-                    $data[-1] = function() {
+                    $data[0] = function() {
                         return 0.0;
                     };
                 } elseif ($type === 'int') {
-                    $data[-1] = function() {
+                    $data[0] = function() {
                         return 0;
                     };
                 } elseif ($type === 'string') {
-                    $data[-1] = function() {
+                    $data[0] = function() {
                         return '';
                     };
                 } else {
-                    $data[-1] = function() use ($type, $name) {
+                    $data[0] = function() use ($type, $name) {
                         if (class_exists($type)) {
                             return new $type();
                         } else {
@@ -110,19 +110,19 @@ trait DataObjectTrait
     public function &__get($name)
     {
         if (isset($this->internalDataObjectData['p' . $name])) {
-            if (isset($this->internalDataObjectData['p' . $name][1])) { // get exists
-                $value = call_user_func($this->internalDataObjectData['p' . $name][1]);
+            if (isset($this->internalDataObjectData['p' . $name][2])) { // get exists
+                $value = call_user_func($this->internalDataObjectData['p' . $name][2]);
                 return $value;
             }
             if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
                 return $this->internalDataObjectData['d' . $name];
             }
-            if (isset($this->internalDataObjectData['p' . $name][0])) { // init exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][0]);
+            if (isset($this->internalDataObjectData['p' . $name][1])) { // init exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][1]);
                 return $this->internalDataObjectData['d' . $name];
             }
-            if (isset($this->internalDataObjectData['p' . $name][-1])) { // default init exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][-1]);
+            if (isset($this->internalDataObjectData['p' . $name][0])) { // default init exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][0]);
                 return $this->internalDataObjectData['d' . $name];
             }
             $value = null;
@@ -142,11 +142,11 @@ trait DataObjectTrait
     public function __set($name, $value): void
     {
         if (isset($this->internalDataObjectData['p' . $name])) {
-            if (isset($this->internalDataObjectData['p' . $name][4])) { // readonly
+            if (isset($this->internalDataObjectData['p' . $name][5])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
             }
-            if (isset($this->internalDataObjectData['p' . $name][5])) { // type exists
-                $type = $this->internalDataObjectData['p' . $name][5];
+            if (isset($this->internalDataObjectData['p' . $name][6])) { // type exists
+                $type = $this->internalDataObjectData['p' . $name][6];
                 $nullable = false;
                 $ok = false;
                 if ($type[0] === '?') {
@@ -194,8 +194,8 @@ trait DataObjectTrait
                     }
                 }
             }
-            if (isset($this->internalDataObjectData['p' . $name][2])) { // set exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][2], $value);
+            if (isset($this->internalDataObjectData['p' . $name][3])) { // set exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][3], $value);
                 if ($this->internalDataObjectData['d' . $name] === null) {
                     unset($this->internalDataObjectData['d' . $name]);
                 }
@@ -225,11 +225,11 @@ trait DataObjectTrait
     public function __unset($name): void
     {
         if (isset($this->internalDataObjectData['p' . $name])) {
-            if (isset($this->internalDataObjectData['p' . $name][4])) { // readonly
+            if (isset($this->internalDataObjectData['p' . $name][5])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
             }
-            if (isset($this->internalDataObjectData['p' . $name][3])) { // unset exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][3]);
+            if (isset($this->internalDataObjectData['p' . $name][4])) { // unset exists
+                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][4]);
                 return;
             }
         }
