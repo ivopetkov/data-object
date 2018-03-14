@@ -23,11 +23,12 @@ trait DataObjectTrait
     private $internalDataObjectData = [];
 
     /**
-     * Defines a new property
+     * Defines a new property.
      * 
      * @param string $name The property name.
      * @param array $options The property options. Available values: 'init' (callable), 'get' (callable), 'set' (callable), 'set' (callable), readonly (boolean), type (boolean)
      * @throws \Exception
+     * @return $this Returns a reference to the object.
      */
     protected function defineProperty(string $name, array $options = [])
     {
@@ -100,6 +101,7 @@ trait DataObjectTrait
             }
         }
         $this->internalDataObjectData['p' . $name] = $data;
+        return $this;
     }
 
     /**
