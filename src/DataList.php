@@ -414,15 +414,30 @@ class DataList implements \ArrayAccess, \Iterator
                     usort($data, $action[1]);
                 } elseif ($action[0] === 'sortBy') {
                     $this->updateAllValuesIfNeeded($data);
-                    usort($data, function($object1, $object2) use ($action) {
-                        if (!isset($object1->{$action[1]})) {
+                    $sortData = []; // save the index and the property needed for the sort in a temp array
+                    foreach ($data as $index => $object) {
+                        $sortData[] = [$index, isset($object->{$action[1]}) ? $object->{$action[1]} : null];
+                    }
+                    usort($sortData, function($value1SortData, $value2SortData) use ($action) {
+                        if ($value1SortData[1] === null) {
                             return $action[2] === 'asc' ? -1 : 1;
                         }
-                        if (!isset($object2->{$action[1]})) {
+                        if ($value2SortData[1] === null) {
                             return $action[2] === 'asc' ? 1 : -1;
                         }
-                        return strcmp($object1->{$action[1]}, $object2->{$action[1]}) * ($action[2] === 'asc' ? 1 : -1);
+                        $result = strcmp($value1SortData[1], $value2SortData[1]);
+                        if ($result === 0) { // if the sort property is the same, maintain the order by index
+                            return $value1SortData[0] - $value2SortData[0];
+                        }
+                        return $result * ($action[2] === 'asc' ? 1 : -1);
                     });
+                    $temp = [];
+                    foreach ($sortData as $sortedValueData) {
+                        $temp[] = $data[$sortedValueData[0]];
+                    }
+                    unset($sortData);
+                    $data = $temp;
+                    unset($temp);
                 } elseif ($action[0] === 'reverse') {
                     $data = array_reverse($data);
                 } elseif ($action[0] === 'shuffle') {
