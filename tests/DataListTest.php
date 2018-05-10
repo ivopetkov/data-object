@@ -567,8 +567,8 @@ class DataListTest extends DataObjectTestCase
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list[1]->value === 'b');
         $this->assertTrue($list[2]->value === 'a');
-        $this->assertTrue($list[3]->other === '1');
-        $this->assertTrue($list[4]->value === null);
+        $this->assertTrue($list[3]->value === null);
+        $this->assertTrue($list[4]->other === '1');
     }
 
     /**
@@ -902,6 +902,33 @@ class DataListTest extends DataObjectTestCase
         $dataList = new DataList();
         $this->assertTrue(isset($dataList->length));
         $this->assertFalse(isset($dataList->missing));
+    }
+
+    /**
+     *
+     */
+    public function testDateTimeSort()
+    {
+        $dataList = new DataList();
+        $dateObject1 = new SampleObject6();
+        $dateObject1->property1 = new DateTime("2000-10-11T11:11:11+00:00");
+        $dataList[] = $dateObject1;
+        $dateObject2 = new SampleObject6();
+        $dateObject2->property1 = null;
+        $dataList[] = $dateObject2;
+        $dateObject3 = new SampleObject6();
+        $dateObject3->property1 = new DateTime("2100-10-11T11:11:11+00:00");
+        $dataList[] = $dateObject3;
+
+        $dataList->sortBy('property1');
+        $this->assertTrue($dataList[0]->property1 === null);
+        $this->assertTrue($dataList[1]->property1->format('c') === "2000-10-11T11:11:11+00:00");
+        $this->assertTrue($dataList[2]->property1->format('c') === "2100-10-11T11:11:11+00:00");
+
+        $dataList->sortBy('property1', 'desc');
+        $this->assertTrue($dataList[0]->property1->format('c') === "2100-10-11T11:11:11+00:00");
+        $this->assertTrue($dataList[1]->property1->format('c') === "2000-10-11T11:11:11+00:00");
+        $this->assertTrue($dataList[2]->property1 === null);
     }
 
 }

@@ -416,16 +416,32 @@ class DataList implements \ArrayAccess, \Iterator
                     $this->updateAllValuesIfNeeded($data);
                     $sortData = []; // save the index and the property needed for the sort in a temp array
                     foreach ($data as $index => $object) {
-                        $sortData[] = [$index, isset($object->{$action[1]}) ? $object->{$action[1]} : null];
+                        $sortValue = isset($object->{$action[1]}) ? $object->{$action[1]} : null;
+                        if (is_object($sortValue)) {
+                            if ($sortValue instanceof \DateTime) {
+                                $sortValue = $sortValue->getTimestamp();
+                            } else {
+                                $sortValue = null;
+                            }
+                        }
+                        $sortData[] = [$index, $sortValue];
                     }
                     usort($sortData, function($value1SortData, $value2SortData) use ($action) {
-                        if ($value1SortData[1] === null) {
-                            return $action[2] === 'asc' ? -1 : 1;
+                        if ($value1SortData[1] === null && $value2SortData[1] === null) {
+                            $result = 0;
+                        } else {
+                            if ($value1SortData[1] === null) {
+                                return $action[2] === 'asc' ? -1 : 1;
+                            }
+                            if ($value2SortData[1] === null) {
+                                return $action[2] === 'asc' ? 1 : -1;
+                            }
+                            if ((is_int($value1SortData[1]) || is_float($value1SortData[1])) && (is_int($value2SortData[1]) || is_float($value2SortData[1]))) {
+                                $result = $value1SortData[1] < $value2SortData[1] ? -1 : 1;
+                            } else {
+                                $result = strcmp($value1SortData[1], $value2SortData[1]);
+                            }
                         }
-                        if ($value2SortData[1] === null) {
-                            return $action[2] === 'asc' ? 1 : -1;
-                        }
-                        $result = strcmp($value1SortData[1], $value2SortData[1]);
                         if ($result === 0) { // if the sort property is the same, maintain the order by index
                             return $value1SortData[0] - $value2SortData[0];
                         }
