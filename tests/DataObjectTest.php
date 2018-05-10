@@ -41,7 +41,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1');
                 $this->defineProperty('property2');
@@ -89,7 +89,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1');
                 $this->defineProperty('property2');
@@ -177,7 +177,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1', [
                     'get' => function() {
@@ -205,7 +205,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property2', [
                     'init' => function() {
@@ -229,7 +229,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property3', [
                     'init' => function() {
@@ -255,7 +255,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $temp = 0;
                 $this->defineProperty('property4', [
@@ -285,7 +285,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property5', [
                     'init' => function() {
@@ -314,7 +314,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
 
                 $this->defineProperty('property1', [
@@ -335,7 +335,7 @@ class DataObjectTest extends DataObjectTestCase
     {
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1', [
                     'readonly' => true
@@ -408,7 +408,7 @@ class DataObjectTest extends DataObjectTestCase
             private $property2 = 2;
             protected $property3 = 3;
 
-            protected function initialize()
+            public function __construct($data)
             {
                 $this->defineProperty('property6', [
                     'get' => function() {
@@ -427,6 +427,7 @@ class DataObjectTest extends DataObjectTestCase
                         ]);
                     }
                 ]);
+                parent::__construct($data);
             }
         };
         $array = $object->toArray();
@@ -514,7 +515,7 @@ class DataObjectTest extends DataObjectTestCase
             private $property2 = 2;
             protected $property3 = 3;
 
-            protected function initialize()
+            public function __construct($data)
             {
                 $this->defineProperty('property6', [
                     'get' => function() {
@@ -538,6 +539,7 @@ class DataObjectTest extends DataObjectTestCase
                         return new SampleObject4();
                     }
                 ]);
+                parent::__construct($data);
             }
         };
         $json = $object->toJSON();
@@ -626,7 +628,7 @@ class DataObjectTest extends DataObjectTestCase
         $this->expectException('Exception');
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1', [
                     'init' => false
@@ -643,7 +645,7 @@ class DataObjectTest extends DataObjectTestCase
         $this->expectException('Exception');
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1', [
                     'get' => false
@@ -660,7 +662,7 @@ class DataObjectTest extends DataObjectTestCase
         $this->expectException('Exception');
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1', [
                     'set' => false
@@ -677,7 +679,7 @@ class DataObjectTest extends DataObjectTestCase
         $this->expectException('Exception');
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1', [
                     'unset' => false
@@ -694,7 +696,7 @@ class DataObjectTest extends DataObjectTestCase
         $this->expectException('Exception');
         $object = new class extends DataObject {
 
-            protected function initialize()
+            public function __construct()
             {
                 $this->defineProperty('property1', [
                     'readonly' => 5
