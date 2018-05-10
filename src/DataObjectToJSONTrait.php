@@ -46,6 +46,9 @@ trait DataObjectToJSONTrait
             if (method_exists($value, 'toJSON')) {
                 $result[$name] = $value->toJSON();
             } else {
+                if ($value instanceof \DateTime) {
+                    $value = $value->format('c');
+                }
                 $result[$name] = json_encode($value);
             }
         }

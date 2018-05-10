@@ -75,7 +75,7 @@ class SampleObject2 extends \IvoPetkov\DataObject
         }
         return $object;
     }
-    
+
     static function fromJSON(string $data)
     {
         $data = json_decode($data, true);
@@ -107,6 +107,51 @@ class SampleObject4 extends \IvoPetkov\DataObject
     public function toJSON(): string
     {
         return json_encode(['sampleObjectProperty1' => ["1", "'", '"']]);
+    }
+
+}
+
+class SampleObject5 extends \IvoPetkov\DataObject
+{
+
+    function __construct()
+    {
+        $this->defineProperty('property1', [
+            'type' => 'DateTime',
+            'init' => function() {
+                return new DateTime("2222-11-11T11:11:11+00:00");
+            }
+        ]);
+        parent::__construct();
+    }
+
+}
+
+class SampleObject6 extends \IvoPetkov\DataObject
+{
+
+    function __construct()
+    {
+        $this->defineProperty('property1', [
+            'type' => '?DateTime'
+        ]);
+        parent::__construct();
+    }
+
+}
+
+class SampleObject7 extends \IvoPetkov\DataObject
+{
+
+    function __construct()
+    {
+        $this->defineProperty('property1', [
+            'type' => '?DateTime',
+            'init' => function() {
+                return new DateTime("2222-11-11T11:11:11+00:00");
+            }
+        ]);
+        parent::__construct();
     }
 
 }

@@ -46,13 +46,17 @@ trait DataObjectToArrayTrait
                     if (method_exists($value, 'toArray')) {
                         $result[$name] = $value->toArray();
                     } else {
-                        $propertyVars = $toArray($value);
-                        foreach ($propertyVars as $propertyVarName => $propertyVarValue) {
-                            if (is_object($propertyVarValue)) {
-                                $propertyVars[$propertyVarName] = $toArray($propertyVarValue);
+                        if ($value instanceof \DateTime) {
+                            $result[$name] = $value->format('c');
+                        } else {
+                            $propertyVars = $toArray($value);
+                            foreach ($propertyVars as $propertyVarName => $propertyVarValue) {
+                                if (is_object($propertyVarValue)) {
+                                    $propertyVars[$propertyVarName] = $toArray($propertyVarValue);
+                                }
                             }
+                            $result[$name] = $propertyVars;
                         }
-                        $result[$name] = $propertyVars;
                     }
                 } else {
                     $result[$name] = $value;

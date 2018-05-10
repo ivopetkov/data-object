@@ -13,7 +13,7 @@ use IvoPetkov\DataObject;
 /**
  * @runTestsInSeparateProcesses
  */
-class DataObjectTest extends DataListTestCase
+class DataObjectTest extends DataObjectTestCase
 {
 
     /**
@@ -710,19 +710,10 @@ class DataObjectTest extends DataListTestCase
     {
         return new class($type, $options) extends DataObject {
 
-            public $type;
-            public $options;
-
             function __construct($type, $options)
             {
-                $this->type = $type;
-                $this->options = $options;
+                $this->defineProperty('property1', array_merge(['type' => $type], $options));
                 parent::__construct([]);
-            }
-
-            protected function initialize()
-            {
-                $this->defineProperty('property1', array_merge(['type' => $this->type], $this->options));
             }
         };
     }
@@ -1009,6 +1000,42 @@ class DataObjectTest extends DataListTestCase
         ]);
         $this->expectException('Exception');
         $object->property1 = new stdClass();
+    }
+
+    /**
+     *
+     */
+    public function testDateTimeType()
+    {
+        $object = new SampleObject5();
+        $expectedJSON = '{"property1":"2222-11-11T11:11:11+00:00"}';
+        $expectedArray = ['property1' => '2222-11-11T11:11:11+00:00'];
+        $this->assertTrue($object->toJSON() === $expectedJSON);
+        $this->assertTrue($object->toArray() === $expectedArray);
+        $object2 = SampleObject5::fromJSON($expectedJSON);
+        $this->assertTrue($object2->property1 instanceof \DateTime && $object2->property1->format('c') === "2222-11-11T11:11:11+00:00");
+        $object2 = SampleObject5::fromArray($expectedArray);
+        $this->assertTrue($object2->property1 instanceof \DateTime && $object2->property1->format('c') === "2222-11-11T11:11:11+00:00");
+
+        $object = new SampleObject6();
+        $expectedJSON = '{"property1":null}';
+        $expectedArray = ['property1' => null];
+        $this->assertTrue($object->toJSON() === $expectedJSON);
+        $this->assertTrue($object->toArray() === $expectedArray);
+        $object2 = SampleObject6::fromJSON($expectedJSON);
+        $this->assertTrue($object2->property1 === null);
+        $object2 = SampleObject6::fromArray($expectedArray);
+        $this->assertTrue($object2->property1 === null);
+
+        $object = new SampleObject7();
+        $expectedJSON = '{"property1":"2222-11-11T11:11:11+00:00"}';
+        $expectedArray = ['property1' => '2222-11-11T11:11:11+00:00'];
+        $this->assertTrue($object->toJSON() === $expectedJSON);
+        $this->assertTrue($object->toArray() === $expectedArray);
+        $object2 = SampleObject7::fromJSON($expectedJSON);
+        $this->assertTrue($object2->property1 instanceof \DateTime && $object2->property1->format('c') === "2222-11-11T11:11:11+00:00");
+        $object2 = SampleObject7::fromArray($expectedArray);
+        $this->assertTrue($object2->property1 instanceof \DateTime && $object2->property1->format('c') === "2222-11-11T11:11:11+00:00");
     }
 
 }

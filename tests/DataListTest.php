@@ -13,7 +13,7 @@ use IvoPetkov\DataObject;
 /**
  * @runTestsInSeparateProcesses
  */
-class DataListTest extends DataListTestCase
+class DataListTest extends DataObjectTestCase
 {
 
     /**

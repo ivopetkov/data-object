@@ -44,8 +44,18 @@ trait DataObjectFromJSONTrait
             $currentValueIsSet = false;
             $isReadOnly = false;
             if (isset($this->internalDataObjectData['p' . $name])) {
-                $valueIsSet = false;
                 $propertyData = $this->internalDataObjectData['p' . $name];
+                $valueIsSet = false;
+                if (isset($propertyData[6])) { // type
+                    $type = $propertyData[6];
+                    $isNullable = $type[0] === '?';
+                    if ($isNullable) {
+                        $type = substr($type, 1);
+                    }
+                } else {
+                    $type = null;
+                    $isNullable = true;
+                }
                 if (isset($propertyData[5])) { // readonly
                     $currentValue = $this->$name;
                     $currentValueIsSet = true;
@@ -53,19 +63,29 @@ trait DataObjectFromJSONTrait
                 } elseif (isset($propertyData[1])) { // init
                     $currentValue = $this->$name;
                     $currentValueIsSet = true;
-                } elseif (isset($propertyData[6])) { // type
-                    $type = $propertyData[6];
-                    if (class_exists($type)) {
-                        if (is_callable([$type, 'fromJSON'])) {
-                            if (is_array($value)) {
-                                $value = call_user_func([$type, 'fromJSON'], json_encode($value));
-                                $valueIsSet = true;
+                } elseif ($type !== null && $type !== 'array' && $type !== 'float' && $type !== 'int' && $type !== 'string') {
+                    if ($value !== null) {
+                        if (class_exists($type)) {
+                            if (is_callable([$type, 'fromJSON'])) {
+                                if (is_array($value)) {
+                                    $value = call_user_func([$type, 'fromJSON'], json_encode($value));
+                                    $valueIsSet = true;
+                                } else {
+                                    throw new \Exception('Cannot assing value of type ' . gettype($value) . ' to an object!');
+                                }
                             } else {
-                                throw new \Exception('Cannot assing value of type ' . gettype($value) . ' to an object!');
+                                $currentValue = new $type();
+                                $currentValueIsSet = true;
                             }
                         } else {
-                            $currentValue = new $type();
-                            $currentValueIsSet = true;
+                            throw new \Exception('Cannot find class named ' . $type . ' for property ' . $name . '!');
+                        }
+                    } else {
+                        if ($isNullable) {
+                            $value = null;
+                            $valueIsSet = true;
+                        } else {
+                            throw new \Exception('The property ' . $name . ' value cannot be null!');
                         }
                     }
                 }
@@ -75,6 +95,8 @@ trait DataObjectFromJSONTrait
                 if (!$valueIsSet && is_object($currentValue)) {
                     if (method_exists($currentValue, '__fromJSON')) {
                         $currentValue->__fromJSON(json_encode($value));
+                    } elseif ($type === 'DateTime') {
+                        $currentValue->setTimestamp(strtotime($value));
                     } else {
                         if (is_array($value)) {
                             $_hasArrayAccess = $currentValue instanceof \ArrayAccess;
