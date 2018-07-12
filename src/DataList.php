@@ -823,9 +823,13 @@ class DataList implements \ArrayAccess, \Iterator
                     }
                 }
             }
+            $propertiesToEncode = [];
             if (isset($object->internalDataObjectData)) {
                 foreach ($object->internalDataObjectData as $name => $value) {
                     $result[substr($name, 1)] = null;
+                    if (substr($name, 0, 1) === 'p' && isset($value[7])) { // encodeInJSON is set
+                        $propertiesToEncode[substr($name, 1)] = true;
+                    }
                 }
             }
             ksort($result);
@@ -837,9 +841,16 @@ class DataList implements \ArrayAccess, \Iterator
                     if ($value instanceof \DateTime) {
                         $value = $value->format('c');
                     }
+                    if (isset($propertiesToEncode[$name]) && $value !== null) {
+                        if (is_string($value)) {
+                            $value = 'data:;base64,' . base64_encode($value);
+                        } else {
+                            throw new \Exception('The value of the ' . $name . ' property cannot be JSON encoded. It must be of type string!');
+                        }
+                    }
                     $result[$name] = json_encode($value);
                     if ($result[$name] === false) {
-                        throw new \Exception('Invalid characters! Cannot JSON encode the value: ' . print_r($value, true));
+                        throw new \Exception('Invalid characters in ' . $name . '! Cannot JSON encode the value: ' . print_r($value, true));
                     }
                 }
             }

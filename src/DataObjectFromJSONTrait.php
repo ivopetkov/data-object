@@ -113,6 +113,11 @@ trait DataObjectFromJSONTrait
                     }
                     $value = $currentValue;
                 }
+                if (isset($propertyData[7])) { // encodeInJSON is set
+                    if ($value !== null && substr($value, 0, 13) === 'data:;base64,') {
+                        $value = base64_decode(substr($value, 13));
+                    }
+                }
             }
             if (!$isReadOnly) {
                 if ($hasArrayAccess) {

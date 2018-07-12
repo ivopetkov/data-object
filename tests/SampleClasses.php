@@ -155,3 +155,21 @@ class SampleObject7 extends \IvoPetkov\DataObject
     }
 
 }
+
+class SampleObject8 extends \IvoPetkov\DataObject
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this
+                ->defineProperty('property1', [
+                    'type' => '?string'
+                ])
+                ->defineProperty('property2', [
+                    'type' => '?string',
+                    'encodeInJSON' => true
+        ]);
+    }
+
+}

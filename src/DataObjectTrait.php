@@ -27,12 +27,13 @@ trait DataObjectTrait
      * 
      * @param string $name The property name.
      * @param array $options The property options. Available values: 
-     * - init (callable)
-     * - get (callable)
-     * - set (callable)
-     * - unset (callable)
-     * - readonly (boolean)
-     * - type (string)
+     *   init (callable)
+     *   get (callable)
+     *   set (callable)
+     *   unset (callable)
+     *   readonly (boolean)
+     *   type (string)
+     *   encodeInJSON (boolean) - Base64 encode the value of the property when it's json encoded (in toJSON() for example). The default value is FALSE.
      * @throws \Exception
      * @return $this Returns a reference to the object.
      */
@@ -104,6 +105,14 @@ trait DataObjectTrait
                         }
                     };
                 }
+            }
+        }
+        if (isset($options['encodeInJSON'])) {
+            if (!is_bool($options['encodeInJSON'])) {
+                throw new \Exception('The \'encodeInJSON\' option must be of type bool, ' . gettype($options['encodeInJSON']) . ' given');
+            }
+            if ($options['encodeInJSON']) {
+                $data[7] = true;
             }
         }
         $this->internalDataObjectData['p' . $name] = $data;

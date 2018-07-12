@@ -1040,4 +1040,19 @@ class DataObjectTest extends DataObjectTestCase
         $this->assertTrue($object2->property1 instanceof \DateTime && $object2->property1->format('c') === "2222-11-11T11:11:11+00:00");
     }
 
+    /**
+     *
+     */
+    public function testJSONEncodePropertyValue()
+    {
+        $object = new SampleObject8();
+        $object->property1 = 'value1';
+        $object->property2 = 'value2';
+        $expectedJSON = '{"property1":"value1","property2":"data:;base64,dmFsdWUy"}';
+        $expectedArray = ['property1' => 'value1', 'property2' => 'value2'];
+        $this->assertTrue($object->toJSON() === $expectedJSON);
+        $this->assertTrue($object->toArray() === $expectedArray);
+        $this->assertTrue(SampleObject8::fromJSON($expectedJSON)->toArray() === $expectedArray);
+    }
+
 }
