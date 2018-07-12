@@ -804,6 +804,7 @@ class DataList implements \ArrayAccess, \Iterator
      * Returns the list data converted as JSON
      * 
      * @return string The list data converted as JSON
+     * @throws \Exception
      */
     public function toJSON(): string
     {
@@ -837,6 +838,9 @@ class DataList implements \ArrayAccess, \Iterator
                         $value = $value->format('c');
                     }
                     $result[$name] = json_encode($value);
+                    if ($result[$name] === false) {
+                        throw new \Exception('Invalid characters! Cannot JSON encode the value: ' . print_r($value, true));
+                    }
                 }
             }
             $json = '';

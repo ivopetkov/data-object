@@ -19,6 +19,7 @@ trait DataObjectToJSONTrait
      * Returns the object data converted as JSON
      * 
      * @return string The object data converted as JSON
+     * @throws \Exception
      */
     public function toJSON(): string
     {
@@ -50,6 +51,9 @@ trait DataObjectToJSONTrait
                         $value = $value->format('c');
                     }
                     $result[$name] = json_encode($value);
+                    if ($result[$name] === false) {
+                        throw new \Exception('Invalid characters! Cannot JSON encode the value: ' . print_r($value, true));
+                    }
                 }
             }
             $json = '';
