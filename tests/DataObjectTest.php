@@ -13,7 +13,7 @@ use IvoPetkov\DataObject;
 /**
  * @runTestsInSeparateProcesses
  */
-class DataObjectTest extends DataObjectTestCase
+class DataObjectTest extends PHPUnit\Framework\TestCase
 {
 
     /**
