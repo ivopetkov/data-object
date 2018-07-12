@@ -18,9 +18,7 @@
         "phpunit/phpunit": "^6"
     },
     "autoload": {
-        "psr-4": {
-            "IvoPetkov\\": "src/"
-        }
+        "files": ["autoload.php"]
     },
     "autoload-dev": {
         "psr-4": {
