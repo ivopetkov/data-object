@@ -22,45 +22,44 @@ trait DataObjectToJSONTrait
      */
     public function toJSON(): string
     {
-        $result = [];
+        // Copied to DataList. Copy there when the function is modified !!!
+        $toJSON = function($object): string {
+            $result = [];
 
-        $vars = get_object_vars($this);
-        foreach ($vars as $name => $value) {
-            if ($name !== 'internalDataObjectData') {
-                $reflectionProperty = new \ReflectionProperty($this, $name);
-                if ($reflectionProperty->isPublic()) {
-                    $result[$name] = null;
+            $vars = get_object_vars($object);
+            foreach ($vars as $name => $value) {
+                if ($name !== 'internalDataObjectData') {
+                    $reflectionProperty = new \ReflectionProperty($object, $name);
+                    if ($reflectionProperty->isPublic()) {
+                        $result[$name] = null;
+                    }
                 }
             }
-        }
-
-        if (isset($this->internalDataObjectData)) {
-            foreach ($this->internalDataObjectData as $name => $value) {
-                $result[substr($name, 1)] = null;
-            }
-        }
-
-        ksort($result);
-        foreach ($result as $name => $null) {
-            $value = $this instanceof \ArrayAccess ? $this[$name] : (isset($this->$name) ? $this->$name : null);
-            if (method_exists($value, 'toJSON')) {
-                $result[$name] = $value->toJSON();
-            } else {
-                if ($value instanceof \DateTime) {
-                    $value = $value->format('c');
+            if (isset($object->internalDataObjectData)) {
+                foreach ($object->internalDataObjectData as $name => $value) {
+                    $result[substr($name, 1)] = null;
                 }
-                $result[$name] = json_encode($value);
             }
-        }
-
-        $json = '{';
-        foreach ($result as $name => $value) {
-            $json .= '"' . addcslashes($name, '"\\') . '":' . $value . ',';
-        }
-        $json = rtrim($json, ',');
-        $json .= '}';
-
-        return $json;
+            ksort($result);
+            foreach ($result as $name => $null) {
+                $value = $object instanceof \ArrayAccess ? $object[$name] : (isset($object->$name) ? $object->$name : null);
+                if (method_exists($value, 'toJSON')) {
+                    $result[$name] = $value->toJSON();
+                } else {
+                    if ($value instanceof \DateTime) {
+                        $value = $value->format('c');
+                    }
+                    $result[$name] = json_encode($value);
+                }
+            }
+            $json = '';
+            foreach ($result as $name => $value) {
+                $json .= '"' . addcslashes($name, '"\\') . '":' . $value . ',';
+            }
+            $json = '{' . rtrim($json, ',') . '}';
+            return $json;
+        };
+        return $toJSON($this);
     }
 
 }

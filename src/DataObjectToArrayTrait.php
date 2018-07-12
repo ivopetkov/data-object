@@ -22,8 +22,8 @@ trait DataObjectToArrayTrait
      */
     public function toArray(): array
     {
-
-        $toArray = function($object) use (&$toArray) {
+        // Copied to DataList. Copy there when the function is modified !!!
+        $toArray = function($object) use (&$toArray): array {
             $result = [];
             $vars = get_object_vars($object);
             foreach ($vars as $name => $value) {
