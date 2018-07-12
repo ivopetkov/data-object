@@ -26,7 +26,13 @@ trait DataObjectTrait
      * Defines a new property.
      * 
      * @param string $name The property name.
-     * @param array $options The property options. Available values: 'init' (callable), 'get' (callable), 'set' (callable), 'set' (callable), readonly (boolean), type (boolean)
+     * @param array $options The property options. Available values: 
+     * - init (callable)
+     * - get (callable)
+     * - set (callable)
+     * - unset (callable)
+     * - readonly (boolean)
+     * - type (string)
      * @throws \Exception
      * @return $this Returns a reference to the object.
      */
