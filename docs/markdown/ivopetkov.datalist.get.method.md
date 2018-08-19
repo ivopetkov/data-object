@@ -1,5 +1,7 @@
 # IvoPetkov\DataList::get
 
+Returns the object at the index specified or null if not found.
+
 ```php
 public IvoPetkov\DataObject|null get ( int $index )
 ```
@@ -10,7 +12,7 @@ public IvoPetkov\DataObject|null get ( int $index )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The object at the index specified or null if not found.
 
 ## Details
 

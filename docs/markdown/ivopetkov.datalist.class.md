@@ -24,11 +24,19 @@ implements [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php), [Itera
 
 ##### public [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)|null [get](ivopetkov.datalist.get.method.md) ( int $index )
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object at the index specified or null if not found.
+
 ##### public [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)|null [getFirst](ivopetkov.datalist.getfirst.method.md) ( void )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first object or null if not found.
 
 ##### public [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)|null [getLast](ivopetkov.datalist.getlast.method.md) ( void )
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the last object or null if not found.
+
 ##### public [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)|null [getRandom](ivopetkov.datalist.getrandom.method.md) ( void )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a random object from the list or null if the list is empty.
 
 ##### public [IvoPetkov\DataList](ivopetkov.datalist.class.md) [map](ivopetkov.datalist.map.method.md) ( callable $callback )
 

@@ -157,9 +157,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
+     * Returns the object at the index specified or null if not found.
      * 
-     * @param int $index
-     * @return \IvoPetkov\DataObject|null
+     * @param int $index The index of the item
+     * @return \IvoPetkov\DataObject|null The object at the index specified or null if not found.
      * @throws \Exception
      */
     public function get(int $index)
@@ -172,8 +173,9 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
+     * Returns the first object or null if not found.
      * 
-     * @return \IvoPetkov\DataObject|null
+     * @return \IvoPetkov\DataObject|null The first object or null if not found.
      * @throws \Exception
      */
     public function getFirst()
@@ -186,8 +188,9 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
+     * Returns the last object or null if not found.
      * 
-     * @return \IvoPetkov\DataObject|null
+     * @return \IvoPetkov\DataObject|null The last object or null if not found.
      * @throws \Exception
      */
     public function getLast()
@@ -201,8 +204,9 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
+     * Returns a random object from the list or null if the list is empty.
      * 
-     * @return \IvoPetkov\DataObject|null
+     * @return \IvoPetkov\DataObject|null A random object from the list or null if the list is empty.
      * @throws \Exception
      */
     public function getRandom()
