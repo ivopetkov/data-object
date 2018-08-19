@@ -4,9 +4,9 @@
 
 ##### public array $filterByProperties
 
-##### public array $sortByProperties
-
 ##### public array $requestedProperties
+
+##### public array $sortByProperties
 
 ## Details
 
