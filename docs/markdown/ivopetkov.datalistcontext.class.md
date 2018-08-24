@@ -14,3 +14,7 @@ Information about the operations applied on the data list.
 
 File: /src/DataListContext.php
 
+---
+
+[back to index](index.md)
+

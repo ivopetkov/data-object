@@ -100,3 +100,7 @@ A list of data objects that can be easily filtered, sorted, etc. The objects can
 
 File: /src/DataList.php
 
+---
+
+[back to index](index.md)
+
