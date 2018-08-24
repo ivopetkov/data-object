@@ -16,7 +16,7 @@ trait DataObjectTrait
 {
 
     /**
-     * An array containing the registered properties and the data set
+     * An array containing the registered properties and the data set.
      * 
      * @var array 
      */
@@ -34,39 +34,39 @@ trait DataObjectTrait
      *   readonly (boolean)
      *   type (string)
      *   encodeInJSON (boolean) - Base64 encode the value of the property when it's json encoded (in toJSON() for example). The default value is FALSE.
-     * @throws \Exception
-     * @return $this Returns a reference to the object.
+     * @throws \InvalidArgumentException
+     * @return object Returns a reference to the object.
      */
     protected function defineProperty(string $name, array $options = [])
     {
         $data = [];
         if (isset($options['init'])) {
             if (!is_callable($options['init'])) {
-                throw new \Exception('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
+                throw new \InvalidArgumentException('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
             }
             $data[1] = $options['init'];
         }
         if (isset($options['get'])) {
             if (!is_callable($options['get'])) {
-                throw new \Exception('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
+                throw new \InvalidArgumentException('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
             }
             $data[2] = $options['get'];
         }
         if (isset($options['set'])) {
             if (!is_callable($options['set'])) {
-                throw new \Exception('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
+                throw new \InvalidArgumentException('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
             }
             $data[3] = $options['set'];
         }
         if (isset($options['unset'])) {
             if (!is_callable($options['unset'])) {
-                throw new \Exception('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
+                throw new \InvalidArgumentException('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
             }
             $data[4] = $options['unset'];
         }
         if (isset($options['readonly'])) {
             if (!is_bool($options['readonly'])) {
-                throw new \Exception('The \'readonly\' option must be of type bool, ' . gettype($options['readonly']) . ' given');
+                throw new \InvalidArgumentException('The \'readonly\' option must be of type bool, ' . gettype($options['readonly']) . ' given');
             }
             if ($options['readonly']) {
                 $data[5] = true;
@@ -74,7 +74,7 @@ trait DataObjectTrait
         }
         if (isset($options['type'])) {
             if (!is_string($options['type'])) {
-                throw new \Exception('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
+                throw new \InvalidArgumentException('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
             }
             $type = $data[6] = $options['type'];
             if ($type{0} !== '?') {
@@ -101,7 +101,7 @@ trait DataObjectTrait
                         if (class_exists($type)) {
                             return new $type();
                         } else {
-                            throw new \Exception('Cannot find a class named \'' . $type . '\' for the default value of \'' . $name . '\'.');
+                            throw new \InvalidArgumentException('Cannot find a class named \'' . $type . '\' for the default value of \'' . $name . '\'.');
                         }
                     };
                 }
@@ -109,7 +109,7 @@ trait DataObjectTrait
         }
         if (isset($options['encodeInJSON'])) {
             if (!is_bool($options['encodeInJSON'])) {
-                throw new \Exception('The \'encodeInJSON\' option must be of type bool, ' . gettype($options['encodeInJSON']) . ' given');
+                throw new \InvalidArgumentException('The \'encodeInJSON\' option must be of type bool, ' . gettype($options['encodeInJSON']) . ' given');
             }
             if ($options['encodeInJSON']) {
                 $data[7] = true;
@@ -123,6 +123,7 @@ trait DataObjectTrait
      * 
      * @param string $name
      * @return mixed
+     * @throws \Exception
      */
     public function &__get($name)
     {
@@ -155,6 +156,7 @@ trait DataObjectTrait
      * 
      * @param string $name
      * @param mixed $value
+     * @throws \Exception
      */
     public function __set($name, $value): void
     {

@@ -13,36 +13,36 @@ use IvoPetkov\DataObject;
 use IvoPetkov\DataListContext;
 
 /**
- * @property-read int $length The number of objects in the list
+ * @property-read int $length The number of objects in the list.
  */
 class DataList implements \ArrayAccess, \Iterator
 {
 
     /**
-     * The list data objects
+     * The list data objects.
      * 
      * @var array 
      */
     private $data = [];
 
     /**
-     * The pointer when the list is iterated with foreach 
+     * The pointer when the list is iterated.
      * 
      * @var int
      */
     private $pointer = 0;
 
     /**
-     * The list of actions (sort, filter, etc.) that must be applied to the list
+     * The list of actions (sort, filter, etc.) that must be applied to the list.
      * 
      * @var array 
      */
     private $actions = [];
 
     /**
-     * Constructs a new Data objects list
+     * Constructs a new data objects list.
      * 
-     * @param array|iterable|callback $dataSource An array containing object or arrays that will be converted into objects
+     * @param array|iterable|callback $dataSource An array or an iterable containing objects or arrays that will be converted into data objects or a callback that returns such.
      * @throws \InvalidArgumentException
      */
     public function __construct($dataSource = null)
@@ -63,7 +63,8 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Converts the value into object if needed
+     * Converts the value into object if needed.
+     * 
      * @param int $index
      */
     private function updateValueIfNeeded(&$data, $index)
@@ -82,7 +83,7 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Converts all values into objects if needed
+     * Converts all values into objects if needed.
      */
     private function updateAllValuesIfNeeded(&$data)
     {
@@ -96,6 +97,7 @@ class DataList implements \ArrayAccess, \Iterator
      * @param int $offset
      * @param \IvoPetkov\DataObject|null $value
      * @return void
+     * @throws \InvalidArgumentException
      * @throws \Exception
      */
     public function offsetSet($offset, $value): void
@@ -119,7 +121,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param int $offset
      * @return boolean
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function offsetExists($offset): bool
     {
@@ -130,7 +132,7 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * 
      * @param int $offset
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function offsetUnset($offset): void
     {
@@ -145,7 +147,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param int $offset
      * @return \IvoPetkov\DataObject|null
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function offsetGet($offset)
     {
@@ -159,9 +161,9 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * Returns the object at the index specified or null if not found.
      * 
-     * @param int $index The index of the item
+     * @param int $index The index of the item.
      * @return \IvoPetkov\DataObject|null The object at the index specified or null if not found.
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function get(int $index)
     {
@@ -176,7 +178,7 @@ class DataList implements \ArrayAccess, \Iterator
      * Returns the first object or null if not found.
      * 
      * @return \IvoPetkov\DataObject|null The first object or null if not found.
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function getFirst()
     {
@@ -191,7 +193,7 @@ class DataList implements \ArrayAccess, \Iterator
      * Returns the last object or null if not found.
      * 
      * @return \IvoPetkov\DataObject|null The last object or null if not found.
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function getLast()
     {
@@ -207,7 +209,7 @@ class DataList implements \ArrayAccess, \Iterator
      * Returns a random object from the list or null if the list is empty.
      * 
      * @return \IvoPetkov\DataObject|null A random object from the list or null if the list is empty.
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function getRandom()
     {
@@ -233,6 +235,7 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * 
      * @return \IvoPetkov\DataObject|null
+     * @throws \InvalidArgumentException
      */
     public function current()
     {
@@ -263,6 +266,7 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * 
      * @return boolean
+     * @throws \InvalidArgumentException
      */
     public function valid(): bool
     {
@@ -271,7 +275,7 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Applies the pending actions to the data list
+     * Applies the pending actions to the data list.
      * 
      * @throws \InvalidArgumentException
      */
@@ -282,7 +286,7 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Applies the actions to the data list provided
+     * Applies the actions to the data list provided.
      * 
      * @param mixed $data
      * @param array $actions
@@ -347,7 +351,7 @@ class DataList implements \ArrayAccess, \Iterator
                     $data[] = $value;
                 }
             } else {
-                throw new \InvalidArgumentException('The data source callback result is not iterable');
+                throw new \InvalidArgumentException('The data source callback result is not iterable!');
             }
         }
         if (isset($actions[0])) {
@@ -489,6 +493,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param string $name
      * @return mixed
+     * @throws \InvalidArgumentException
      * @throws \Exception
      */
     public function __get(string $name)
@@ -536,11 +541,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Filters the elements of the list using a callback function
+     * Filters the elements of the list using a callback function.
      * 
-     * @param callable $callback The callback function to use
-     * @return \IvoPetkov\DataList Returns a reference to the list
-     * @throws \Exception
+     * @param callable $callback The callback function to use.
+     * @return \IvoPetkov\DataList A reference to the list.
      */
     public function filter(callable $callback): \IvoPetkov\DataList
     {
@@ -549,12 +553,12 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Filters the elements of the list by specific property value
+     * Filters the elements of the list by specific property value.
      * 
-     * @param string $property The property name
-     * @param mixed $value The value of the property
+     * @param string $property The property name.
+     * @param mixed $value The value of the property.
      * @param string $operator equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray
-     * @return \IvoPetkov\DataList Returns a reference to the list
+     * @return \IvoPetkov\DataList A reference to the list.
      * @throws \Exception
      */
     public function filterBy(string $property, $value, string $operator = 'equal'): \IvoPetkov\DataList
@@ -567,11 +571,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Sorts the elements of the list using a callback function 
+     * Sorts the elements of the list using a callback function.
      * 
-     * @param callable $callback The callback function to use
-     * @return \IvoPetkov\DataList Returns a reference to the list
-     * @throws \Exception
+     * @param callable $callback The callback function to use.
+     * @return \IvoPetkov\DataList A reference to the list.
      */
     public function sort(callable $callback): \IvoPetkov\DataList
     {
@@ -580,11 +583,11 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Sorts the elements of the list by specific property
+     * Sorts the elements of the list by specific property.
      * 
-     * @param string $property The property name
-     * @param string $order The sort order
-     * @return \IvoPetkov\DataList Returns a reference to the list
+     * @param string $property The property name.
+     * @param string $order The sort order.
+     * @return \IvoPetkov\DataList A reference to the list.
      * @throws \Exception
      */
     public function sortBy(string $property, string $order = 'asc'): \IvoPetkov\DataList
@@ -597,9 +600,9 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Reverses the order of the objects in the list
+     * Reverses the order of the objects in the list.
      * 
-     * @return \IvoPetkov\DataList Returns a reference to the list
+     * @return \IvoPetkov\DataList A reference to the list.
      */
     public function reverse(): \IvoPetkov\DataList
     {
@@ -608,9 +611,9 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Randomly reorders the objects in the list
+     * Randomly reorders the objects in the list.
      * 
-     * @return \IvoPetkov\DataList Returns a reference to the list
+     * @return \IvoPetkov\DataList A reference to the list.
      */
     public function shuffle(): \IvoPetkov\DataList
     {
@@ -619,11 +622,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Applies the callback to the objects of the list
+     * Applies the callback to the objects of the list.
      * 
-     * @param callable $callback The callback function to use
-     * @return \IvoPetkov\DataList Returns a reference to the list
-     * @throws \Exception
+     * @param callable $callback The callback function to use.
+     * @return \IvoPetkov\DataList A reference to the list.
      */
     public function map(callable $callback): \IvoPetkov\DataList
     {
@@ -632,11 +634,11 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Prepends an object to the beginning of the list
+     * Prepends an object to the beginning of the list.
      * 
-     * @param \IvoPetkov\DataObject|array $object The data to be prepended
-     * @return \IvoPetkov\DataList Returns a reference to the list
-     * @throws Exception
+     * @param \IvoPetkov\DataObject|array $object The data to be prepended.
+     * @return \IvoPetkov\DataList A reference to the list.
+     * @throws \InvalidArgumentException
      */
     public function unshift($object): \IvoPetkov\DataList
     {
@@ -646,9 +648,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Shift an object off the beginning of the list
+     * Shift an object off the beginning of the list.
      * 
-     * @return \IvoPetkov\DataObject|null Returns the shifted object or null if the list is empty
+     * @return \IvoPetkov\DataObject|null Returns the shifted object or null if the list is empty.
+     * @throws \InvalidArgumentException
      */
     public function shift()
     {
@@ -661,11 +664,11 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Pushes an object onto the end of the list
+     * Pushes an object onto the end of the list.
      * 
-     * @param \IvoPetkov\DataObject|array $object The data to be pushed
-     * @return \IvoPetkov\DataList Returns a reference to the list
-     * @throws Exception
+     * @param \IvoPetkov\DataObject|array $object The data to be pushed.
+     * @return \IvoPetkov\DataList A reference to the list.
+     * @throws \InvalidArgumentException
      */
     public function push($object): \IvoPetkov\DataList
     {
@@ -675,9 +678,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Pops an object off the end of the list
+     * Pops an object off the end of the list.
      * 
-     * @return \IvoPetkov\DataObject|null Returns the popped object or null if the list is empty
+     * @return \IvoPetkov\DataObject|null Returns the popped object or null if the list is empty.
+     * @throws \InvalidArgumentException
      */
     public function pop()
     {
@@ -690,11 +694,13 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Appends the items of the list provides to the current list
+     * Appends the items of the list provided to the current list.
      * 
-     * @return \IvoPetkov\DataList Returns a reference to the list
+     * @param \IvoPetkov\DataList $list A list to append after the current one.
+     * @return \IvoPetkov\DataList A reference to the list.
+     * @throws \InvalidArgumentException
      */
-    public function concat($list): \IvoPetkov\DataList
+    public function concat(\IvoPetkov\DataList $list): \IvoPetkov\DataList
     {
         $this->update();
         foreach ($list as $object) {
@@ -704,9 +710,12 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Extract a slice of the list
+     * Extract a slice of the list.
      * 
-     * @return \IvoPetkov\DataList Returns a slice of the list
+     * @param int $offset The index position where the extraction should begin
+     * @param int $length The max length of the items in the extracted slice.
+     * @return \IvoPetkov\DataList Returns a slice of the list.
+     * @throws \InvalidArgumentException
      */
     public function slice(int $offset, int $length = null): \IvoPetkov\DataList
     {
@@ -717,10 +726,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Returns a new list of object that contain only the specified properties of the objects in the current list
+     * Returns a new list of object that contain only the specified properties of the objects in the current list.
      * 
-     * @param array $properties
-     * @return \IvoPetkov\DataList
+     * @param array $properties The list of property names.
+     * @return \IvoPetkov\DataList Returns a new list.
      */
     public function sliceProperties(array $properties)
     {
@@ -741,9 +750,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Returns the list data converted as an array
+     * Returns the list data converted as an array.
      * 
-     * @return array The list data converted as an array
+     * @return array The list data converted as an array.
+     * @throws \InvalidArgumentException
      */
     public function toArray(): array
     {
@@ -805,9 +815,10 @@ class DataList implements \ArrayAccess, \Iterator
     }
 
     /**
-     * Returns the list data converted as JSON
+     * Returns the list data converted as JSON.
      * 
-     * @return string The list data converted as JSON
+     * @return string The list data converted as JSON.
+     * @throws \InvalidArgumentException
      * @throws \Exception
      */
     public function toJSON(): string

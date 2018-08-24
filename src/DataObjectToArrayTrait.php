@@ -16,9 +16,9 @@ trait DataObjectToArrayTrait
 {
 
     /**
-     * Returns the object data converted as an array
+     * Returns the object data converted as an array.
      * 
-     * @return array The object data converted as an array
+     * @return array The object data converted as an array.
      */
     public function toArray(): array
     {

@@ -16,9 +16,9 @@ trait DataObjectToJSONTrait
 {
 
     /**
-     * Returns the object data converted as JSON
+     * Returns the object data converted as JSON.
      * 
-     * @return string The object data converted as JSON
+     * @return string The object data converted as JSON.
      * @throws \Exception
      */
     public function toJSON(): string

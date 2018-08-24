@@ -26,7 +26,7 @@ class DataListContext
      * @var array 
      */
     public $sortByProperties = [];
-    
+
     /**
      *
      * @var array 

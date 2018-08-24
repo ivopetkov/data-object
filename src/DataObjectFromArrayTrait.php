@@ -32,7 +32,7 @@ trait DataObjectFromArrayTrait
     /**
      * Internal function that fills the current object with the properties specified.
      * 
-     * @param array $data
+     * @param array $data The data used for the object properties.
      * @throws \Exception
      */
     public function __fromArray(array $data): void

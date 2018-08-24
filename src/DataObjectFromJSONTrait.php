@@ -16,9 +16,9 @@ trait DataObjectFromJSONTrait
 {
 
     /**
-     * Creates an object and fills its properties from the array specified.
+     * Creates an object and fills its properties from the JSON specified.
      * 
-     * @param array $data The data used for the object properties.
+     * @param string $data The data used for the object properties.
      * @return object
      */
     static public function fromJSON(string $data)
@@ -32,7 +32,7 @@ trait DataObjectFromJSONTrait
     /**
      * Internal function that fills the current object with the properties specified.
      * 
-     * @param array $data
+     * @param string $data The data used for the object properties.
      * @throws \Exception
      */
     public function __fromJSON(string $data): void
