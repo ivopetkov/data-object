@@ -10,6 +10,10 @@ implements [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php), [Itera
 
 ## Methods
 
+##### public [__construct](ivopetkov.datalist.__construct.method.md) ( [ array|iterable|callback $dataSource ] )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructs a new data objects list.
+
 ##### public [IvoPetkov\DataList](ivopetkov.datalist.class.md) [concat](ivopetkov.datalist.concat.method.md) ( [IvoPetkov\DataList](ivopetkov.datalist.class.md) $list )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Appends the items of the list provided to the current list.

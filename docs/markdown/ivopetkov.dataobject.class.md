@@ -4,6 +4,10 @@ implements [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php)
 
 ## Methods
 
+##### public [__construct](ivopetkov.dataobject.__construct.method.md) ( [ array $data = [] ] )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructs a new data object.
+
 ##### protected object [defineProperty](ivopetkov.dataobject.defineproperty.method.md) ( string $name [, array $options = [] ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defines a new property.
