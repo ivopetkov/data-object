@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::shift
 
-Shift an object off the beginning of the list
+Shift an object off the beginning of the list.
 
 ```php
 public IvoPetkov\DataObject|null shift ( void )
@@ -8,7 +8,7 @@ public IvoPetkov\DataObject|null shift ( void )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the shifted object or null if the list is empty
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the shifted object or null if the list is empty.
 
 ## Details
 

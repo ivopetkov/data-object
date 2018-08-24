@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::reverse
 
-Reverses the order of the objects in the list
+Reverses the order of the objects in the list.
 
 ```php
 public IvoPetkov\DataList reverse ( void )
@@ -8,7 +8,7 @@ public IvoPetkov\DataList reverse ( void )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a reference to the list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A reference to the list.
 
 ## Details
 

@@ -1,18 +1,20 @@
 # IvoPetkov\DataList::concat
 
-Appends the items of the list provides to the current list
+Appends the items of the list provided to the current list.
 
 ```php
-public IvoPetkov\DataList concat ( $list )
+public IvoPetkov\DataList concat ( IvoPetkov\DataList $list )
 ```
 
 ## Parameters
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$list`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A list to append after the current one.
+
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a reference to the list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A reference to the list.
 
 ## Details
 

@@ -1,6 +1,6 @@
 # IvoPetkov\DataObject::toJSON
 
-Returns the object data converted as JSON
+Returns the object data converted as JSON.
 
 ```php
 public string toJSON ( void )
@@ -8,7 +8,7 @@ public string toJSON ( void )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The object data converted as JSON
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The object data converted as JSON.
 
 ## Details
 

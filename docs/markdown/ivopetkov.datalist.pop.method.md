@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::pop
 
-Pops an object off the end of the list
+Pops an object off the end of the list.
 
 ```php
 public IvoPetkov\DataObject|null pop ( void )
@@ -8,7 +8,7 @@ public IvoPetkov\DataObject|null pop ( void )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the popped object or null if the list is empty
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the popped object or null if the list is empty.
 
 ## Details
 

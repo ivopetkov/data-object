@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::unshift
 
-Prepends an object to the beginning of the list
+Prepends an object to the beginning of the list.
 
 ```php
 public IvoPetkov\DataList unshift ( IvoPetkov\DataObject|array $object )
@@ -10,9 +10,11 @@ public IvoPetkov\DataList unshift ( IvoPetkov\DataObject|array $object )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$object`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to be prepended.
+
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a reference to the list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A reference to the list.
 
 ## Details
 

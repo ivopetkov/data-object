@@ -10,6 +10,8 @@ static public object fromArray ( array $data )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$data`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data used for the object properties.
+
 ## Returns
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

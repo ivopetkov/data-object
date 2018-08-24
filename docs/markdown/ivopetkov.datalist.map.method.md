@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::map
 
-Applies the callback to the objects of the list
+Applies the callback to the objects of the list.
 
 ```php
 public IvoPetkov\DataList map ( callable $callback )
@@ -10,9 +10,11 @@ public IvoPetkov\DataList map ( callable $callback )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$callback`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The callback function to use.
+
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a reference to the list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A reference to the list.
 
 ## Details
 

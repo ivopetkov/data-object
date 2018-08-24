@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::toJSON
 
-Returns the list data converted as JSON
+Returns the list data converted as JSON.
 
 ```php
 public string toJSON ( void )
@@ -8,7 +8,7 @@ public string toJSON ( void )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The list data converted as JSON
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The list data converted as JSON.
 
 ## Details
 

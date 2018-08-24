@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::filter
 
-Filters the elements of the list using a callback function
+Filters the elements of the list using a callback function.
 
 ```php
 public IvoPetkov\DataList filter ( callable $callback )
@@ -10,9 +10,11 @@ public IvoPetkov\DataList filter ( callable $callback )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$callback`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The callback function to use.
+
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a reference to the list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A reference to the list.
 
 ## Details
 

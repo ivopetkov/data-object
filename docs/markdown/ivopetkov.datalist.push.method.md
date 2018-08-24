@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::push
 
-Pushes an object onto the end of the list
+Pushes an object onto the end of the list.
 
 ```php
 public IvoPetkov\DataList push ( IvoPetkov\DataObject|array $object )
@@ -10,9 +10,11 @@ public IvoPetkov\DataList push ( IvoPetkov\DataObject|array $object )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$object`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to be pushed.
+
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a reference to the list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A reference to the list.
 
 ## Details
 

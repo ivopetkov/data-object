@@ -1,6 +1,6 @@
 # IvoPetkov\DataList::shuffle
 
-Randomly reorders the objects in the list
+Randomly reorders the objects in the list.
 
 ```php
 public IvoPetkov\DataList shuffle ( void )
@@ -8,7 +8,7 @@ public IvoPetkov\DataList shuffle ( void )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a reference to the list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A reference to the list.
 
 ## Details
 
