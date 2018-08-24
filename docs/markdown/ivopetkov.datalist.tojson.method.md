@@ -16,3 +16,7 @@ Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
 File: /src/DataList.php
 
+---
+
+[back to index](index.md)
+

@@ -1,5 +1,7 @@
 # IvoPetkov\DataListContext
 
+Information about the operations applied on the data list.
+
 ## Properties
 
 ##### public array $filterByProperties

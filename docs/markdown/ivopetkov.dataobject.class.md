@@ -2,6 +2,8 @@
 
 implements [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php)
 
+A data object that supports registering properties and importing/exporting from array and JSON.
+
 ## Methods
 
 ##### public [__construct](ivopetkov.dataobject.__construct.method.md) ( [ array $data = [] ] )

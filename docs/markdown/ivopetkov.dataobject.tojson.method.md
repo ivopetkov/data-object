@@ -16,3 +16,7 @@ Class: [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)
 
 File: /src/DataObject.php
 
+---
+
+[back to index](index.md)
+

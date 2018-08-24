@@ -14,11 +14,15 @@ static public object fromArray ( array $data )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a newly constructed object.
 
 ## Details
 
 Class: [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)
 
 File: /src/DataObject.php
+
+---
+
+[back to index](index.md)
 

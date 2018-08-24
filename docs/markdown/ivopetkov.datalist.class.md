@@ -2,6 +2,8 @@
 
 implements [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php), [Iterator](http://php.net/manual/en/class.iterator.php), [Traversable](http://php.net/manual/en/class.traversable.php)
 
+A list of data objects that can be easily filtered, sorted, etc. The objects can be lazy loaded using a callback in the constructor.
+
 ## Properties
 
 ##### public readonly int $length
