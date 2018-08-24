@@ -13,6 +13,8 @@ use IvoPetkov\DataObject;
 use IvoPetkov\DataListContext;
 
 /**
+ * A list of data objects that can be easily filtered, sorted, etc. The objects can be lazy loaded using a callback in the constructor.
+ * 
  * @property-read int $length The number of objects in the list.
  */
 class DataList implements \ArrayAccess, \Iterator
@@ -42,7 +44,7 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * Constructs a new data objects list.
      * 
-     * @param array|iterable|callback $dataSource An array or an iterable containing objects or arrays that will be converted into data objects or a callback that returns such.
+     * @param array|iterable|callback $dataSource An array or an iterable containing objects or arrays that will be converted into data objects or a callback that returns such. The callback option enables lazy data loading.
      * @throws \InvalidArgumentException
      */
     public function __construct($dataSource = null)

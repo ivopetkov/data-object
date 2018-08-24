@@ -19,7 +19,7 @@ trait DataObjectFromArrayTrait
      * Creates an object and fills its properties from the array specified.
      * 
      * @param array $data The data used for the object properties.
-     * @return object
+     * @return object Returns a newly constructed object.
      */
     static public function fromArray(array $data)
     {

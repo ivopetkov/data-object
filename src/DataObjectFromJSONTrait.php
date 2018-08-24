@@ -19,7 +19,7 @@ trait DataObjectFromJSONTrait
      * Creates an object and fills its properties from the JSON specified.
      * 
      * @param string $data The data used for the object properties.
-     * @return object
+     * @return object Returns a newly constructed object.
      */
     static public function fromJSON(string $data)
     {

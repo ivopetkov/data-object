@@ -10,7 +10,7 @@
 namespace IvoPetkov;
 
 /**
- * 
+ * A data object that supports registering properties and importing/exporting from array and JSON.
  */
 class DataObject implements \ArrayAccess
 {
@@ -25,7 +25,7 @@ class DataObject implements \ArrayAccess
     /**
      * Constructs a new data object.
      * 
-     * @param array $data
+     * @param array $data The data to use for the properties values.
      */
     public function __construct(array $data = [])
     {

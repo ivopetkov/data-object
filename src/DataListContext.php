@@ -10,7 +10,7 @@
 namespace IvoPetkov;
 
 /**
- * 
+ * Information about the operations applied on the data list.
  */
 class DataListContext
 {
