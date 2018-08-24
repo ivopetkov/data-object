@@ -557,7 +557,7 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param string $property The property name.
      * @param mixed $value The value of the property.
-     * @param string $operator equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray
+     * @param string $operator Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
      * @return \IvoPetkov\DataList A reference to the list.
      * @throws \Exception
      */
