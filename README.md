@@ -52,7 +52,7 @@ composer require ivopetkov/data-object
 
 ## Documentation
 
-Full [documentation](https://github.com/ivopetkov/data-object/blob/master/docs/markdown/index.md) is avaiable as part of this repository.
+Full [documentation](https://github.com/ivopetkov/data-object/blob/master/docs/markdown/index.md) is available as part of this repository.
 
 ## License
 This project is licensed under the MIT License. See the [license file](https://github.com/ivopetkov/data-object/blob/master/LICENSE) for more information.
