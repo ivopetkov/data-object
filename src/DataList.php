@@ -561,12 +561,12 @@ class DataList implements \ArrayAccess, \Iterator
      * @param mixed $value The value of the property.
      * @param string $operator Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
      * @return \IvoPetkov\DataList A reference to the list.
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function filterBy(string $property, $value, string $operator = 'equal'): \IvoPetkov\DataList
     {
         if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray']) === false) {
-            throw new \Exception('Invalid operator (' . $operator . ')');
+            throw new \InvalidArgumentException('Invalid operator (' . $operator . ')');
         }
         $this->actions[] = ['filterBy', $property, $value, $operator];
         return $this;
@@ -590,12 +590,12 @@ class DataList implements \ArrayAccess, \Iterator
      * @param string $property The property name.
      * @param string $order The sort order.
      * @return \IvoPetkov\DataList A reference to the list.
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function sortBy(string $property, string $order = 'asc'): \IvoPetkov\DataList
     {
         if ($order !== 'asc' && $order !== 'desc') {
-            throw new \Exception('The order argument \'asc\' or \'desc\'');
+            throw new \InvalidArgumentException('The order argument \'asc\' or \'desc\'');
         }
         $this->actions[] = ['sortBy', $property, $order];
         return $this;
