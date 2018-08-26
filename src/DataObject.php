@@ -29,18 +29,9 @@ class DataObject implements \ArrayAccess
      */
     public function __construct(array $data = [])
     {
-        $this->initialize();
         foreach ($data as $name => $value) {
             $this->$name = $value;
         }
-    }
-
-    /**
-     * 
-     */
-    protected function initialize()
-    {
-        
     }
 
 }
