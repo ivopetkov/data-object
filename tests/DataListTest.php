@@ -296,6 +296,38 @@ class DataListTest extends PHPUnit\Framework\TestCase
     /**
      *
      */
+    public function testSlicePropertiesContext()
+    {
+        $list = new DataList(function($context) {
+            $actions = $context->getActions();
+            foreach ($actions as $action) {
+                if ($action->name === 'sliceProperties' && array_search('id', $action->properties) !== false) {
+                    return [
+                        ['id' => '1', 'value' => 1],
+                        ['id' => '2', 'value' => 2],
+                        ['id' => '3', 'value' => 3],
+                    ];
+                }
+            }
+            return [];
+        });
+        $result = $list->sliceProperties(['id']);
+        $this->assertTrue($result->toArray() === [
+            [
+                'id' => '1'
+            ],
+            [
+                'id' => '2'
+            ],
+            [
+                'id' => '3'
+            ]
+        ]);
+    }
+
+    /**
+     *
+     */
     public function testFilter()
     {
         $data = [
@@ -489,10 +521,10 @@ class DataListTest extends PHPUnit\Framework\TestCase
     {
         $list = new DataList(function($context) {
             $requiresOnlyC = false;
-            foreach ($context->filterByProperties as $filter) {
-                if ($filter->property === 'value' && $filter->value === 'c' && $filter->operator === 'equal') {
+            $actions = $context->getActions();
+            foreach ($actions as $action) {
+                if ($action->name === 'filterBy' && $action->property === 'value' && $action->value === 'c' && $action->operator === 'equal') {
                     $requiresOnlyC = true;
-                    $filter->applied = true;
                 }
             }
             if ($requiresOnlyC) {
@@ -579,10 +611,10 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $getList = function() {
             return new DataList(function($context) {
                 $sortByValue = null;
-                foreach ($context->sortByProperties as $sort) {
-                    if ($sort->property === 'value') {
-                        $sortByValue = $sort->order;
-                        $sort->applied = true;
+                $actions = $context->getActions();
+                foreach ($actions as $action) {
+                    if ($action->name === 'sortBy' && $action->property === 'value') {
+                        $sortByValue = $action->order;
                     }
                 }
                 if ($sortByValue === 'asc') {

@@ -10,7 +10,7 @@
 namespace IvoPetkov;
 
 /**
- * Information about the operations applied on the data list.
+ * Information about the actions applied on a data list.
  */
 class DataListContext
 {
@@ -19,18 +19,26 @@ class DataListContext
      *
      * @var array 
      */
-    public $filterByProperties = [];
+    private $actions = [];
 
     /**
-     *
-     * @var array 
+     * Array containing the data list actions.
+     * 
+     * @param array $actions
      */
-    public $sortByProperties = [];
+    public function __construct(array $actions)
+    {
+        $this->actions = $actions;
+    }
 
     /**
-     *
-     * @var array 
+     * Returns a DataList containing all the actions.
+     * 
+     * @return \IvoPetkov\DataList|\IvoPetkov\DataListAction[]|\IvoPetkov\DataListFilterByAction[]|\IvoPetkov\DataListSlicePropertiesAction[]|\IvoPetkov\DataListSortByAction[] A DataList containing all the actions.
      */
-    public $requestedProperties = [];
+    public function getActions()
+    {
+        return new \IvoPetkov\DataList($this->actions);
+    }
 
 }

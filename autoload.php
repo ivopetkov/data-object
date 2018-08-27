@@ -9,7 +9,11 @@
 
 $classes = array(
     'IvoPetkov\DataList' => 'src/DataList.php',
+    'IvoPetkov\DataListAction' => 'src/DataListAction.php',
     'IvoPetkov\DataListContext' => 'src/DataListContext.php',
+    'IvoPetkov\DataListFilterByAction' => 'src/DataListFilterByAction.php',
+    'IvoPetkov\DataListSlicePropertiesAction' => 'src/DataListSlicePropertiesAction.php',
+    'IvoPetkov\DataListSortByAction' => 'src/DataListSortByAction.php',
     'IvoPetkov\DataObject' => 'src/DataObject.php',
     'IvoPetkov\DataObjectArrayAccessTrait' => 'src/DataObjectArrayAccessTrait.php',
     'IvoPetkov\DataObjectFromArrayTrait' => 'src/DataObjectFromArrayTrait.php',

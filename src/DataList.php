@@ -10,7 +10,6 @@
 namespace IvoPetkov;
 
 use IvoPetkov\DataObject;
-use IvoPetkov\DataListContext;
 
 /**
  * A list of data objects that can be easily filtered, sorted, etc. The objects can be lazy loaded using a callback in the constructor.
@@ -298,55 +297,19 @@ class DataList implements \ArrayAccess, \Iterator
     private function updateData($data, $actions): array
     {
         if (is_callable($data)) {
-            $context = new DataListContext();
-            $contextActionsIndexes = [];
-            foreach ($actions as $index => $action) {
+            $actionsList = [];
+            foreach ($actions as $action) {
                 if ($action[0] === 'filterBy') {
-                    $contextActionsIndexes[$index] = 'filterBy' . sizeof($context->filterByProperties);
-                    $context->filterByProperties[] = new DataObject([
-                        'property' => $action[1],
-                        'value' => $action[2],
-                        'operator' => $action[3],
-                        'applied' => false
-                    ]);
+                    $actionsList[] = new \IvoPetkov\DataListFilterByAction($action[0], $action[1], $action[2], $action[3]);
                 } elseif ($action[0] === 'sortBy') {
-                    $contextActionsIndexes[$index] = 'sortBy' . sizeof($context->sortByProperties);
-                    $context->sortByProperties[] = new DataObject([
-                        'property' => $action[1],
-                        'order' => $action[2],
-                        'applied' => false
-                    ]);
+                    $actionsList[] = new \IvoPetkov\DataListSortByAction($action[0], $action[1], $action[2]);
                 } elseif ($action[0] === 'sliceProperties') {
-                    if (is_array($action[1])) {
-                        foreach ($action[1] as $property) {
-                            $context->requestedProperties[] = $property;
-                        }
-                    }
+                    $actionsList[] = new \IvoPetkov\DataListSlicePropertiesAction($action[0], $action[1]);
+                } else {
+                    $actionsList[] = new \IvoPetkov\DataListAction($action[0]);
                 }
             }
-            $dataSource = call_user_func($data, $context);
-            $hasRemovedActions = false;
-            foreach ($context->filterByProperties as $index => $object) {
-                if ($object->applied) {
-                    $actionIndex = array_search('filterBy' . $index, $contextActionsIndexes);
-                    if ($actionIndex !== false) {
-                        unset($actions[$actionIndex]);
-                        $hasRemovedActions = true;
-                    }
-                }
-            }
-            foreach ($context->sortByProperties as $index => $object) {
-                if ($object->applied) {
-                    $actionIndex = array_search('sortBy' . $index, $contextActionsIndexes);
-                    if ($actionIndex !== false) {
-                        unset($actions[$actionIndex]);
-                        $hasRemovedActions = true;
-                    }
-                }
-            }
-            if ($hasRemovedActions) {
-                $actions = array_values($actions);
-            }
+            $dataSource = call_user_func($data, new \IvoPetkov\DataListContext($actionsList));
             if (is_array($dataSource) || $dataSource instanceof \Traversable) {
                 $data = [];
                 foreach ($dataSource as $value) {
@@ -356,122 +319,120 @@ class DataList implements \ArrayAccess, \Iterator
                 throw new \InvalidArgumentException('The data source callback result is not iterable!');
             }
         }
-        if (isset($actions[0])) {
-            foreach ($actions as $action) {
-                if ($action[0] === 'filter') {
-                    $this->updateAllValuesIfNeeded($data);
-                    $temp = [];
-                    foreach ($data as $index => $object) {
-                        if (call_user_func($action[1], $object) === true) {
-                            $temp[] = $object;
-                        }
+        foreach ($actions as $action) {
+            if ($action[0] === 'filter') {
+                $this->updateAllValuesIfNeeded($data);
+                $temp = [];
+                foreach ($data as $object) {
+                    if (call_user_func($action[1], $object) === true) {
+                        $temp[] = $object;
                     }
-                    $data = $temp;
-                    unset($temp);
-                } else if ($action[0] === 'filterBy') {
-                    $this->updateAllValuesIfNeeded($data);
-                    $temp = [];
-                    foreach ($data as $object) {
-                        $propertyName = $action[1];
-                        $targetValue = $action[2];
-                        $operator = $action[3];
-                        $add = false;
-                        if (!isset($object->$propertyName)) {
-                            if ($operator === 'equal' && $targetValue === null) {
-                                $add = true;
-                            } elseif ($operator === 'notEqual' && $targetValue !== null) {
-                                $add = true;
-                            } elseif ($operator === 'inArray' && is_array($targetValue) && array_search(null, $targetValue) !== false) {
-                                $add = true;
-                            } elseif ($operator === 'notInArray' && !(is_array($targetValue) && array_search(null, $targetValue) !== false)) {
-                                $add = true;
-                            } else {
-                                continue;
-                            }
-                        }
-                        if (!$add) {
-                            $value = $object->$propertyName;
-                            if ($operator === 'equal') {
-                                $add = $value === $targetValue;
-                            } elseif ($operator === 'notEqual') {
-                                $add = $value !== $targetValue;
-                            } elseif ($operator === 'regExp') {
-                                $add = preg_match('/' . $targetValue . '/', $value) === 1;
-                            } elseif ($operator === 'notRegExp') {
-                                $add = preg_match('/' . $targetValue . '/', $value) === 0;
-                            } elseif ($operator === 'startWith') {
-                                $add = substr($value, 0, strlen($targetValue)) === $targetValue;
-                            } elseif ($operator === 'notStartWith') {
-                                $add = substr($value, 0, strlen($targetValue)) !== $targetValue;
-                            } elseif ($operator === 'endWith') {
-                                $add = substr($value, -strlen($targetValue)) === $targetValue;
-                            } elseif ($operator === 'notEndWith') {
-                                $add = substr($value, -strlen($targetValue)) !== $targetValue;
-                            } elseif ($operator === 'inArray') {
-                                $add = is_array($targetValue) && array_search($value, $targetValue) !== false;
-                            } elseif ($operator === 'notInArray') {
-                                $add = !(is_array($targetValue) && array_search($value, $targetValue) !== false);
-                            }
-                        }
-                        if ($add) {
-                            $temp[] = $object;
-                        }
-                    }
-                    $data = $temp;
-                    unset($temp);
-                } elseif ($action[0] === 'sort') {
-                    $this->updateAllValuesIfNeeded($data);
-                    usort($data, $action[1]);
-                } elseif ($action[0] === 'sortBy') {
-                    $this->updateAllValuesIfNeeded($data);
-                    $sortData = []; // save the index and the property needed for the sort in a temp array
-                    foreach ($data as $index => $object) {
-                        $sortValue = isset($object->{$action[1]}) ? $object->{$action[1]} : null;
-                        if (is_object($sortValue)) {
-                            if ($sortValue instanceof \DateTime) {
-                                $sortValue = $sortValue->getTimestamp();
-                            } else {
-                                $sortValue = null;
-                            }
-                        }
-                        $sortData[] = [$index, $sortValue];
-                    }
-                    usort($sortData, function($value1SortData, $value2SortData) use ($action) {
-                        if ($value1SortData[1] === null && $value2SortData[1] === null) {
-                            $result = 0;
-                        } else {
-                            if ($value1SortData[1] === null) {
-                                return $action[2] === 'asc' ? -1 : 1;
-                            }
-                            if ($value2SortData[1] === null) {
-                                return $action[2] === 'asc' ? 1 : -1;
-                            }
-                            if ((is_int($value1SortData[1]) || is_float($value1SortData[1])) && (is_int($value2SortData[1]) || is_float($value2SortData[1]))) {
-                                $result = $value1SortData[1] < $value2SortData[1] ? -1 : 1;
-                            } else {
-                                $result = strcmp($value1SortData[1], $value2SortData[1]);
-                            }
-                        }
-                        if ($result === 0) { // if the sort property is the same, maintain the order by index
-                            return $value1SortData[0] - $value2SortData[0];
-                        }
-                        return $result * ($action[2] === 'asc' ? 1 : -1);
-                    });
-                    $temp = [];
-                    foreach ($sortData as $sortedValueData) {
-                        $temp[] = $data[$sortedValueData[0]];
-                    }
-                    unset($sortData);
-                    $data = $temp;
-                    unset($temp);
-                } elseif ($action[0] === 'reverse') {
-                    $data = array_reverse($data);
-                } elseif ($action[0] === 'shuffle') {
-                    shuffle($data);
-                } elseif ($action[0] === 'map') {
-                    $this->updateAllValuesIfNeeded($data);
-                    $data = array_map($action[1], $data);
                 }
+                $data = $temp;
+                unset($temp);
+            } else if ($action[0] === 'filterBy') {
+                $this->updateAllValuesIfNeeded($data);
+                $temp = [];
+                foreach ($data as $object) {
+                    $propertyName = $action[1];
+                    $targetValue = $action[2];
+                    $operator = $action[3];
+                    $add = false;
+                    if (!isset($object->$propertyName)) {
+                        if ($operator === 'equal' && $targetValue === null) {
+                            $add = true;
+                        } elseif ($operator === 'notEqual' && $targetValue !== null) {
+                            $add = true;
+                        } elseif ($operator === 'inArray' && is_array($targetValue) && array_search(null, $targetValue) !== false) {
+                            $add = true;
+                        } elseif ($operator === 'notInArray' && !(is_array($targetValue) && array_search(null, $targetValue) !== false)) {
+                            $add = true;
+                        } else {
+                            continue;
+                        }
+                    }
+                    if (!$add) {
+                        $value = $object->$propertyName;
+                        if ($operator === 'equal') {
+                            $add = $value === $targetValue;
+                        } elseif ($operator === 'notEqual') {
+                            $add = $value !== $targetValue;
+                        } elseif ($operator === 'regExp') {
+                            $add = preg_match('/' . $targetValue . '/', $value) === 1;
+                        } elseif ($operator === 'notRegExp') {
+                            $add = preg_match('/' . $targetValue . '/', $value) === 0;
+                        } elseif ($operator === 'startWith') {
+                            $add = substr($value, 0, strlen($targetValue)) === $targetValue;
+                        } elseif ($operator === 'notStartWith') {
+                            $add = substr($value, 0, strlen($targetValue)) !== $targetValue;
+                        } elseif ($operator === 'endWith') {
+                            $add = substr($value, -strlen($targetValue)) === $targetValue;
+                        } elseif ($operator === 'notEndWith') {
+                            $add = substr($value, -strlen($targetValue)) !== $targetValue;
+                        } elseif ($operator === 'inArray') {
+                            $add = is_array($targetValue) && array_search($value, $targetValue) !== false;
+                        } elseif ($operator === 'notInArray') {
+                            $add = !(is_array($targetValue) && array_search($value, $targetValue) !== false);
+                        }
+                    }
+                    if ($add) {
+                        $temp[] = $object;
+                    }
+                }
+                $data = $temp;
+                unset($temp);
+            } elseif ($action[0] === 'sort') {
+                $this->updateAllValuesIfNeeded($data);
+                usort($data, $action[1]);
+            } elseif ($action[0] === 'sortBy') {
+                $this->updateAllValuesIfNeeded($data);
+                $sortData = []; // save the index and the property needed for the sort in a temp array
+                foreach ($data as $index => $object) {
+                    $sortValue = isset($object->{$action[1]}) ? $object->{$action[1]} : null;
+                    if (is_object($sortValue)) {
+                        if ($sortValue instanceof \DateTime) {
+                            $sortValue = $sortValue->getTimestamp();
+                        } else {
+                            $sortValue = null;
+                        }
+                    }
+                    $sortData[] = [$index, $sortValue];
+                }
+                usort($sortData, function($value1SortData, $value2SortData) use ($action) {
+                    if ($value1SortData[1] === null && $value2SortData[1] === null) {
+                        $result = 0;
+                    } else {
+                        if ($value1SortData[1] === null) {
+                            return $action[2] === 'asc' ? -1 : 1;
+                        }
+                        if ($value2SortData[1] === null) {
+                            return $action[2] === 'asc' ? 1 : -1;
+                        }
+                        if ((is_int($value1SortData[1]) || is_float($value1SortData[1])) && (is_int($value2SortData[1]) || is_float($value2SortData[1]))) {
+                            $result = $value1SortData[1] < $value2SortData[1] ? -1 : 1;
+                        } else {
+                            $result = strcmp($value1SortData[1], $value2SortData[1]);
+                        }
+                    }
+                    if ($result === 0) { // if the sort property is the same, maintain the order by index
+                        return $value1SortData[0] - $value2SortData[0];
+                    }
+                    return $result * ($action[2] === 'asc' ? 1 : -1);
+                });
+                $temp = [];
+                foreach ($sortData as $sortedValueData) {
+                    $temp[] = $data[$sortedValueData[0]];
+                }
+                unset($sortData);
+                $data = $temp;
+                unset($temp);
+            } elseif ($action[0] === 'reverse') {
+                $data = array_reverse($data);
+            } elseif ($action[0] === 'shuffle') {
+                shuffle($data);
+            } elseif ($action[0] === 'map') {
+                $this->updateAllValuesIfNeeded($data);
+                $data = array_map($action[1], $data);
             }
         }
         return $data;
