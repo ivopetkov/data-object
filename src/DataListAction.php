@@ -14,7 +14,7 @@ namespace IvoPetkov;
  * 
  * @property-read string $name The name of the action.
  */
-class DataListAction
+class DataListAction implements \ArrayAccess
 {
 
     use \IvoPetkov\DataObjectTrait;
