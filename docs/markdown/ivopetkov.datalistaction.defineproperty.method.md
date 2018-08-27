@@ -1,4 +1,4 @@
-# IvoPetkov\DataObject::defineProperty
+# IvoPetkov\DataListAction::defineProperty
 
 Defines a new property.
 
@@ -29,9 +29,9 @@ encodeInJSON (boolean) - Base64 encode the value of the property when it's json 
 
 ## Details
 
-Class: [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)
+Class: [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-File: /src/DataObject.php
+File: /src/DataListAction.php
 
 ---
 
