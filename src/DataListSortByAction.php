@@ -20,13 +20,12 @@ class DataListSortByAction extends \IvoPetkov\DataListAction
 
     /**
      * 
-     * @param string $name The name of the action.
      * @param string $property The property name used for the sort.
      * @param string $order The sort order. Available values: asc and desc.
      */
-    function __construct(string $name, string $property, string $order)
+    function __construct(string $property, string $order)
     {
-        parent::__construct($name);
+        parent::__construct('sortBy');
         $this
                 ->defineProperty('property', [
                     'type' => '?string',

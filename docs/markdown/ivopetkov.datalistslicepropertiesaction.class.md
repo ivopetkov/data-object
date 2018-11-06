@@ -14,7 +14,7 @@ Information about a sliceProperties action applied on a data list.
 
 ## Methods
 
-##### public [__construct](ivopetkov.datalistslicepropertiesaction.__construct.method.md) ( string $name , array $properties )
+##### public [__construct](ivopetkov.datalistslicepropertiesaction.__construct.method.md) ( array $properties )
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md):
 

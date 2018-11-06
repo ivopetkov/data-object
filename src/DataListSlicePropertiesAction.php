@@ -19,12 +19,11 @@ class DataListSlicePropertiesAction extends \IvoPetkov\DataListAction
 
     /**
      * 
-     * @param string $name The name of the action.
      * @param array $properties The properties list.
      */
-    function __construct(string $name, array $properties)
+    function __construct(array $properties)
     {
-        parent::__construct($name);
+        parent::__construct('sliceProperties');
         $this
                 ->defineProperty('properties', [
                     'type' => '?array',

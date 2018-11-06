@@ -22,7 +22,7 @@ Information about a filterBy action applied on a data list.
 
 ## Methods
 
-##### public [__construct](ivopetkov.datalistfilterbyaction.__construct.method.md) ( string $name , string $property , string $value , string $operator )
+##### public [__construct](ivopetkov.datalistfilterbyaction.__construct.method.md) ( string $property , string $value , string $operator )
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md):
 

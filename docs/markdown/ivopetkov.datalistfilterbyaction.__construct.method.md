@@ -1,14 +1,10 @@
 # IvoPetkov\DataListFilterByAction::__construct
 
 ```php
-public __construct ( string $name , string $property , string $value , string $operator )
+public __construct ( string $property , string $value , string $operator )
 ```
 
 ## Parameters
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$property`
 

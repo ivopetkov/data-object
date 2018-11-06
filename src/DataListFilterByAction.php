@@ -21,14 +21,13 @@ class DataListFilterByAction extends \IvoPetkov\DataListAction
 
     /**
      * 
-     * @param string $name The name of the action.
      * @param string $property The property name used for the filter.
      * @param string $value The value to filter on.
      * @param string $operator The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
      */
-    function __construct(string $name, string $property, string $value, string $operator)
+    function __construct(string $property, string $value, string $operator)
     {
-        parent::__construct($name);
+        parent::__construct('filterBy');
         $this
                 ->defineProperty('property', [
                     'type' => '?string',

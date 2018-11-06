@@ -1,14 +1,10 @@
 # IvoPetkov\DataListSortByAction::__construct
 
 ```php
-public __construct ( string $name , string $property , string $order )
+public __construct ( string $property , string $order )
 ```
 
 ## Parameters
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$property`
 

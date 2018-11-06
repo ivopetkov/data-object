@@ -300,11 +300,11 @@ class DataList implements \ArrayAccess, \Iterator
             $actionsList = [];
             foreach ($actions as $action) {
                 if ($action[0] === 'filterBy') {
-                    $actionsList[] = new \IvoPetkov\DataListFilterByAction($action[0], $action[1], $action[2], $action[3]);
+                    $actionsList[] = new \IvoPetkov\DataListFilterByAction($action[1], $action[2], $action[3]);
                 } elseif ($action[0] === 'sortBy') {
-                    $actionsList[] = new \IvoPetkov\DataListSortByAction($action[0], $action[1], $action[2]);
+                    $actionsList[] = new \IvoPetkov\DataListSortByAction($action[1], $action[2]);
                 } elseif ($action[0] === 'sliceProperties') {
-                    $actionsList[] = new \IvoPetkov\DataListSlicePropertiesAction($action[0], $action[1]);
+                    $actionsList[] = new \IvoPetkov\DataListSlicePropertiesAction($action[1]);
                 } else {
                     $actionsList[] = new \IvoPetkov\DataListAction($action[0]);
                 }

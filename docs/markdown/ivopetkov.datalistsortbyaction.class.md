@@ -18,7 +18,7 @@ Information about a sortBy action applied on a data list.
 
 ## Methods
 
-##### public [__construct](ivopetkov.datalistsortbyaction.__construct.method.md) ( string $name , string $property , string $order )
+##### public [__construct](ivopetkov.datalistsortbyaction.__construct.method.md) ( string $property , string $order )
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md):
 
