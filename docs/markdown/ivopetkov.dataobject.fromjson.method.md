@@ -3,7 +3,7 @@
 Creates an object and fills its properties from the JSON specified.
 
 ```php
-static public object fromJSON ( string $data )
+public static object fromJSON ( string $data )
 ```
 
 ## Parameters

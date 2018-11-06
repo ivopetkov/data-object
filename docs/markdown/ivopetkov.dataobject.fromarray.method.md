@@ -3,7 +3,7 @@
 Creates an object and fills its properties from the array specified.
 
 ```php
-static public object fromArray ( array $data )
+public static object fromArray ( array $data )
 ```
 
 ## Parameters

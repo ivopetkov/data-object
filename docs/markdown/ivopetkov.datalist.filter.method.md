@@ -3,7 +3,7 @@
 Filters the elements of the list using a callback function.
 
 ```php
-public IvoPetkov\DataList filter ( callable $callback )
+public self filter ( callable $callback )
 ```
 
 ## Parameters

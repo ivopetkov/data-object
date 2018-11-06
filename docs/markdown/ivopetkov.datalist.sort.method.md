@@ -3,7 +3,7 @@
 Sorts the elements of the list using a callback function.
 
 ```php
-public IvoPetkov\DataList sort ( callable $callback )
+public self sort ( callable $callback )
 ```
 
 ## Parameters

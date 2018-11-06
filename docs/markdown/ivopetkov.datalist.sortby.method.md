@@ -3,7 +3,7 @@
 Sorts the elements of the list by specific property.
 
 ```php
-public IvoPetkov\DataList sortBy ( string $property [, string $order = 'asc' ] )
+public self sortBy ( string $property [, string $order = 'asc' ] )
 ```
 
 ## Parameters

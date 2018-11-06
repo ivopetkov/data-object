@@ -3,7 +3,7 @@
 Applies the callback to the objects of the list.
 
 ```php
-public IvoPetkov\DataList map ( callable $callback )
+public self map ( callable $callback )
 ```
 
 ## Parameters

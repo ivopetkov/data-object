@@ -3,7 +3,7 @@
 Randomly reorders the objects in the list.
 
 ```php
-public IvoPetkov\DataList shuffle ( void )
+public self shuffle ( void )
 ```
 
 ## Returns

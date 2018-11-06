@@ -3,7 +3,7 @@
 Prepends an object to the beginning of the list.
 
 ```php
-public IvoPetkov\DataList unshift ( IvoPetkov\DataObject|array $object )
+public self unshift ( IvoPetkov\DataObject|array $object )
 ```
 
 ## Parameters

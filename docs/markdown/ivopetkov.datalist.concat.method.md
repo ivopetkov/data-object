@@ -3,7 +3,7 @@
 Appends the items of the list provided to the current list.
 
 ```php
-public IvoPetkov\DataList concat ( IvoPetkov\DataList $list )
+public self concat ( IvoPetkov\DataList $list )
 ```
 
 ## Parameters

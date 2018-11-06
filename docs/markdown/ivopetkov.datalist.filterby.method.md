@@ -3,7 +3,7 @@
 Filters the elements of the list by specific property value.
 
 ```php
-public IvoPetkov\DataList filterBy ( string $property , mixed $value [, string $operator = 'equal' ] )
+public self filterBy ( string $property , mixed $value [, string $operator = 'equal' ] )
 ```
 
 ## Parameters

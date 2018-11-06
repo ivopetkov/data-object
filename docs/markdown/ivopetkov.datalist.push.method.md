@@ -3,7 +3,7 @@
 Pushes an object onto the end of the list.
 
 ```php
-public IvoPetkov\DataList push ( IvoPetkov\DataObject|array $object )
+public self push ( IvoPetkov\DataObject|array $object )
 ```
 
 ## Parameters

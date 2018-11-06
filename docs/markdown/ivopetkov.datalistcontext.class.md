@@ -12,6 +12,8 @@ Information about the actions applied on a data list.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a DataList containing all the actions.
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: A DataList containing all the actions.
+
 ## Details
 
 File: /src/DataListContext.php

@@ -18,11 +18,11 @@ Information about a sliceProperties action applied on a data list.
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md):
 
-##### protected object [defineProperty](ivopetkov.datalistaction.defineproperty.method.md) ( string $name [, array $options = [] ] )
-
 ##### public array [toArray](ivopetkov.datalistaction.toarray.method.md) ( void )
 
 ##### public string [toJSON](ivopetkov.datalistaction.tojson.method.md) ( void )
+
+##### protected object [defineProperty](ivopetkov.datalistaction.defineproperty.method.md) ( string $name [, array $options = [] ] )
 
 ## Details
 

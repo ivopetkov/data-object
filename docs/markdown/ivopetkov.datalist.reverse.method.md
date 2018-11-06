@@ -3,7 +3,7 @@
 Reverses the order of the objects in the list.
 
 ```php
-public IvoPetkov\DataList reverse ( void )
+public self reverse ( void )
 ```
 
 ## Returns
