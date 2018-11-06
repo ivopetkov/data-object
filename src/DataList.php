@@ -507,9 +507,9 @@ class DataList implements \ArrayAccess, \Iterator
      * Filters the elements of the list using a callback function.
      * 
      * @param callable $callback The callback function to use.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      */
-    public function filter(callable $callback): \IvoPetkov\DataList
+    public function filter(callable $callback): self
     {
         $this->actions[] = ['filter', $callback];
         return $this;
@@ -521,10 +521,10 @@ class DataList implements \ArrayAccess, \Iterator
      * @param string $property The property name.
      * @param mixed $value The value of the property.
      * @param string $operator Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
-    public function filterBy(string $property, $value, string $operator = 'equal'): \IvoPetkov\DataList
+    public function filterBy(string $property, $value, string $operator = 'equal'): self
     {
         if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray']) === false) {
             throw new \InvalidArgumentException('Invalid operator (' . $operator . ')');
@@ -537,9 +537,9 @@ class DataList implements \ArrayAccess, \Iterator
      * Sorts the elements of the list using a callback function.
      * 
      * @param callable $callback The callback function to use.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      */
-    public function sort(callable $callback): \IvoPetkov\DataList
+    public function sort(callable $callback): self
     {
         $this->actions[] = ['sort', $callback];
         return $this;
@@ -550,10 +550,10 @@ class DataList implements \ArrayAccess, \Iterator
      * 
      * @param string $property The property name.
      * @param string $order The sort order.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
-    public function sortBy(string $property, string $order = 'asc'): \IvoPetkov\DataList
+    public function sortBy(string $property, string $order = 'asc'): self
     {
         if ($order !== 'asc' && $order !== 'desc') {
             throw new \InvalidArgumentException('The order argument \'asc\' or \'desc\'');
@@ -565,9 +565,9 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * Reverses the order of the objects in the list.
      * 
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      */
-    public function reverse(): \IvoPetkov\DataList
+    public function reverse(): self
     {
         $this->actions[] = ['reverse'];
         return $this;
@@ -576,9 +576,9 @@ class DataList implements \ArrayAccess, \Iterator
     /**
      * Randomly reorders the objects in the list.
      * 
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      */
-    public function shuffle(): \IvoPetkov\DataList
+    public function shuffle(): self
     {
         $this->actions[] = ['shuffle'];
         return $this;
@@ -588,9 +588,9 @@ class DataList implements \ArrayAccess, \Iterator
      * Applies the callback to the objects of the list.
      * 
      * @param callable $callback The callback function to use.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      */
-    public function map(callable $callback): \IvoPetkov\DataList
+    public function map(callable $callback): self
     {
         $this->actions[] = ['map', $callback];
         return $this;
@@ -600,10 +600,10 @@ class DataList implements \ArrayAccess, \Iterator
      * Prepends an object to the beginning of the list.
      * 
      * @param \IvoPetkov\DataObject|array $object The data to be prepended.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
-    public function unshift($object): \IvoPetkov\DataList
+    public function unshift($object): self
     {
         $this->update();
         array_unshift($this->data, $object);
@@ -630,10 +630,10 @@ class DataList implements \ArrayAccess, \Iterator
      * Pushes an object onto the end of the list.
      * 
      * @param \IvoPetkov\DataObject|array $object The data to be pushed.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
-    public function push($object): \IvoPetkov\DataList
+    public function push($object): self
     {
         $this->update();
         array_push($this->data, $object);
@@ -660,10 +660,10 @@ class DataList implements \ArrayAccess, \Iterator
      * Appends the items of the list provided to the current list.
      * 
      * @param \IvoPetkov\DataList $list A list to append after the current one.
-     * @return \IvoPetkov\DataList A reference to the list.
+     * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
-    public function concat(\IvoPetkov\DataList $list): \IvoPetkov\DataList
+    public function concat(\IvoPetkov\DataList $list): self
     {
         $this->update();
         foreach ($list as $object) {
