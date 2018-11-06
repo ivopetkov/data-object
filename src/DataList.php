@@ -500,7 +500,9 @@ class DataList implements \ArrayAccess, \Iterator
      */
     public function __debugInfo(): array
     {
-        return $this->toArray();
+        $this->update();
+        $this->updateAllValuesIfNeeded($this->data);
+        return $this->data;
     }
 
     /**
