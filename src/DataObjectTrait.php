@@ -35,7 +35,7 @@ trait DataObjectTrait
      *   type (string)
      *   encodeInJSON (boolean) - Base64 encode the value of the property when it's json encoded (in toJSON() for example). The default value is FALSE.
      * @throws \InvalidArgumentException
-     * @return object Returns a reference to the object.
+     * @return self Returns a reference to the object.
      */
     protected function defineProperty(string $name, array $options = [])
     {
