@@ -301,11 +301,11 @@ trait DataListTrait
     /**
      * Appends the items of the list provided to the current list.
      * 
-     * @param \IvoPetkov\DataList $list A list to append after the current one.
+     * @param array|iterable $list A list to append after the current one.
      * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
-    public function concat(\IvoPetkov\DataList $list): self
+    public function concat($list): self
     {
         $this->internalDataListUpdate();
         foreach ($list as $object) {
@@ -319,37 +319,42 @@ trait DataListTrait
      * 
      * @param int $offset The index position where the extraction should begin
      * @param int $length The max length of the items in the extracted slice.
-     * @return \IvoPetkov\DataList Returns a slice of the list.
+     * @return mixed Returns a slice of the list.
      * @throws \InvalidArgumentException
      */
-    public function slice(int $offset, int $length = null): \IvoPetkov\DataList
+    public function slice(int $offset, int $length = null)
     {
         $this->internalDataListUpdate();
         $slice = array_slice($this->internalDataListData, $offset, $length);
         $className = get_class($this);
-        return new $className($slice);
+        $list = new $className();
+        foreach ($slice as $object) {
+            $list->push($object);
+        }
+        return $list;
     }
 
     /**
      * Returns a new list of object that contain only the specified properties of the objects in the current list.
      * 
      * @param array $properties The list of property names.
-     * @return \IvoPetkov\DataList Returns a new list.
+     * @return mixed Returns a new list.
      */
     public function sliceProperties(array $properties)
     {
         $actions = $this->internalDataListActions;
         $actions[] = ['sliceProperties', $properties];
         $data = $this->internalDataListUpdateData($this->internalDataListData, $actions);
-        $list = new \IvoPetkov\DataList();
-        $tempObject = new \IvoPetkov\DataObject();
+        $className = get_class($this);
+        $list = new $className();
+        $tempObject = new \stdClass();
         foreach ($data as $index => $object) {
             $object = $this->internalDataListUpdateValueIfNeeded($data, $index);
             $newObject = clone($tempObject);
             foreach ($properties as $property) {
                 $newObject->$property = isset($object->$property) ? $object->$property : null;
             }
-            $list[] = $newObject;
+            $list->push($newObject);
         }
         return $list;
     }
