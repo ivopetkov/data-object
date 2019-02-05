@@ -1,14 +1,14 @@
 # IvoPetkov\DataListContext::getActions
 
-Returns a DataList containing all the actions.
+Returns an array containing all the actions.
 
 ```php
-public IvoPetkov\DataList|IvoPetkov\DataListAction[]|IvoPetkov\DataListFilterByAction[]|IvoPetkov\DataListSlicePropertiesAction[]|IvoPetkov\DataListSortByAction[] getActions ( void )
+public array getActions ( void )
 ```
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A DataList containing all the actions.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An array containing all the actions.
 
 ## Details
 

@@ -3,14 +3,11 @@
 Information about a sortBy action applied on a data list.
 
 ```php
-IvoPetkov\DataListSortByAction extends IvoPetkov\DataListAction implements ArrayAccess {
+IvoPetkov\DataListSortByAction extends IvoPetkov\DataListAction {
 
 	/* Properties */
-	public readonly string $order
-	public readonly string $property
-
-	/* Methods */
-	public __construct ( string $property , string $order )
+	public string The sort order. Available values: asc and desc. $order
+	public string The property name used for the sort. $property
 
 }
 ```
@@ -21,37 +18,15 @@ IvoPetkov\DataListSortByAction extends IvoPetkov\DataListAction implements Array
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about an action applied on a data list.
 
-## Implements
-
-##### [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php)
-
 ## Properties
 
-##### public readonly string $order
+##### public string The sort order. Available values: asc and desc. $order
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The sort order. Available values: asc and desc.
-
-##### public readonly string $property
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name used for the sort.
-
-## Methods
-
-##### public [__construct](ivopetkov.datalistsortbyaction.__construct.method.md) ( string $property , string $order )
+##### public string The property name used for the sort. $property
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-##### protected self [defineProperty](ivopetkov.datalistaction.defineproperty.method.md) ( string $name [, array $options = [] ] )
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defines a new property.
-
-##### public array [toArray](ivopetkov.datalistaction.toarray.method.md) ( void )
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as an array.
-
-##### public string [toJSON](ivopetkov.datalistaction.tojson.method.md) ( void )
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as JSON.
+##### public string The name of the action. $name
 
 ## Details
 
