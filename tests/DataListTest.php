@@ -37,7 +37,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($list[0]->value === $expectedData[0]);
         $this->assertTrue($list[1]->value === $expectedData[1]);
         $this->assertTrue($list[2]->value === $expectedData[2]);
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
         foreach ($list as $i => $object) {
             $this->assertTrue($object->value === $expectedData[$i]);
         }
@@ -61,7 +61,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($list[0]->value === 'a');
         $this->assertTrue($list[1]->value === 'b');
         $this->assertTrue($list[2]->value === 'c');
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
     }
 
     /**
@@ -175,46 +175,6 @@ class DataListTest extends PHPUnit\Framework\TestCase
     /**
      *
      */
-    public function testUnsetWithInvalidProperty()
-    {
-        $this->expectException('Exception');
-        $data = [
-            ['value' => 'a'],
-            ['value' => 'b'],
-            function() {
-                return ['value' => 'c'];
-            },
-            function() {
-                return ['value' => 'd'];
-            }
-        ];
-        $list = new DataList($data);
-        unset($list->invalid_property);
-    }
-
-    /**
-     *
-     */
-    public function testUnsetWithReadonlyProperty()
-    {
-        $this->expectException('Exception');
-        $data = [
-            ['value' => 'a'],
-            ['value' => 'b'],
-            function() {
-                return ['value' => 'c'];
-            },
-            function() {
-                return ['value' => 'd'];
-            }
-        ];
-        $list = new DataList($data);
-        unset($list->length);
-    }
-
-    /**
-     *
-     */
     public function testConcat()
     {
         $list1 = new DataList([
@@ -230,10 +190,10 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($list1[1]->value === 2);
         $this->assertTrue($list1[2]->value === 3);
         $this->assertTrue($list1[3]->value === 4);
-        $this->assertTrue($list1->length === 4);
+        $this->assertTrue(count($list1) === 4);
         $this->assertTrue($list2[0]->value === 3);
         $this->assertTrue($list2[1]->value === 4);
-        $this->assertTrue($list2->length === 2);
+        $this->assertTrue(count($list2) === 2);
     }
 
     /**
@@ -253,7 +213,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list[] = $dataObject;
         $slice = $list->slice(1, 1);
         $this->assertTrue($slice[0]->value === 2);
-        $this->assertTrue($slice->length === 1);
+        $this->assertTrue(count($slice) === 1);
     }
 
     /**
@@ -362,7 +322,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list = new DataList($data);
         $list->filterBy('value', 'c');
         $this->assertTrue($list[0]->value === 'c');
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
 
         $data = [
             ['value' => 'a'],
@@ -379,7 +339,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($list[1]->value === 'b');
         $this->assertTrue($list[2]->value === null);
         $this->assertTrue($list[3]->other === 1);
-        $this->assertTrue($list->length === 4);
+        $this->assertTrue(count($list) === 4);
 
         $data = [
             ['value' => 'a1'],
@@ -392,7 +352,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->filterBy('value', '[0-9]{1}', 'regExp');
         $this->assertTrue($list[0]->value === 'a1');
         $this->assertTrue($list[1]->value === 'b2');
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
 
         $data = [
             ['value' => 'a1'],
@@ -404,7 +364,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list = new DataList($data);
         $list->filterBy('value', '[0-9]{1}', 'notRegExp');
         $this->assertTrue($list[0]->value === 'c');
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
 
         $data = [
             ['value' => 'aaa'],
@@ -416,7 +376,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'startWith');
         $this->assertTrue($list[0]->value === 'aaa');
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
 
         $data = [
             ['value' => 'aaa'],
@@ -429,7 +389,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->filterBy('value', 'aa', 'notStartWith');
         $this->assertTrue($list[0]->value === 'baaa');
         $this->assertTrue($list[1]->value === 'caaa');
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
 
         $data = [
             ['value' => 'aaa'],
@@ -442,7 +402,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->filterBy('value', 'aa', 'endWith');
         $this->assertTrue($list[0]->value === 'aaa');
         $this->assertTrue($list[1]->value === 'baa');
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
 
         $data = [
             ['value' => 'aaa'],
@@ -454,7 +414,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'notEndWith');
         $this->assertTrue($list[0]->value === 'aac');
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
 
         $data = [
             ['value' => null, 'other' => 1],
@@ -467,7 +427,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->filterBy('value', null, 'equal');
         $this->assertTrue($list[0]->other === 1);
         $this->assertTrue($list[1]->other === 2);
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
 
 
         $data = [
@@ -480,16 +440,16 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list = new DataList($data);
         $list->filterBy('value', ['aac'], 'inArray');
         $this->assertTrue($list[0]->value === 'aac');
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
         $list = new DataList($data);
         $list->filterBy('value', [null], 'inArray');
         $this->assertTrue($list[0]->other === 1);
         $this->assertTrue($list[1]->other === 2);
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
         $list = new DataList($data);
         $list->filterBy('other', [2, 3], 'inArray');
         $this->assertTrue($list[0]->other === 2);
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
 
         $data = [
             ['value' => null, 'other' => 1],
@@ -502,16 +462,16 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->filterBy('value', ['aac'], 'notInArray');
         $this->assertTrue($list[0]->other === 1);
         $this->assertTrue($list[1]->other === 2);
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
         $list = new DataList($data);
         $list->filterBy('value', [null], 'notInArray');
         $this->assertTrue($list[0]->value === 'aac');
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
         $list = new DataList($data);
         $list->filterBy('other', [2, 3], 'notInArray');
         $this->assertTrue($list[0]->other === 1);
         $this->assertTrue($list[1]->value === 'aac');
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
     }
 
     /**
@@ -543,7 +503,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
                 ->filterBy('value', 'c');
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list[0]->filtered === 1);
-        $this->assertTrue($list->length === 1);
+        $this->assertTrue(count($list) === 1);
     }
 
     /**
@@ -637,19 +597,19 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->sortBy('value', 'desc');
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list[0]->sorted === 2);
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
 
         $list = $getList();
         $list->sortBy('value', 'asc');
         $this->assertTrue($list[0]->value === 'a');
         $this->assertTrue($list[0]->sorted === 1);
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
     }
 
     /**
      *
      */
-    public function testLength()
+    public function testCount()
     {
         $data = [
             ['value' => 'a'],
@@ -659,9 +619,9 @@ class DataListTest extends PHPUnit\Framework\TestCase
             }
         ];
         $list = new DataList($data);
-        $this->assertTrue(isset($list->length));
+        $this->assertTrue(count($list) === 3);
         $list->pop();
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
     }
 
     /**
@@ -677,13 +637,13 @@ class DataListTest extends PHPUnit\Framework\TestCase
             }
         ];
         $list = new DataList($data);
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
         $object = $list->shift();
         $this->assertTrue($object->value === 'a');
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
         $list->unshift(['value' => 'a']);
         $this->assertTrue($list[0]->value === 'a');
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
     }
 
     /**
@@ -708,18 +668,18 @@ class DataListTest extends PHPUnit\Framework\TestCase
             }
         ];
         $list = new DataList($data);
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
         $object = $list->pop();
         $this->assertTrue($object->value === 'c');
-        $this->assertTrue($list->length === 2);
+        $this->assertTrue(count($list) === 2);
         $list->push(['value' => 'c']);
         $this->assertTrue($list[2]->value === 'c');
-        $this->assertTrue($list->length === 3);
+        $this->assertTrue(count($list) === 3);
         $list->push(function() {
             return ['value' => 'd'];
         });
         $this->assertTrue($list[3]->value === 'd');
-        $this->assertTrue($list->length === 4);
+        $this->assertTrue(count($list) === 4);
     }
 
     /**
@@ -870,36 +830,6 @@ class DataListTest extends PHPUnit\Framework\TestCase
     /**
      *
      */
-    public function testExceptions4()
-    {
-        $dataList = new DataList();
-        $this->expectException('Exception');
-        $dataList->missing = 5;
-    }
-
-    /**
-     *
-     */
-    public function testExceptions5()
-    {
-        $dataList = new DataList();
-        $this->expectException('Exception');
-        echo $dataList->missing;
-    }
-
-    /**
-     *
-     */
-    public function testExceptions6()
-    {
-        $dataList = new DataList();
-        $this->expectException('Exception');
-        $dataList->length = 5;
-    }
-
-    /**
-     *
-     */
     public function testExceptions7()
     {
         $dataList = new DataList();
@@ -924,16 +854,6 @@ class DataListTest extends PHPUnit\Framework\TestCase
     {
         $this->expectException('InvalidArgumentException');
         $dataList = new DataList('invalid_data_source');
-    }
-
-    /**
-     *
-     */
-    public function testIsset()
-    {
-        $dataList = new DataList();
-        $this->assertTrue(isset($dataList->length));
-        $this->assertFalse(isset($dataList->missing));
     }
 
     /**
