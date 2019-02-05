@@ -15,10 +15,5 @@ namespace IvoPetkov;
 class DataListSlicePropertiesAction extends \IvoPetkov\DataListAction
 {
 
-    /**
-     *
-     * @var array The properties list.
-     */
-    public $properties = null;
-
+    use \IvoPetkov\DataListSlicePropertiesActionTrait;
 }

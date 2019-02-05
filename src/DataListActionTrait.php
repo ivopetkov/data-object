@@ -10,10 +10,15 @@
 namespace IvoPetkov;
 
 /**
- * Information about an action applied on a data list.
+ * 
  */
-class DataListAction
+trait DataListActionTrait
 {
 
-    use \IvoPetkov\DataListActionTrait;
+    /**
+     *
+     * @var string The name of the action.
+     */
+    public $name = null;
+
 }

@@ -442,7 +442,9 @@ trait DataListTrait
                 $actionsList[] = $action;
             }
             $class = $this->internalDataListClasses['IvoPetkov\DataListContext'];
-            $dataSource = call_user_func($data, new $class($actionsList));
+            $context = new $class();
+            $context->setActions($actionsList);
+            $dataSource = call_user_func($data, $context);
             if (is_array($dataSource) || $dataSource instanceof \Traversable) {
                 $data = [];
                 foreach ($dataSource as $value) {

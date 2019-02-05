@@ -15,16 +15,5 @@ namespace IvoPetkov;
 class DataListSortByAction extends \IvoPetkov\DataListAction
 {
 
-    /**
-     *
-     * @var string The property name used for the sort.
-     */
-    public $property = null;
-
-    /**
-     *
-     * @var string The sort order. Available values: asc and desc.
-     */
-    public $order = null;
-
+    use \IvoPetkov\DataListSortByActionTrait;
 }
