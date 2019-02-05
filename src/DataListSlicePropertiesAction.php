@@ -11,27 +11,14 @@ namespace IvoPetkov;
 
 /**
  * Information about a sliceProperties action applied on a data list.
- * 
- * @property-read array $properties The properties list.
  */
 class DataListSlicePropertiesAction extends \IvoPetkov\DataListAction
 {
 
     /**
-     * 
-     * @param array $properties The properties list.
+     *
+     * @var array The properties list.
      */
-    function __construct(array $properties)
-    {
-        parent::__construct('sliceProperties');
-        $this
-                ->defineProperty('properties', [
-                    'type' => '?array',
-                    'readonly' => true,
-                    'get' => function() use ($properties) {
-                        return $properties;
-                    }
-        ]);
-    }
+    public $properties = null;
 
 }

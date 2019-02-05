@@ -32,13 +32,13 @@ class DataListContext
     }
 
     /**
-     * Returns a DataList containing all the actions.
+     * Returns an array containing all the actions.
      * 
-     * @return \IvoPetkov\DataList|\IvoPetkov\DataListAction[]|\IvoPetkov\DataListFilterByAction[]|\IvoPetkov\DataListSlicePropertiesAction[]|\IvoPetkov\DataListSortByAction[] A DataList containing all the actions.
+     * @return array An array containing all the actions.
      */
     public function getActions()
     {
-        return new \IvoPetkov\DataList($this->actions);
+        return $this->actions;
     }
 
 }

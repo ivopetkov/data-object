@@ -418,20 +418,28 @@ trait DataListTrait
     {
         if (is_callable($data)) {
             $actionsList = [];
-            foreach ($actions as $action) {
-                if ($action[0] === 'filterBy') {
+            foreach ($actions as $actionData) {
+                if ($actionData[0] === 'filterBy') {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListFilterByAction'];
-                    $actionsList[] = new $class($action[1], $action[2], $action[3]);
-                } elseif ($action[0] === 'sortBy') {
+                    $action = new $class();
+                    $action->property = $actionData[1];
+                    $action->value = $actionData[2];
+                    $action->operator = $actionData[3];
+                } elseif ($actionData[0] === 'sortBy') {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListSortByAction'];
-                    $actionsList[] = new $class($action[1], $action[2]);
-                } elseif ($action[0] === 'sliceProperties') {
+                    $action = new $class();
+                    $action->property = $actionData[1];
+                    $action->order = $actionData[2];
+                } elseif ($actionData[0] === 'sliceProperties') {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListSlicePropertiesAction'];
-                    $actionsList[] = new $class($action[1]);
+                    $action = new $class();
+                    $action->properties = $actionData[1];
                 } else {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListAction'];
-                    $actionsList[] = new $class($action[0]);
+                    $action = new $class();
                 }
+                $action->name = $actionData[0];
+                $actionsList[] = $action;
             }
             $class = $this->internalDataListClasses['IvoPetkov\DataListContext'];
             $dataSource = call_user_func($data, new $class($actionsList));
