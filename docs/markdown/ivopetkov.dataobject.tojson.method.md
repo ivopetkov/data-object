@@ -14,7 +14,7 @@ public string toJSON ( void )
 
 Class: [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)
 
-File: /src/DataObject.php
+Location: ~/src/DataObject.php
 
 ---
 

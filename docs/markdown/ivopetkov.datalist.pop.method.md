@@ -3,7 +3,7 @@
 Pops an object off the end of the list.
 
 ```php
-public IvoPetkov\DataObject|null pop ( void )
+public object|null pop ( void )
 ```
 
 ## Returns
@@ -14,7 +14,7 @@ public IvoPetkov\DataObject|null pop ( void )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

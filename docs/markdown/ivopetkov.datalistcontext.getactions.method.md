@@ -14,7 +14,7 @@ public IvoPetkov\DataList|IvoPetkov\DataListAction[]|IvoPetkov\DataListFilterByA
 
 Class: [IvoPetkov\DataListContext](ivopetkov.datalistcontext.class.md)
 
-File: /src/DataListContext.php
+Location: ~/src/DataListContext.php
 
 ---
 

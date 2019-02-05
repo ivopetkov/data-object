@@ -3,14 +3,14 @@
 Returns the object at the index specified or null if not found.
 
 ```php
-public IvoPetkov\DataObject|null get ( int $index )
+public object|null get ( int $index )
 ```
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$index`
+##### index
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The index of the item.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The index of the item.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public IvoPetkov\DataObject|null get ( int $index )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

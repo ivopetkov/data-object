@@ -14,7 +14,7 @@ public array toArray ( void )
 
 Class: [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-File: /src/DataListAction.php
+Location: ~/src/DataListAction.php
 
 ---
 

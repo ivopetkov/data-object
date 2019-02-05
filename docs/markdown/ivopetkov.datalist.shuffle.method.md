@@ -14,7 +14,7 @@ public self shuffle ( void )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

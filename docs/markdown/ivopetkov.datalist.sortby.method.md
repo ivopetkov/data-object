@@ -8,13 +8,13 @@ public self sortBy ( string $property [, string $order = 'asc' ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$property`
+##### property
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$order`
+##### order
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The sort order.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The sort order.
 
 ## Returns
 
@@ -24,7 +24,7 @@ public self sortBy ( string $property [, string $order = 'asc' ] )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

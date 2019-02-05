@@ -6,15 +6,15 @@ public __construct ( string $name )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
+##### name
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
 
 ## Details
 
 Class: [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-File: /src/DataListAction.php
+Location: ~/src/DataListAction.php
 
 ---
 

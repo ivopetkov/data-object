@@ -8,9 +8,9 @@ public static object fromArray ( array $data )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$data`
+##### data
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data used for the object properties.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data used for the object properties.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public static object fromArray ( array $data )
 
 Class: [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)
 
-File: /src/DataObject.php
+Location: ~/src/DataObject.php
 
 ---
 

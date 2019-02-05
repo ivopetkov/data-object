@@ -3,14 +3,14 @@
 Prepends an object to the beginning of the list.
 
 ```php
-public self unshift ( IvoPetkov\DataObject|array $object )
+public self unshift ( object|array $object )
 ```
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$object`
+##### object
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to be prepended.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to be prepended.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public self unshift ( IvoPetkov\DataObject|array $object )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

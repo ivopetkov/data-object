@@ -9,5 +9,10 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-$docsGenerator = new IvoPetkov\DocsGenerator(__DIR__, ['/src']);
-$docsGenerator->generateMarkdown(__DIR__ . '/docs/markdown');
+$docsGenerator = new IvoPetkov\DocsGenerator(__DIR__);
+$docsGenerator->addSourceDir('/src');
+$options = [
+    'showPrivate' => false,
+    'showProtected' => true
+];
+$docsGenerator->generateMarkdown(__DIR__ . '/docs/markdown', $options);

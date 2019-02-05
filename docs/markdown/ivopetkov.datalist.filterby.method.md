@@ -8,17 +8,17 @@ public self filterBy ( string $property , mixed $value [, string $operator = 'eq
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$property`
+##### property
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$value`
+##### value
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The value of the property.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The value of the property.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$operator`
+##### operator
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
 
 ## Returns
 
@@ -28,7 +28,7 @@ public self filterBy ( string $property , mixed $value [, string $operator = 'eq
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

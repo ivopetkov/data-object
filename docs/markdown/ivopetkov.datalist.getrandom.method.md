@@ -3,7 +3,7 @@
 Returns a random object from the list or null if the list is empty.
 
 ```php
-public IvoPetkov\DataObject|null getRandom ( void )
+public object|null getRandom ( void )
 ```
 
 ## Returns
@@ -14,7 +14,7 @@ public IvoPetkov\DataObject|null getRandom ( void )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

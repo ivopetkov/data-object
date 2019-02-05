@@ -8,13 +8,13 @@ public IvoPetkov\DataList slice ( int $offset [, int $length ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$offset`
+##### offset
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The index position where the extraction should begin
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The index position where the extraction should begin
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$length`
+##### length
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The max length of the items in the extracted slice.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The max length of the items in the extracted slice.
 
 ## Returns
 
@@ -24,7 +24,7 @@ public IvoPetkov\DataList slice ( int $offset [, int $length ] )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

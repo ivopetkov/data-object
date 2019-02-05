@@ -1,9 +1,9 @@
-# IvoPetkov\DataList::__construct
+# IvoPetkov\DataList::setDataSource
 
-Constructs a new data objects list.
+Sets a new data source for the list.
 
 ```php
-public __construct ( [ array|iterable|callback $dataSource ] )
+protected void setDataSource ( array|iterable|callback $dataSource )
 ```
 
 ## Parameters

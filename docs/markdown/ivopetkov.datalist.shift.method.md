@@ -3,7 +3,7 @@
 Shift an object off the beginning of the list.
 
 ```php
-public IvoPetkov\DataObject|null shift ( void )
+public object|null shift ( void )
 ```
 
 ## Returns
@@ -14,7 +14,7 @@ public IvoPetkov\DataObject|null shift ( void )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

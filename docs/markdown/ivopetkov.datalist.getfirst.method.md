@@ -3,7 +3,7 @@
 Returns the first object or null if not found.
 
 ```php
-public IvoPetkov\DataObject|null getFirst ( void )
+public object|null getFirst ( void )
 ```
 
 ## Returns
@@ -14,7 +14,7 @@ public IvoPetkov\DataObject|null getFirst ( void )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

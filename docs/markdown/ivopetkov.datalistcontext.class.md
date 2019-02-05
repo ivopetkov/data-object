@@ -2,6 +2,16 @@
 
 Information about the actions applied on a data list.
 
+```php
+IvoPetkov\DataListContext {
+
+	/* Methods */
+	public __construct ( array $actions )
+	public IvoPetkov\DataList|IvoPetkov\DataListAction[]|IvoPetkov\DataListFilterByAction[]|IvoPetkov\DataListSlicePropertiesAction[]|IvoPetkov\DataListSortByAction[] getActions ( void )
+
+}
+```
+
 ## Methods
 
 ##### public [__construct](ivopetkov.datalistcontext.__construct.method.md) ( array $actions )
@@ -12,11 +22,9 @@ Information about the actions applied on a data list.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a DataList containing all the actions.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: A DataList containing all the actions.
-
 ## Details
 
-File: /src/DataListContext.php
+Location: ~/src/DataListContext.php
 
 ---
 

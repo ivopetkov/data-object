@@ -8,9 +8,9 @@ public self concat ( IvoPetkov\DataList $list )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$list`
+##### list
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A list to append after the current one.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A list to append after the current one.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public self concat ( IvoPetkov\DataList $list )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

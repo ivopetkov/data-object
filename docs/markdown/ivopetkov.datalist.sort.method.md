@@ -8,9 +8,9 @@ public self sort ( callable $callback )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$callback`
+##### callback
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The callback function to use.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The callback function to use.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public self sort ( callable $callback )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

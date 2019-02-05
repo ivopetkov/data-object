@@ -8,9 +8,9 @@ public IvoPetkov\DataList sliceProperties ( array $properties )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$properties`
+##### properties
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The list of property names.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The list of property names.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public IvoPetkov\DataList sliceProperties ( array $properties )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

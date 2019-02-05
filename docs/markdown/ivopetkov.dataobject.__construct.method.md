@@ -8,15 +8,15 @@ public __construct ( [ array $data = [] ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$data`
+##### data
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to use for the properties values.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to use for the properties values.
 
 ## Details
 
 Class: [IvoPetkov\DataObject](ivopetkov.dataobject.class.md)
 
-File: /src/DataObject.php
+Location: ~/src/DataObject.php
 
 ---
 

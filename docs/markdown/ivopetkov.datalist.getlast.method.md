@@ -3,7 +3,7 @@
 Returns the last object or null if not found.
 
 ```php
-public IvoPetkov\DataObject|null getLast ( void )
+public object|null getLast ( void )
 ```
 
 ## Returns
@@ -14,7 +14,7 @@ public IvoPetkov\DataObject|null getLast ( void )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 

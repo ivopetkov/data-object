@@ -6,15 +6,15 @@ public __construct ( array $properties )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$properties`
+##### properties
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The properties list.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The properties list.
 
 ## Details
 
 Class: [IvoPetkov\DataListSlicePropertiesAction](ivopetkov.datalistslicepropertiesaction.class.md)
 
-File: /src/DataListSlicePropertiesAction.php
+Location: ~/src/DataListSlicePropertiesAction.php
 
 ---
 

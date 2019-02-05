@@ -8,13 +8,13 @@ public __construct ( array $actions )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$actions`
+##### actions
 
 ## Details
 
 Class: [IvoPetkov\DataListContext](ivopetkov.datalistcontext.class.md)
 
-File: /src/DataListContext.php
+Location: ~/src/DataListContext.php
 
 ---
 

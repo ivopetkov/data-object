@@ -3,14 +3,14 @@
 Pushes an object onto the end of the list.
 
 ```php
-public self push ( IvoPetkov\DataObject|array $object )
+public self push ( object|array $object )
 ```
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$object`
+##### object
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to be pushed.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The data to be pushed.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public self push ( IvoPetkov\DataObject|array $object )
 
 Class: [IvoPetkov\DataList](ivopetkov.datalist.class.md)
 
-File: /src/DataList.php
+Location: ~/src/DataList.php
 
 ---
 
