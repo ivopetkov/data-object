@@ -883,4 +883,33 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($dataList[2]->property1 === null);
     }
 
+    /**
+     *
+     */
+    public function testCustomDataListClasses()
+    {
+
+        $log = [];
+        $list = new SampleDataList1(function(SampleDataList1Context $context) use (&$log) {
+            $log[] = get_class($context);
+            $actions = $context->getActions();
+            foreach ($actions as $action) {
+                $log[] = get_class($action);
+            }
+            return [];
+        });
+        $list->filterBy('property1', 'value1');
+        $list->sortBy('property2', 'asc');
+        $list->reverse();
+        $list->sliceProperties(['property3', 'property4']);
+        $expectedLog = [
+            'SampleDataList1Context',
+            'SampleDataList1FilterByAction',
+            'SampleDataList1SortByAction',
+            'SampleDataList1Action',
+            'SampleDataList1SlicePropertiesAction'
+        ];
+        $this->assertEquals($log, $expectedLog);
+    }
+
 }

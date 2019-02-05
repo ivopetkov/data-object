@@ -37,6 +37,18 @@ trait DataListTrait
     private $internalDataListActions = [];
 
     /**
+     *
+     * @var array 
+     */
+    private $internalDataListClasses = [
+        'IvoPetkov\DataListContext' => 'IvoPetkov\DataListContext',
+        'IvoPetkov\DataListAction' => 'IvoPetkov\DataListAction',
+        'IvoPetkov\DataListFilterByAction' => 'IvoPetkov\DataListFilterByAction',
+        'IvoPetkov\DataListSortByAction' => 'IvoPetkov\DataListSortByAction',
+        'IvoPetkov\DataListSlicePropertiesAction' => 'IvoPetkov\DataListSlicePropertiesAction',
+    ];
+
+    /**
      * Sets a new data source for the list.
      * 
      * @param array|iterable|callback $dataSource An array or an iterable containing objects or arrays that will be converted into data objects or a callback that returns such. The callback option enables lazy data loading.
@@ -55,6 +67,16 @@ trait DataListTrait
             return;
         }
         throw new \InvalidArgumentException('The data argument must be iterable or a callback that returns such data.');
+    }
+
+    /**
+     * 
+     * @param string $baseClass
+     * @param string $newClass
+     */
+    protected function registerDataListClass(string $baseClass, string $newClass)
+    {
+        $this->internalDataListClasses[$baseClass] = $newClass;
     }
 
     /**
@@ -398,16 +420,21 @@ trait DataListTrait
             $actionsList = [];
             foreach ($actions as $action) {
                 if ($action[0] === 'filterBy') {
-                    $actionsList[] = new \IvoPetkov\DataListFilterByAction($action[1], $action[2], $action[3]);
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListFilterByAction'];
+                    $actionsList[] = new $class($action[1], $action[2], $action[3]);
                 } elseif ($action[0] === 'sortBy') {
-                    $actionsList[] = new \IvoPetkov\DataListSortByAction($action[1], $action[2]);
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListSortByAction'];
+                    $actionsList[] = new $class($action[1], $action[2]);
                 } elseif ($action[0] === 'sliceProperties') {
-                    $actionsList[] = new \IvoPetkov\DataListSlicePropertiesAction($action[1]);
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListSlicePropertiesAction'];
+                    $actionsList[] = new $class($action[1]);
                 } else {
-                    $actionsList[] = new \IvoPetkov\DataListAction($action[0]);
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListAction'];
+                    $actionsList[] = new $class($action[0]);
                 }
             }
-            $dataSource = call_user_func($data, new \IvoPetkov\DataListContext($actionsList));
+            $class = $this->internalDataListClasses['IvoPetkov\DataListContext'];
+            $dataSource = call_user_func($data, new $class($actionsList));
             if (is_array($dataSource) || $dataSource instanceof \Traversable) {
                 $data = [];
                 foreach ($dataSource as $value) {
