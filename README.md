@@ -23,7 +23,7 @@ $list = new DataList($data);
 
 // Can access the objects by index and get properties the following ways
 echo $list[0]->value; // Output: a
-echo $list[0]['value']; // Output: a
+echo $list[1]->value; // Output: b
 
 // Can loop through the objects
 foreach($list as $object){
