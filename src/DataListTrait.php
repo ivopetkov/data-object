@@ -347,12 +347,12 @@ trait DataListTrait
         $data = $this->internalDataListUpdateData($this->internalDataListData, $actions);
         $className = get_class($this);
         $list = new $className();
-        $tempObject = new \stdClass();
+        $tempObject = new \ArrayObject();
         foreach ($data as $index => $object) {
             $object = $this->internalDataListUpdateValueIfNeeded($data, $index);
             $newObject = clone($tempObject);
             foreach ($properties as $property) {
-                $newObject->$property = isset($object->$property) ? $object->$property : null;
+                $newObject[$property] = isset($object->$property) ? $object->$property : null;
             }
             $list->push($newObject);
         }
