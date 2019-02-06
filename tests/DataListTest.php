@@ -259,8 +259,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
     public function testSlicePropertiesContext()
     {
         $list = new DataList(function($context) {
-            $actions = $context->getActions();
-            foreach ($actions as $action) {
+            foreach ($context->actions as $action) {
                 if ($action->name === 'sliceProperties' && array_search('id', $action->properties) !== false) {
                     return [
                         ['id' => '1', 'value' => 1],
@@ -481,8 +480,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
     {
         $list = new DataList(function($context) {
             $requiresOnlyC = false;
-            $actions = $context->getActions();
-            foreach ($actions as $action) {
+            foreach ($context->actions as $action) {
                 if ($action->name === 'filterBy' && $action->property === 'value' && $action->value === 'c' && $action->operator === 'equal') {
                     $requiresOnlyC = true;
                 }
@@ -571,8 +569,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $getList = function() {
             return new DataList(function($context) {
                 $sortByValue = null;
-                $actions = $context->getActions();
-                foreach ($actions as $action) {
+                foreach ($context->actions as $action) {
                     if ($action->name === 'sortBy' && $action->property === 'value') {
                         $sortByValue = $action->order;
                     }
@@ -892,8 +889,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $log = [];
         $list = new SampleDataList1(function(SampleDataList1Context $context) use (&$log) {
             $log[] = get_class($context);
-            $actions = $context->getActions();
-            foreach ($actions as $action) {
+            foreach ($context->actions as $action) {
                 $log[] = get_class($action);
             }
             return [];

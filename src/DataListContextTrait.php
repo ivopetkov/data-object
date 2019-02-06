@@ -16,29 +16,10 @@ trait DataListContextTrait
 {
 
     /**
-     *
+     * An array containing all the actions.
+     * 
      * @var array 
      */
-    private $internalDataListContextActions = [];
-
-    /**
-     * Array containing the data list actions.
-     * 
-     * @param array $actions
-     */
-    public function setActions(array $actions)
-    {
-        $this->internalDataListContextActions = $actions;
-    }
-
-    /**
-     * Returns an array containing all the actions.
-     * 
-     * @return array An array containing all the actions.
-     */
-    public function getActions()
-    {
-        return $this->internalDataListContextActions;
-    }
+    public $actions;
 
 }
