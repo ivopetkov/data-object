@@ -6,7 +6,7 @@ Information about a sliceProperties action applied on a data list.
 IvoPetkov\DataListSlicePropertiesAction extends IvoPetkov\DataListAction {
 
 	/* Properties */
-	public array The properties list. $properties
+	public array $properties
 
 }
 ```
@@ -19,11 +19,15 @@ IvoPetkov\DataListSlicePropertiesAction extends IvoPetkov\DataListAction {
 
 ## Properties
 
-##### public array The properties list. $properties
+##### public array $properties
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The properties list.
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-##### public string The name of the action. $name
+##### public string $name
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
 
 ## Details
 

@@ -16,14 +16,16 @@ trait DataListSortByActionTrait
 {
 
     /**
-     *
-     * @var string The property name used for the sort.
+     * The property name used for the sort.
+     * 
+     * @var string
      */
     public $property = null;
 
     /**
-     *
-     * @var string The sort order. Available values: asc and desc.
+     * The sort order. Available values: asc and desc.
+     * 
+     * @var string
      */
     public $order = null;
 

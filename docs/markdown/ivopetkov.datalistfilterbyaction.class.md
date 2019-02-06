@@ -6,9 +6,9 @@ Information about a filterBy action applied on a data list.
 IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
 
 	/* Properties */
-	public string The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray. $operator
-	public string The property name used for the filter. $property
-	public string The value to filter on. $value
+	public string $operator
+	public string $property
+	public string $value
 
 }
 ```
@@ -21,15 +21,23 @@ IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
 
 ## Properties
 
-##### public string The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray. $operator
+##### public string $operator
 
-##### public string The property name used for the filter. $property
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
 
-##### public string The value to filter on. $value
+##### public string $property
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name used for the filter.
+
+##### public string $value
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The value to filter on.
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-##### public string The name of the action. $name
+##### public string $name
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
 
 ## Details
 

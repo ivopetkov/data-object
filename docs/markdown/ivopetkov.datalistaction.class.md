@@ -6,14 +6,16 @@ Information about an action applied on a data list.
 IvoPetkov\DataListAction {
 
 	/* Properties */
-	public string The name of the action. $name
+	public string $name
 
 }
 ```
 
 ## Properties
 
-##### public string The name of the action. $name
+##### public string $name
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
 
 ## Details
 

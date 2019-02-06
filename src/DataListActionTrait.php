@@ -16,8 +16,9 @@ trait DataListActionTrait
 {
 
     /**
-     *
-     * @var string The name of the action.
+     * The name of the action.
+     * 
+     * @var string
      */
     public $name = null;
 

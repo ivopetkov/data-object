@@ -16,20 +16,23 @@ trait DataListFilterByActionTrait
 {
 
     /**
-     *
-     * @var string The property name used for the filter.
+     * The property name used for the filter.
+     * 
+     * @var string
      */
     public $property = null;
 
     /**
-     *
-     * @var string The value to filter on.
+     * The value to filter on.
+     * 
+     * @var string
      */
     public $value = null;
 
     /**
-     *
-     * @var string The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
+     * The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
+     * 
+     * @var string
      */
     public $operator = null;
 

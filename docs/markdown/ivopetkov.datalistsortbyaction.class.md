@@ -6,8 +6,8 @@ Information about a sortBy action applied on a data list.
 IvoPetkov\DataListSortByAction extends IvoPetkov\DataListAction {
 
 	/* Properties */
-	public string The sort order. Available values: asc and desc. $order
-	public string The property name used for the sort. $property
+	public string $order
+	public string $property
 
 }
 ```
@@ -20,13 +20,19 @@ IvoPetkov\DataListSortByAction extends IvoPetkov\DataListAction {
 
 ## Properties
 
-##### public string The sort order. Available values: asc and desc. $order
+##### public string $order
 
-##### public string The property name used for the sort. $property
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The sort order. Available values: asc and desc.
+
+##### public string $property
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name used for the sort.
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-##### public string The name of the action. $name
+##### public string $name
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
 
 ## Details
 

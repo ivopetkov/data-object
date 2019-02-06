@@ -16,8 +16,9 @@ trait DataListSlicePropertiesActionTrait
 {
 
     /**
-     *
-     * @var array The properties list.
+     * The properties list.
+     * 
+     * @var array
      */
     public $properties = null;
 
