@@ -17,6 +17,7 @@ $classes = array(
     'IvoPetkov\DataListFilterByAction' => 'src/DataListFilterByAction.php',
     'IvoPetkov\DataListFilterByActionTrait' => 'src/DataListFilterByActionTrait.php',
     'IvoPetkov\DataListIteratorTrait' => 'src/DataListIteratorTrait.php',
+    'IvoPetkov\DataListObject' => 'src/DataListObject.php',
     'IvoPetkov\DataListSlicePropertiesAction' => 'src/DataListSlicePropertiesAction.php',
     'IvoPetkov\DataListSlicePropertiesActionTrait' => 'src/DataListSlicePropertiesActionTrait.php',
     'IvoPetkov\DataListSortByAction' => 'src/DataListSortByAction.php',

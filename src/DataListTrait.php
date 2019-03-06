@@ -46,6 +46,7 @@ trait DataListTrait
         'IvoPetkov\DataListFilterByAction' => 'IvoPetkov\DataListFilterByAction',
         'IvoPetkov\DataListSortByAction' => 'IvoPetkov\DataListSortByAction',
         'IvoPetkov\DataListSlicePropertiesAction' => 'IvoPetkov\DataListSlicePropertiesAction',
+        'IvoPetkov\DataListObject' => 'IvoPetkov\DataListObject',
     ];
 
     /**
@@ -347,7 +348,8 @@ trait DataListTrait
         $data = $this->internalDataListUpdateData($this->internalDataListData, $actions);
         $className = get_class($this);
         $list = new $className();
-        $tempObject = new \ArrayObject();
+        $class = $this->internalDataListClasses['IvoPetkov\DataListObject'];
+        $tempObject = new $class();
         foreach ($data as $index => $object) {
             $object = $this->internalDataListUpdateValueIfNeeded($data, $index);
             $newObject = clone($tempObject);
