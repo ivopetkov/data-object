@@ -46,6 +46,7 @@ trait DataListTrait
         'IvoPetkov\DataListFilterByAction' => 'IvoPetkov\DataListFilterByAction',
         'IvoPetkov\DataListSortByAction' => 'IvoPetkov\DataListSortByAction',
         'IvoPetkov\DataListSlicePropertiesAction' => 'IvoPetkov\DataListSlicePropertiesAction',
+        'IvoPetkov\DataListSliceAction' => 'IvoPetkov\DataListSliceAction',
         'IvoPetkov\DataListObject' => 'IvoPetkov\DataListObject',
     ];
 
@@ -325,8 +326,10 @@ trait DataListTrait
      */
     public function slice(int $offset, int $length = null)
     {
-        $this->internalDataListUpdate();
-        $slice = array_slice($this->internalDataListData, $offset, $length);
+        $actions = $this->internalDataListActions;
+        $actions[] = ['slice', $offset, $length];
+        $data = $this->internalDataListUpdateData($this->internalDataListData, $actions);
+        $slice = array_slice($data, $offset, $length);
         $className = get_class($this);
         $list = new $className();
         foreach ($slice as $object) {
@@ -441,6 +444,11 @@ trait DataListTrait
                     $class = $this->internalDataListClasses['IvoPetkov\DataListSlicePropertiesAction'];
                     $action = new $class();
                     $action->properties = $actionData[1];
+                } elseif ($actionData[0] === 'slice') {
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListSliceAction'];
+                    $action = new $class();
+                    $action->offset = $actionData[1];
+                    $action->limit = $actionData[2];
                 } else {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListAction'];
                     $action = new $class();

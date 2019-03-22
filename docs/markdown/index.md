@@ -16,6 +16,14 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a filterBy action applied on a data list.
 
+### [IvoPetkov\DataListObject](ivopetkov.datalistobject.class.md)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about an object in the data list.
+
+### [IvoPetkov\DataListSliceAction](ivopetkov.datalistsliceaction.class.md)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a slice action applied on a data list.
+
 ### [IvoPetkov\DataListSlicePropertiesAction](ivopetkov.datalistslicepropertiesaction.class.md)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a sliceProperties action applied on a data list.

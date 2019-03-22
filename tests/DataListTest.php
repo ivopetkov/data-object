@@ -219,6 +219,41 @@ class DataListTest extends PHPUnit\Framework\TestCase
     /**
      *
      */
+    public function testSliceContext()
+    {
+        $list = new DataList(function($context) {
+            foreach ($context->actions as $action) {
+                if ($action->name === 'slice') {
+                    if ($action->offset === 2 && $action->limit === 3) {
+                        return [
+                            [],
+                            [],
+                            ['id' => '3'],
+                            ['id' => '4'],
+                            ['id' => '5'],
+                        ];
+                    }
+                }
+            }
+            return [];
+        });
+        $result = $list->slice(2, 3);
+        $this->assertTrue($result->toArray() === [
+            [
+                'id' => '3'
+            ],
+            [
+                'id' => '4'
+            ],
+            [
+                'id' => '5'
+            ]
+        ]);
+    }
+
+    /**
+     *
+     */
     public function testSliceProperties()
     {
         $data = [
