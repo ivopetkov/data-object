@@ -355,7 +355,7 @@ trait DataListTrait
         $tempObject = new $class();
         foreach ($data as $index => $object) {
             $object = $this->internalDataListUpdateValueIfNeeded($data, $index);
-            $newObject = clone($tempObject);
+            $newObject = clone ($tempObject);
             foreach ($properties as $property) {
                 $newObject[$property] = isset($object->$property) ? $object->$property : null;
             }
@@ -548,7 +548,7 @@ trait DataListTrait
                     }
                     $sortData[] = [$index, $sortValue];
                 }
-                usort($sortData, function($value1SortData, $value2SortData) use ($action) {
+                usort($sortData, function ($value1SortData, $value2SortData) use ($action) {
                     if ($value1SortData[1] === null && $value2SortData[1] === null) {
                         $result = 0;
                     } else {
@@ -587,5 +587,4 @@ trait DataListTrait
         }
         return $data;
     }
-
 }
