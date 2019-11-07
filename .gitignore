@@ -1,5 +1,6 @@
 vendor/
 composer.lock
+cov.xml
 nbproject/
 .idea/
 docs.php
