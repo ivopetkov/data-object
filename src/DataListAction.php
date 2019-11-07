@@ -16,4 +16,6 @@ class DataListAction
 {
 
     use \IvoPetkov\DataListActionTrait;
+    use \IvoPetkov\DataObjectToArrayTrait;
+    use \IvoPetkov\DataObjectToJSONTrait;
 }
