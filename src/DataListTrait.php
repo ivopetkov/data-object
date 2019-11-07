@@ -426,6 +426,109 @@ trait DataListTrait
      */
     private function internalDataListUpdateData($data, $actions): array
     {
+        if (!empty($actions)) {
+            $optimizedActions = [];
+            $actionsToOptimize = [];
+            $optimizeAndAddActions = function () use (&$optimizedActions, &$actionsToOptimize): bool {
+                if (!empty($actionsToOptimize)) {
+                    $startWith = [];
+                    $notStartWith = [];
+                    $targetProperty = null;
+                    foreach ($actionsToOptimize as $actionToOptimize) {
+                        if ($targetProperty === null) {
+                            $targetProperty = $actionToOptimize[1];
+                        }
+                        if ($actionToOptimize[3] === 'startWith') {
+                            $startWith[] = $actionToOptimize[2];
+                        } elseif ($actionToOptimize[3] === 'notStartWith') {
+                            $notStartWith[] = $actionToOptimize[2];
+                        } else {
+                            throw new \Exception('Should not get here for ' . $actionToOptimize[3]);
+                        }
+                    }
+                    if (!empty($startWith)) {
+                        $startWith = array_values(array_unique($startWith));
+                        $isLessSpecific = function ($index, $prefix) use ($startWith) {
+                            foreach ($startWith as $_index => $_prefix) {
+                                if ($_index !== $index) {
+                                    if (strpos($prefix, $_prefix) === 0) {
+                                        return true;
+                                    }
+                                }
+                            }
+                            return false;
+                        };
+                        $lessSpecific = [];
+                        foreach ($startWith as $index => $prefix) {
+                            if ($isLessSpecific($index, $prefix)) {
+                                $lessSpecific[] = $prefix;
+                            }
+                        }
+                        $startWith = array_diff($startWith, $lessSpecific);
+                        if (sizeof($startWith) > 1) { // impossible case
+                            return true;
+                        }
+                        $startWith = array_values($startWith);
+                    }
+                    if (isset($startWith[0])) {
+                        foreach ($notStartWith as $_notStartWith) {
+                            if (strpos($startWith[0], $_notStartWith) === 0) { // confict with notStartWith
+                                return true;
+                            }
+                        }
+                        if (!empty($notStartWith)) { // remove not needed prefixes (outside the startWith)
+                            $temp = [];
+                            foreach ($notStartWith as $_notStartWith) {
+                                if (strpos($_notStartWith, $startWith[0]) === 0) {
+                                    $temp[] = $_notStartWith;
+                                }
+                            }
+                            $notStartWith = $temp;
+                        }
+                    }
+                    $actionsToOptimize = [];
+                    foreach ($startWith as $value) {
+                        $actionsToOptimize[] = ['filterBy', $targetProperty, $value, 'startWith'];
+                    }
+                    foreach ($notStartWith as $value) {
+                        $actionsToOptimize[] = ['filterBy', $targetProperty, $value, 'notStartWith'];
+                    }
+                    $optimizedActions = array_merge($optimizedActions, $actionsToOptimize);
+                }
+                return false;
+            };
+            foreach ($actions as $action) {
+                $canBeOptimized = false;
+                if ($action[0] === 'filterBy') {
+                    if (array_search($action[3], ['startWith', 'notStartWith']) !== false) {
+                        if (empty($actionsToOptimize)) {
+                            $canBeOptimized = true;
+                        } else {
+                            foreach ($actionsToOptimize as $actionToOptimize) {
+                                if ($action[1] === $actionToOptimize[1]) {
+                                    $canBeOptimized = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if ($canBeOptimized) {
+                            $actionsToOptimize[] = $action;
+                        }
+                    }
+                }
+                if (!$canBeOptimized) {
+                    if ($optimizeAndAddActions()) {
+                        return [];
+                    }
+                    $actionsToOptimize = [];
+                    $optimizedActions[] = $action;
+                }
+            }
+            if ($optimizeAndAddActions()) {
+                return [];
+            }
+            $actions = $optimizedActions;
+        }
         if (is_callable($data)) {
             $actionsList = [];
             foreach ($actions as $actionData) {
@@ -482,11 +585,11 @@ trait DataListTrait
                 unset($temp);
             } else if ($action[0] === 'filterBy') {
                 $this->internalDataListUpdateAllValuesIfNeeded($data);
+                $propertyName = $action[1];
+                $targetValue = $action[2];
+                $operator = $action[3];
                 $temp = [];
                 foreach ($data as $object) {
-                    $propertyName = $action[1];
-                    $targetValue = $action[2];
-                    $operator = $action[3];
                     $add = false;
                     if (!isset($object->$propertyName)) {
                         if ($operator === 'equal' && $targetValue === null) {
