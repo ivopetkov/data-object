@@ -572,121 +572,214 @@ trait DataListTrait
                 throw new \InvalidArgumentException('The data source callback result is not iterable!');
             }
         }
-        foreach ($actions as $action) {
-            if ($action[0] === 'filter') {
-                $this->internalDataListUpdateAllValuesIfNeeded($data);
-                $temp = [];
-                foreach ($data as $object) {
-                    if (call_user_func($action[1], $object) === true) {
-                        $temp[] = $object;
+
+        if (!empty($actions)) {
+            $buildPrefixesIndex = function (array $prefixes) {
+                $getIndex = function (array $prefixes) use (&$getIndex) {
+                    $index = [];
+                    foreach ($prefixes as $prefix) {
+                        $length = $prefix[0] + 1;
+                        $start = substr($prefix[1], 0, $length);
+                        if (!isset($index[$start])) {
+                            $index[$start] = [];
+                        }
+                        $index[$start][] = [$length, $prefix[1]];
                     }
-                }
-                $data = $temp;
-                unset($temp);
-            } else if ($action[0] === 'filterBy') {
-                $this->internalDataListUpdateAllValuesIfNeeded($data);
-                $propertyName = $action[1];
-                $targetValue = $action[2];
-                $operator = $action[3];
-                $temp = [];
-                foreach ($data as $object) {
-                    $add = false;
-                    if (!isset($object->$propertyName)) {
-                        if ($operator === 'equal' && $targetValue === null) {
-                            $add = true;
-                        } elseif ($operator === 'notEqual' && $targetValue !== null) {
-                            $add = true;
-                        } elseif ($operator === 'inArray' && is_array($targetValue) && array_search(null, $targetValue) !== false) {
-                            $add = true;
-                        } elseif ($operator === 'notInArray' && !(is_array($targetValue) && array_search(null, $targetValue) !== false)) {
-                            $add = true;
+                    $keysToRemove = [];
+                    $keysToAdd = [];
+                    foreach ($index as $k => $indexPrefixes) {
+                        if (sizeof($indexPrefixes) === 1) {
+                            $keysToRemove[] = $k;
+                            $keysToAdd[$indexPrefixes[0][1]] = true;
                         } else {
-                            continue;
+                            $index[$k] = $getIndex($indexPrefixes);
+                            if (sizeof($index[$k]) === 1) {
+                                $keysToRemove[] = $k;
+                                $keysToAdd[key($index[$k])] = current($index[$k]);
+                            }
                         }
                     }
-                    if (!$add) {
-                        $value = $object->$propertyName;
-                        if ($operator === 'equal') {
-                            $add = $value === $targetValue;
-                        } elseif ($operator === 'notEqual') {
-                            $add = $value !== $targetValue;
-                        } elseif ($operator === 'regExp') {
-                            $add = preg_match('/' . $targetValue . '/', $value) === 1;
-                        } elseif ($operator === 'notRegExp') {
-                            $add = preg_match('/' . $targetValue . '/', $value) === 0;
-                        } elseif ($operator === 'startWith') {
-                            $add = substr($value, 0, strlen($targetValue)) === $targetValue;
-                        } elseif ($operator === 'notStartWith') {
-                            $add = substr($value, 0, strlen($targetValue)) !== $targetValue;
-                        } elseif ($operator === 'endWith') {
-                            $add = substr($value, -strlen($targetValue)) === $targetValue;
-                        } elseif ($operator === 'notEndWith') {
-                            $add = substr($value, -strlen($targetValue)) !== $targetValue;
-                        } elseif ($operator === 'inArray') {
-                            $add = is_array($targetValue) && array_search($value, $targetValue) !== false;
-                        } elseif ($operator === 'notInArray') {
-                            $add = !(is_array($targetValue) && array_search($value, $targetValue) !== false);
-                        }
+                    foreach ($keysToRemove as $keyToRemove) {
+                        unset($index[$keyToRemove]);
                     }
-                    if ($add) {
-                        $temp[] = $object;
+                    foreach ($keysToAdd as $keyToAdd => $value) {
+                        $index[$keyToAdd] = $value;
                     }
+                    return $index;
+                };
+                foreach ($prefixes as $i => $prefix) {
+                    $prefixes[$i] = [0, $prefix];
                 }
-                $data = $temp;
-                unset($temp);
-            } elseif ($action[0] === 'sort') {
-                $this->internalDataListUpdateAllValuesIfNeeded($data);
-                usort($data, $action[1]);
-            } elseif ($action[0] === 'sortBy') {
-                $this->internalDataListUpdateAllValuesIfNeeded($data);
-                $sortData = []; // save the index and the property needed for the sort in a temp array
-                foreach ($data as $index => $object) {
-                    $sortValue = isset($object->{$action[1]}) ? $object->{$action[1]} : null;
-                    if (is_object($sortValue)) {
-                        if ($sortValue instanceof \DateTime) {
-                            $sortValue = $sortValue->getTimestamp();
+                return $getIndex($prefixes);
+            };
+
+            $existsInPrefixesIndex = function (string $prefix, array $index) use (&$existsInPrefixesIndex) {
+                foreach ($index as $key => $value) {
+                    if (strpos($prefix, $key) === 0) {
+                        if ($value === true) {
+                            return true;
                         } else {
-                            $sortValue = null;
+                            if ($existsInPrefixesIndex($prefix, $value)) {
+                                return true;
+                            }
                         }
                     }
-                    $sortData[] = [$index, $sortValue];
                 }
-                usort($sortData, function ($value1SortData, $value2SortData) use ($action) {
-                    if ($value1SortData[1] === null && $value2SortData[1] === null) {
-                        $result = 0;
+                return false;
+            };
+
+            $pendingNotStartWithFilters = [];
+            $processPendingNotStartWithFilters = function () use (&$data, &$pendingNotStartWithFilters, &$buildPrefixesIndex, &$existsInPrefixesIndex) {
+                if (!empty($pendingNotStartWithFilters)) {
+                    $this->internalDataListUpdateAllValuesIfNeeded($data);
+                    foreach ($pendingNotStartWithFilters as $propertyName => $prefixes) {
+                        $pendingNotStartWithFilters[$propertyName] = $buildPrefixesIndex($prefixes);
+                    }
+                    $temp = [];
+                    foreach ($data as $object) {
+                        $add = true;
+                        foreach ($pendingNotStartWithFilters as $propertyName => $prefixesIndex) {
+                            if (isset($object->$propertyName)) {
+                                if ($existsInPrefixesIndex($object->$propertyName, $prefixesIndex)) {
+                                    $add = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if ($add) {
+                            $temp[] = $object;
+                        }
+                    }
+                    $data = $temp;
+                    unset($temp);
+                    $pendingNotStartWithFilters = [];
+                }
+            };
+            foreach ($actions as $action) {
+                if ($action[0] === 'filterBy' && $action[3] === 'notStartWith') { } else {
+                    $processPendingNotStartWithFilters();
+                }
+                if ($action[0] === 'filter') {
+                    $this->internalDataListUpdateAllValuesIfNeeded($data);
+                    $temp = [];
+                    foreach ($data as $object) {
+                        if (call_user_func($action[1], $object) === true) {
+                            $temp[] = $object;
+                        }
+                    }
+                    $data = $temp;
+                    unset($temp);
+                } else if ($action[0] === 'filterBy') {
+                    $propertyName = $action[1];
+                    $targetValue = $action[2];
+                    $operator = $action[3];
+                    if ($operator === 'notStartWith') {
+                        if (!isset($pendingNotStartWithFilters[$propertyName])) {
+                            $pendingNotStartWithFilters[$propertyName] = [];
+                        }
+                        $pendingNotStartWithFilters[$propertyName][] = $targetValue;
                     } else {
-                        if ($value1SortData[1] === null) {
-                            return $action[2] === 'asc' ? -1 : 1;
+                        $this->internalDataListUpdateAllValuesIfNeeded($data);
+                        $temp = [];
+                        foreach ($data as $object) {
+                            $add = false;
+                            if (!isset($object->$propertyName)) {
+                                if ($operator === 'equal' && $targetValue === null) {
+                                    $add = true;
+                                } elseif ($operator === 'notEqual' && $targetValue !== null) {
+                                    $add = true;
+                                } elseif ($operator === 'inArray' && is_array($targetValue) && array_search(null, $targetValue) !== false) {
+                                    $add = true;
+                                } elseif ($operator === 'notInArray' && !(is_array($targetValue) && array_search(null, $targetValue) !== false)) {
+                                    $add = true;
+                                } else {
+                                    continue;
+                                }
+                            }
+                            if (!$add) {
+                                $value = $object->$propertyName;
+                                if ($operator === 'equal') {
+                                    $add = $value === $targetValue;
+                                } elseif ($operator === 'notEqual') {
+                                    $add = $value !== $targetValue;
+                                } elseif ($operator === 'regExp') {
+                                    $add = preg_match('/' . $targetValue . '/', $value) === 1;
+                                } elseif ($operator === 'notRegExp') {
+                                    $add = preg_match('/' . $targetValue . '/', $value) === 0;
+                                } elseif ($operator === 'startWith') {
+                                    $add = substr($value, 0, strlen($targetValue)) === $targetValue;
+                                } elseif ($operator === 'endWith') {
+                                    $add = substr($value, -strlen($targetValue)) === $targetValue;
+                                } elseif ($operator === 'notEndWith') {
+                                    $add = substr($value, -strlen($targetValue)) !== $targetValue;
+                                } elseif ($operator === 'inArray') {
+                                    $add = is_array($targetValue) && array_search($value, $targetValue) !== false;
+                                } elseif ($operator === 'notInArray') {
+                                    $add = !(is_array($targetValue) && array_search($value, $targetValue) !== false);
+                                }
+                            }
+                            if ($add) {
+                                $temp[] = $object;
+                            }
                         }
-                        if ($value2SortData[1] === null) {
-                            return $action[2] === 'asc' ? 1 : -1;
+                        $data = $temp;
+                        unset($temp);
+                    }
+                } elseif ($action[0] === 'sort') {
+                    $this->internalDataListUpdateAllValuesIfNeeded($data);
+                    usort($data, $action[1]);
+                } elseif ($action[0] === 'sortBy') {
+                    $this->internalDataListUpdateAllValuesIfNeeded($data);
+                    $sortData = []; // save the index and the property needed for the sort in a temp array
+                    foreach ($data as $index => $object) {
+                        $sortValue = isset($object->{$action[1]}) ? $object->{$action[1]} : null;
+                        if (is_object($sortValue)) {
+                            if ($sortValue instanceof \DateTime) {
+                                $sortValue = $sortValue->getTimestamp();
+                            } else {
+                                $sortValue = null;
+                            }
                         }
-                        if ((is_int($value1SortData[1]) || is_float($value1SortData[1])) && (is_int($value2SortData[1]) || is_float($value2SortData[1]))) {
-                            $result = $value1SortData[1] < $value2SortData[1] ? -1 : 1;
+                        $sortData[] = [$index, $sortValue];
+                    }
+                    usort($sortData, function ($value1SortData, $value2SortData) use ($action) {
+                        if ($value1SortData[1] === null && $value2SortData[1] === null) {
+                            $result = 0;
                         } else {
-                            $result = strcmp($value1SortData[1], $value2SortData[1]);
+                            if ($value1SortData[1] === null) {
+                                return $action[2] === 'asc' ? -1 : 1;
+                            }
+                            if ($value2SortData[1] === null) {
+                                return $action[2] === 'asc' ? 1 : -1;
+                            }
+                            if ((is_int($value1SortData[1]) || is_float($value1SortData[1])) && (is_int($value2SortData[1]) || is_float($value2SortData[1]))) {
+                                $result = $value1SortData[1] < $value2SortData[1] ? -1 : 1;
+                            } else {
+                                $result = strcmp($value1SortData[1], $value2SortData[1]);
+                            }
                         }
+                        if ($result === 0) { // if the sort property is the same, maintain the order by index
+                            return $value1SortData[0] - $value2SortData[0];
+                        }
+                        return $result * ($action[2] === 'asc' ? 1 : -1);
+                    });
+                    $temp = [];
+                    foreach ($sortData as $sortedValueData) {
+                        $temp[] = $data[$sortedValueData[0]];
                     }
-                    if ($result === 0) { // if the sort property is the same, maintain the order by index
-                        return $value1SortData[0] - $value2SortData[0];
-                    }
-                    return $result * ($action[2] === 'asc' ? 1 : -1);
-                });
-                $temp = [];
-                foreach ($sortData as $sortedValueData) {
-                    $temp[] = $data[$sortedValueData[0]];
+                    unset($sortData);
+                    $data = $temp;
+                    unset($temp);
+                } elseif ($action[0] === 'reverse') {
+                    $data = array_reverse($data);
+                } elseif ($action[0] === 'shuffle') {
+                    shuffle($data);
+                } elseif ($action[0] === 'map') {
+                    $this->internalDataListUpdateAllValuesIfNeeded($data);
+                    $data = array_map($action[1], $data);
                 }
-                unset($sortData);
-                $data = $temp;
-                unset($temp);
-            } elseif ($action[0] === 'reverse') {
-                $data = array_reverse($data);
-            } elseif ($action[0] === 'shuffle') {
-                shuffle($data);
-            } elseif ($action[0] === 'map') {
-                $this->internalDataListUpdateAllValuesIfNeeded($data);
-                $data = array_map($action[1], $data);
             }
+            $processPendingNotStartWithFilters();
         }
         return $data;
     }
