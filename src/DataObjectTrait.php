@@ -77,7 +77,7 @@ trait DataObjectTrait
                 throw new \InvalidArgumentException('The \'type\' option must be of type string, ' . gettype($options['type']) . ' given');
             }
             $type = $data[6] = $options['type'];
-            if ($type{0} !== '?') {
+            if ($type[0] !== '?') {
                 if (isset($data[1]) || isset($data[2], $data[4])) {
                     // has init or get and unset callbacks
                 } elseif ($type === 'array') {
