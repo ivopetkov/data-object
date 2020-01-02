@@ -24,15 +24,22 @@ trait DataObjectToJSONTrait
     public function toJSON(): string
     {
         // Copied to DataList. Copy there when the function is modified !!!
-        $toJSON = function($object): string {
+        $toJSON = function ($object): string {
             $result = [];
 
-            $vars = get_object_vars($object);
-            foreach ($vars as $name => $value) {
-                if ($name !== 'internalDataObjectData') {
-                    $reflectionProperty = new \ReflectionProperty($object, $name);
-                    if ($reflectionProperty->isPublic()) {
-                        $result[$name] = null;
+            if ($object instanceof \ArrayObject) {
+                $vars = (array) $object; // Needed for PHP 7.4.
+                foreach ($vars as $name => $value) {
+                    $result[$name] = null;
+                }
+            } else {
+                $vars = get_object_vars($object);
+                foreach ($vars as $name => $value) {
+                    if ($name !== 'internalDataObjectData') {
+                        $reflectionProperty = new \ReflectionProperty($object, $name);
+                        if ($reflectionProperty->isPublic()) {
+                            $result[$name] = null;
+                        }
                     }
                 }
             }
@@ -76,5 +83,4 @@ trait DataObjectToJSONTrait
         };
         return $toJSON($this);
     }
-
 }
