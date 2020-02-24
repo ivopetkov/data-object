@@ -46,10 +46,11 @@ trait DataListToArrayTrait
                 }
             }
             if (isset($object->internalDataObjectData)) {
-                foreach ($object->internalDataObjectData as $name => $value) {
-                    if ($name !== 'c') {
-                        $result[substr($name, 1)] = null;
-                    }
+                foreach ($object->internalDataObjectData['p'] as $name => $value) {
+                    $result[$name] = null;
+                }
+                foreach ($object->internalDataObjectData['d'] as $name => $value) {
+                    $result[$name] = null;
                 }
             }
             ksort($result);

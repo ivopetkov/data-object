@@ -24,7 +24,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -48,11 +48,11 @@ class DataListTest extends PHPUnit\Framework\TestCase
      */
     public function testConstructor2()
     {
-        $function = function() {
+        $function = function () {
             return [
                 ['value' => 'a'],
                 ['value' => 'b'],
-                function() {
+                function () {
                     return ['value' => 'c'];
                 }
             ];
@@ -72,7 +72,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -153,10 +153,10 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             },
-            function() {
+            function () {
                 return ['value' => 'd'];
             }
         ];
@@ -221,7 +221,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
      */
     public function testSliceContext()
     {
-        $list = new DataList(function($context) {
+        $list = new DataList(function ($context) {
             foreach ($context->actions as $action) {
                 if ($action->name === 'slice') {
                     if ($action->offset === 2 && $action->limit === 3) {
@@ -259,10 +259,10 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['id' => 1, 'value' => 'a', 'other' => 1],
             ['id' => 2, 'value' => 'b'],
-            function() {
+            function () {
                 return ['id' => 3, 'value' => 'c', 'other' => 3];
             },
-            function() {
+            function () {
                 return ['id' => 4];
             }
         ];
@@ -293,7 +293,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
      */
     public function testSlicePropertiesContext()
     {
-        $list = new DataList(function($context) {
+        $list = new DataList(function ($context) {
             foreach ($context->actions as $action) {
                 if ($action->name === 'sliceProperties' && array_search('id', $action->properties) !== false) {
                     return [
@@ -327,12 +327,12 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
         $list = new DataList($data);
-        $list->filter(function($object) {
+        $list->filter(function ($object) {
             return $object->value !== 'b';
         });
         $this->assertTrue($list[0]->value === 'a');
@@ -347,7 +347,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             },
             ['value' => null],
@@ -361,7 +361,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             },
             ['value' => null],
@@ -378,7 +378,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a1'],
             ['value' => 'b2'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -391,7 +391,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a1'],
             ['value' => 'b2'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -403,7 +403,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baaa'],
-            function() {
+            function () {
                 return ['value' => 'caaa'];
             }
         ];
@@ -415,7 +415,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baaa'],
-            function() {
+            function () {
                 return ['value' => 'caaa'];
             }
         ];
@@ -428,7 +428,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baa'],
-            function() {
+            function () {
                 return ['value' => 'aac'];
             }
         ];
@@ -441,7 +441,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'aaa'],
             ['value' => 'baa'],
-            function() {
+            function () {
                 return ['value' => 'aac'];
             }
         ];
@@ -453,7 +453,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => null, 'other' => 1],
             ['other' => 2],
-            function() {
+            function () {
                 return ['value' => 'aac'];
             }
         ];
@@ -467,7 +467,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => null, 'other' => 1],
             ['other' => 2],
-            function() {
+            function () {
                 return ['value' => 'aac'];
             }
         ];
@@ -488,7 +488,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => null, 'other' => 1],
             ['other' => 2],
-            function() {
+            function () {
                 return ['value' => 'aac'];
             }
         ];
@@ -513,7 +513,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
      */
     public function testFilterByContext()
     {
-        $list = new DataList(function($context) {
+        $list = new DataList(function ($context) {
             $requiresOnlyC = false;
             foreach ($context->actions as $action) {
                 if ($action->name === 'filterBy' && $action->property === 'value' && $action->value === 'c' && $action->operator === 'equal') {
@@ -533,7 +533,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
             }
         });
         $list
-                ->filterBy('value', 'c');
+            ->filterBy('value', 'c');
         $this->assertTrue($list[0]->value === 'c');
         $this->assertTrue($list[0]->filtered === 1);
         $this->assertTrue(count($list) === 1);
@@ -547,19 +547,19 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
         $list = new DataList($data);
-        $list->sort(function($object1, $object2) {
+        $list->sort(function ($object1, $object2) {
             return strcmp($object1->value, $object2->value);
         });
         $this->assertTrue($list[0]->value === 'a');
         $this->assertTrue($list[1]->value === 'b');
         $this->assertTrue($list[2]->value === 'c');
 
-        $list->sort(function($object1, $object2) {
+        $list->sort(function ($object1, $object2) {
             return strcmp($object1->value, $object2->value) * -1;
         });
         $this->assertTrue($list[0]->value === 'c');
@@ -575,7 +575,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             },
             ['value' => null],
@@ -601,8 +601,8 @@ class DataListTest extends PHPUnit\Framework\TestCase
      */
     public function testSortByContext()
     {
-        $getList = function() {
-            return new DataList(function($context) {
+        $getList = function () {
+            return new DataList(function ($context) {
                 $sortByValue = null;
                 foreach ($context->actions as $action) {
                     if ($action->name === 'sortBy' && $action->property === 'value') {
@@ -646,7 +646,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -664,7 +664,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -695,7 +695,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -707,7 +707,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->push(['value' => 'c']);
         $this->assertTrue($list[2]->value === 'c');
         $this->assertTrue(count($list) === 3);
-        $list->push(function() {
+        $list->push(function () {
             return ['value' => 'd'];
         });
         $this->assertTrue($list[3]->value === 'd');
@@ -731,7 +731,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
@@ -757,14 +757,14 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
         $list = new DataList($data);
         $list->shuffle();
 
-        $valueExists = function($value) use (&$list) {
+        $valueExists = function ($value) use (&$list) {
             foreach ($list as $object) {
                 if ($object->value === $value) {
                     return true;
@@ -793,12 +793,12 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $data = [
             ['value' => 'a'],
             ['value' => 'b'],
-            function() {
+            function () {
                 return ['value' => 'c'];
             }
         ];
         $list = new DataList($data);
-        $list->map(function($object) {
+        $list->map(function ($object) {
             $object->value .= $object->value;
             return $object;
         });
@@ -816,7 +816,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
             ['value' => 'a'],
             ['value' => 'b'],
             new \IvoPetkov\DataObject(['value' => 'c']),
-            function() {
+            function () {
                 return ['value' => 'd'];
             }
         ];
@@ -839,7 +839,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
             ['value' => 'a'],
             ['value' => 'b'],
             new \IvoPetkov\DataObject(['value' => 'c']),
-            function() {
+            function () {
                 return ['value' => 'd'];
             }
         ];
@@ -922,7 +922,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
     {
 
         $log = [];
-        $list = new SampleDataList1(function(SampleDataList1Context $context) use (&$log) {
+        $list = new SampleDataList1(function (SampleDataList1Context $context) use (&$log) {
             $log[] = get_class($context);
             foreach ($context->actions as $action) {
                 $log[] = get_class($action);
@@ -942,5 +942,4 @@ class DataListTest extends PHPUnit\Framework\TestCase
         ];
         $this->assertEquals($log, $expectedLog);
     }
-
 }

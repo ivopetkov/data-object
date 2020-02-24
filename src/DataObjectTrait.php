@@ -20,7 +20,7 @@ trait DataObjectTrait
      * 
      * @var array 
      */
-    private $internalDataObjectData = ['c' => []];
+    private $internalDataObjectData = ['p' => [], 'd' => [], 'c' => []]; // properties, data, callables index
 
     /**
      * Defines a new property. Use closures with $this->privateProperty instead of local variables in the constructor (thay cannot be cloned).
@@ -119,7 +119,7 @@ trait DataObjectTrait
                 $data[7] = true;
             }
         }
-        $this->internalDataObjectData['p' . $name] = $data;
+        $this->internalDataObjectData['p'][$name] = $data;
         return $this;
     }
 
@@ -131,27 +131,27 @@ trait DataObjectTrait
      */
     public function &__get($name)
     {
-        if (isset($this->internalDataObjectData['p' . $name])) {
-            if (isset($this->internalDataObjectData['p' . $name][2])) { // get exists
-                $value = call_user_func($this->internalDataObjectData['p' . $name][2]);
+        if (isset($this->internalDataObjectData['p'][$name])) {
+            if (isset($this->internalDataObjectData['p'][$name][2])) { // get exists
+                $value = call_user_func($this->internalDataObjectData['p'][$name][2]);
                 return $value;
             }
-            if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
-                return $this->internalDataObjectData['d' . $name];
+            if (array_key_exists($name, $this->internalDataObjectData['d'])) {
+                return $this->internalDataObjectData['d'][$name];
             }
-            if (isset($this->internalDataObjectData['p' . $name][1])) { // init exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][1]);
-                return $this->internalDataObjectData['d' . $name];
+            if (isset($this->internalDataObjectData['p'][$name][1])) { // init exists
+                $this->internalDataObjectData['d'][$name] = call_user_func($this->internalDataObjectData['p'][$name][1]);
+                return $this->internalDataObjectData['d'][$name];
             }
-            if (isset($this->internalDataObjectData['p' . $name][0])) { // default init exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][0]);
-                return $this->internalDataObjectData['d' . $name];
+            if (isset($this->internalDataObjectData['p'][$name][0])) { // default init exists
+                $this->internalDataObjectData['d'][$name] = call_user_func($this->internalDataObjectData['p'][$name][0]);
+                return $this->internalDataObjectData['d'][$name];
             }
             $value = null;
             return $value;
         }
-        if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
-            return $this->internalDataObjectData['d' . $name];
+        if (array_key_exists($name, $this->internalDataObjectData['d'])) {
+            return $this->internalDataObjectData['d'][$name];
         }
         throw new \Exception('Undefined property: ' . get_class($this) . '::$' . $name);
     }
@@ -164,12 +164,12 @@ trait DataObjectTrait
      */
     public function __set($name, $value): void
     {
-        if (isset($this->internalDataObjectData['p' . $name])) {
-            if (isset($this->internalDataObjectData['p' . $name][5])) { // readonly
+        if (isset($this->internalDataObjectData['p'][$name])) {
+            if (isset($this->internalDataObjectData['p'][$name][5])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
             }
-            if (isset($this->internalDataObjectData['p' . $name][6])) { // type exists
-                $type = $this->internalDataObjectData['p' . $name][6];
+            if (isset($this->internalDataObjectData['p'][$name][6])) { // type exists
+                $type = $this->internalDataObjectData['p'][$name][6];
                 $nullable = false;
                 $ok = false;
                 if ($type[0] === '?') {
@@ -217,15 +217,15 @@ trait DataObjectTrait
                     }
                 }
             }
-            if (isset($this->internalDataObjectData['p' . $name][3])) { // set exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][3], $value);
-                if ($this->internalDataObjectData['d' . $name] === null) {
-                    unset($this->internalDataObjectData['d' . $name]);
+            if (isset($this->internalDataObjectData['p'][$name][3])) { // set exists
+                $this->internalDataObjectData['d'][$name] = call_user_func($this->internalDataObjectData['p'][$name][3], $value);
+                if ($this->internalDataObjectData['d'][$name] === null) {
+                    unset($this->internalDataObjectData['d'][$name]);
                 }
                 return;
             }
         }
-        $this->internalDataObjectData['d' . $name] = $value;
+        $this->internalDataObjectData['d'][$name] = $value;
     }
 
     /**
@@ -235,10 +235,10 @@ trait DataObjectTrait
      */
     public function __isset($name): bool
     {
-        if (isset($this->internalDataObjectData['p' . $name])) {
+        if (isset($this->internalDataObjectData['p'][$name])) {
             return $this->$name !== null;
         }
-        return isset($this->internalDataObjectData['d' . $name]);
+        return isset($this->internalDataObjectData['d'][$name]);
     }
 
     /**
@@ -247,26 +247,26 @@ trait DataObjectTrait
      */
     public function __unset($name): void
     {
-        if (isset($this->internalDataObjectData['p' . $name])) {
-            if (isset($this->internalDataObjectData['p' . $name][5])) { // readonly
+        if (isset($this->internalDataObjectData['p'][$name])) {
+            if (isset($this->internalDataObjectData['p'][$name][5])) { // readonly
                 throw new \Exception('The property ' . get_class($this) . '::$' . $name . ' is readonly');
             }
-            if (isset($this->internalDataObjectData['p' . $name][4])) { // unset exists
-                $this->internalDataObjectData['d' . $name] = call_user_func($this->internalDataObjectData['p' . $name][4]);
+            if (isset($this->internalDataObjectData['p'][$name][4])) { // unset exists
+                $this->internalDataObjectData['d'][$name] = call_user_func($this->internalDataObjectData['p'][$name][4]);
                 return;
             }
         }
-        if (array_key_exists('d' . $name, $this->internalDataObjectData)) {
-            unset($this->internalDataObjectData['d' . $name]);
+        if (array_key_exists($name, $this->internalDataObjectData['d'])) {
+            unset($this->internalDataObjectData['d'][$name]);
         }
     }
 
     public function __clone()
     {
         foreach ($this->internalDataObjectData['c'] as $data) {
-            $v = $this->internalDataObjectData['p' . $data[0]][$data[1]];
-            if ($v instanceof \Closure) {
-                $this->internalDataObjectData['p' . $data[0]][$data[1]] = \Closure::bind($v, $this);
+            $value = $this->internalDataObjectData['p'][$data[0]][$data[1]];
+            if ($value instanceof \Closure) {
+                $this->internalDataObjectData['p'][$data[0]][$data[1]] = \Closure::bind($value, $this);
             }
         }
     }

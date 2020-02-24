@@ -43,8 +43,8 @@ trait DataObjectFromJSONTrait
             $currentValue = null;
             $currentValueIsSet = false;
             $isReadOnly = false;
-            if (isset($this->internalDataObjectData['p' . $name])) {
-                $propertyData = $this->internalDataObjectData['p' . $name];
+            if (isset($this->internalDataObjectData['p'][$name])) {
+                $propertyData = $this->internalDataObjectData['p'][$name];
                 $valueIsSet = false;
                 if (isset($propertyData[6])) { // type
                     $type = $propertyData[6];

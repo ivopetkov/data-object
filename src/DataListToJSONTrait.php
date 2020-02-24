@@ -48,13 +48,14 @@ trait DataListToJSONTrait
             }
             $propertiesToEncode = [];
             if (isset($object->internalDataObjectData)) {
-                foreach ($object->internalDataObjectData as $name => $value) {
-                    if ($name !== 'c') {
-                        $result[substr($name, 1)] = null;
-                        if (substr($name, 0, 1) === 'p' && isset($value[7])) { // encodeInJSON is set
-                            $propertiesToEncode[substr($name, 1)] = true;
-                        }
+                foreach ($object->internalDataObjectData['p'] as $name => $value) {
+                    $result[$name] = null;
+                    if (isset($value[7])) { // encodeInJSON is set
+                        $propertiesToEncode[$name] = true;
                     }
+                }
+                foreach ($object->internalDataObjectData['d'] as $name => $value) {
+                    $result[$name] = null;
                 }
             }
             ksort($result);
