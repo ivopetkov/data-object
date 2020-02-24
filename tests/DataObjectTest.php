@@ -1079,15 +1079,19 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($object->property1, 'value1');
         $this->assertEquals($object->property2, 'value2');
         $this->assertEquals($object->property3, 'value3');
+        $this->assertEquals($object->property4, 'value4');
         $clonedObject = clone ($object);
         $clonedObject->property1 = 'updatedValue1';
         $clonedObject->property2 = 'updatedValue2';
         $clonedObject->property3 = 'updatedValue3';
+        $clonedObject->property4 = 'updatedValue4';
         $this->assertEquals($object->property1, 'value1');
         $this->assertEquals($object->property2, 'updatedValue2'); // expected. Should not use local properties in constructors.
         $this->assertEquals($object->property3, 'value3');
+        $this->assertEquals($object->property4, 'value4');
         $this->assertEquals($clonedObject->property1, 'updatedValue1');
         $this->assertEquals($clonedObject->property2, 'updatedValue2');
         $this->assertEquals($clonedObject->property3, 'updatedValue3');
+        $this->assertEquals($clonedObject->property4, 'updatedValue4');
     }
 }

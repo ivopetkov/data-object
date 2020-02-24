@@ -23,7 +23,7 @@ trait DataObjectTrait
     private $internalDataObjectData = ['c' => []];
 
     /**
-     * Defines a new property.
+     * Defines a new property. Use closures with $this->privateProperty instead of local variables in the constructor (thay cannot be cloned).
      * 
      * @param string $name The property name.
      * @param array $options The property options. Available values: 
@@ -264,7 +264,10 @@ trait DataObjectTrait
     public function __clone()
     {
         foreach ($this->internalDataObjectData['c'] as $data) {
-            $this->internalDataObjectData['p' . $data[0]][$data[1]] = \Closure::bind($this->internalDataObjectData['p' . $data[0]][$data[1]], $this);
+            $v = $this->internalDataObjectData['p' . $data[0]][$data[1]];
+            if ($v instanceof \Closure) {
+                $this->internalDataObjectData['p' . $data[0]][$data[1]] = \Closure::bind($v, $this);
+            }
         }
     }
 }

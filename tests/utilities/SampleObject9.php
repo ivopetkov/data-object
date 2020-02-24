@@ -39,6 +39,15 @@ class SampleObject9 extends \IvoPetkov\DataObject
                 'init' => function () {
                     return 'value3';
                 }
+            ])
+            ->defineProperty('property4', [
+                'type' => '?string',
+                'init' => ['SampleObject9', 'property4init']
             ]);
+    }
+
+    static function property4init()
+    {
+        return 'value4';
     }
 }
