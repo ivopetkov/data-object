@@ -39,7 +39,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testProperties()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -87,7 +88,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testArrayAccess()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -175,19 +177,20 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testDefineProperty1()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
                 $this->defineProperty('property1', [
-                    'get' => function() {
+                    'get' => function () {
                         if (!isset($this->property1raw)) {
                             return 'unknown';
                         } else {
                             return $this->property1raw;
                         }
                     },
-                    'set' => function($value) {
+                    'set' => function ($value) {
                         $this->property1raw = $value;
                     }
                 ]);
@@ -203,13 +206,15 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testDefineProperty2()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
                 $this->defineProperty('property2', [
-                    'init' => function() {
-                        return new class {
+                    'init' => function () {
+                        return new class
+                        {
 
                             public $name = 'John';
                         };
@@ -227,15 +232,16 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testDefineProperty3()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
                 $this->defineProperty('property3', [
-                    'init' => function() {
+                    'init' => function () {
                         return 0;
                     },
-                    'unset' => function() {
+                    'unset' => function () {
                         return 0;
                     }
                 ]);
@@ -253,19 +259,20 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testDefineProperty4()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
                 $temp = 0;
                 $this->defineProperty('property4', [
-                    'get' => function() use (&$temp) {
+                    'get' => function () use (&$temp) {
                         return $temp;
                     },
-                    'set' => function($value) use (&$temp) {
+                    'set' => function ($value) use (&$temp) {
                         $temp = $value;
                     },
-                    'unset' => function() use (&$temp) {
+                    'unset' => function () use (&$temp) {
                         $temp = 0;
                     }
                 ]);
@@ -283,18 +290,19 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testDefineProperty5()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
                 $this->defineProperty('property5', [
-                    'init' => function() {
+                    'init' => function () {
                         return 1;
                     },
-                    'set' => function($value) {
+                    'set' => function ($value) {
                         return $value * 2;
                     },
-                    'unset' => function() {
+                    'unset' => function () {
                         return 1;
                     }
                 ]);
@@ -312,7 +320,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testReadonlyProperty()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -333,7 +342,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     public function testUnsetReadonlyProperty()
     {
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -400,9 +410,10 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
                 [
                     'property5.1' => '5.1'
                 ]
-                    ])
+            ])
         ];
-        $object = new class($data) extends DataObject {
+        $object = new class ($data) extends DataObject
+        {
 
             public $property1 = 1;
             private $property2 = 2;
@@ -411,12 +422,12 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
             public function __construct($data)
             {
                 $this->defineProperty('property6', [
-                    'get' => function() {
+                    'get' => function () {
                         return 6;
                     }
                 ]);
                 $this->defineProperty('property7', [
-                    'init' => function() {
+                    'init' => function () {
                         return new DataList([
                             [
                                 'property7.1' => '7.1'
@@ -507,9 +518,10 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
                 [
                     'property5.1' => '5.1'
                 ]
-                    ])
+            ])
         ];
-        $object = new class($data) extends DataObject {
+        $object = new class ($data) extends DataObject
+        {
 
             public $property1 = 1;
             private $property2 = 2;
@@ -518,12 +530,12 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
             public function __construct($data)
             {
                 $this->defineProperty('property6', [
-                    'get' => function() {
+                    'get' => function () {
                         return 6;
                     }
                 ]);
                 $this->defineProperty('property7', [
-                    'init' => function() {
+                    'init' => function () {
                         return new DataList([
                             [
                                 'property7.1' => '7.1'
@@ -535,7 +547,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
                     }
                 ]);
                 $this->defineProperty('property8', [
-                    'init' => function() {
+                    'init' => function () {
                         return new SampleObject4();
                     }
                 ]);
@@ -626,7 +638,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testExceptions1()
     {
         $this->expectException('Exception');
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -643,7 +656,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testExceptions2()
     {
         $this->expectException('Exception');
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -660,7 +674,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testExceptions3()
     {
         $this->expectException('Exception');
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -677,7 +692,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testExceptions4()
     {
         $this->expectException('Exception');
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -694,7 +710,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testExceptions5()
     {
         $this->expectException('Exception');
-        $object = new class extends DataObject {
+        $object = new class extends DataObject
+        {
 
             public function __construct()
             {
@@ -710,7 +727,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     private function getDataObjectWithPropertyType($type, $options = [])
     {
-        return new class($type, $options) extends DataObject {
+        return new class ($type, $options) extends DataObject
+        {
 
             function __construct($type, $options)
             {
@@ -828,14 +846,12 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testPropertyTypes4a()
     {
         $object = $this->getDataObjectWithPropertyType('callable', [
-            'init' => function() {
-                return function() {
-                            
-                        };
+            'init' => function () {
+                return function () {
+                };
             }
         ]);
-        $temp = function() {
-            
+        $temp = function () {
         };
         $object->property1 = $temp;
         $this->assertEquals($object->property1, $temp);
@@ -851,10 +867,9 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testPropertyTypes4b()
     {
         $object = $this->getDataObjectWithPropertyType('callable', [
-            'init' => function() {
-                return function() {
-                            
-                        };
+            'init' => function () {
+                return function () {
+                };
             }
         ]);
         $this->expectException('Exception');
@@ -911,7 +926,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testPropertyTypes6a()
     {
         $object = $this->getDataObjectWithPropertyType('bool', [
-            'init' => function() {
+            'init' => function () {
                 return true;
             }
         ]);
@@ -929,7 +944,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testPropertyTypes6b()
     {
         $object = $this->getDataObjectWithPropertyType('bool', [
-            'init' => function() {
+            'init' => function () {
                 return true;
             }
         ]);
@@ -953,7 +968,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testPropertyTypes7a()
     {
         $object = $this->getDataObjectWithPropertyType('DateTime', [
-            'init' => function() {
+            'init' => function () {
                 return new DateTime();
             }
         ]);
@@ -972,7 +987,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testPropertyTypes7b()
     {
         $object = $this->getDataObjectWithPropertyType('DateTime', [
-            'init' => function() {
+            'init' => function () {
                 return new DateTime();
             }
         ]);
@@ -996,7 +1011,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     public function testPropertyTypes7d()
     {
         $object = $this->getDataObjectWithPropertyType('DateTime', [
-            'init' => function() {
+            'init' => function () {
                 return new DateTime();
             }
         ]);
@@ -1055,4 +1070,24 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
         $this->assertTrue(SampleObject8::fromJSON($expectedJSON)->toArray() === $expectedArray);
     }
 
+    /**
+     *
+     */
+    public function testClone()
+    {
+        $object = new SampleObject9();
+        $this->assertEquals($object->property1, 'value1');
+        $this->assertEquals($object->property2, 'value2');
+        $this->assertEquals($object->property3, 'value3');
+        $clonedObject = clone ($object);
+        $clonedObject->property1 = 'updatedValue1';
+        $clonedObject->property2 = 'updatedValue2';
+        $clonedObject->property3 = 'updatedValue3';
+        $this->assertEquals($object->property1, 'value1');
+        $this->assertEquals($object->property2, 'updatedValue2'); // expected. Should not use local properties in constructors.
+        $this->assertEquals($object->property3, 'value3');
+        $this->assertEquals($clonedObject->property1, 'updatedValue1');
+        $this->assertEquals($clonedObject->property2, 'updatedValue2');
+        $this->assertEquals($clonedObject->property3, 'updatedValue3');
+    }
 }

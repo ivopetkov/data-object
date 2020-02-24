@@ -27,7 +27,7 @@ trait DataListToJSONTrait
         $this->internalDataListUpdate();
 
         // Copied from DataObjectToJSONTrait. Do not modify here !!!
-        $toJSON = function($object): string {
+        $toJSON = function ($object): string {
             $result = [];
 
             if ($object instanceof \ArrayObject) {
@@ -49,9 +49,11 @@ trait DataListToJSONTrait
             $propertiesToEncode = [];
             if (isset($object->internalDataObjectData)) {
                 foreach ($object->internalDataObjectData as $name => $value) {
-                    $result[substr($name, 1)] = null;
-                    if (substr($name, 0, 1) === 'p' && isset($value[7])) { // encodeInJSON is set
-                        $propertiesToEncode[substr($name, 1)] = true;
+                    if ($name !== 'c') {
+                        $result[substr($name, 1)] = null;
+                        if (substr($name, 0, 1) === 'p' && isset($value[7])) { // encodeInJSON is set
+                            $propertiesToEncode[substr($name, 1)] = true;
+                        }
                     }
                 }
             }
@@ -97,5 +99,4 @@ trait DataListToJSONTrait
         $json = '[' . rtrim($json, ',') . ']';
         return $json;
     }
-
 }

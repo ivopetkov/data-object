@@ -656,7 +656,8 @@ trait DataListTrait
                 }
             };
             foreach ($actions as $action) {
-                if ($action[0] === 'filterBy' && $action[3] === 'notStartWith') { } else {
+                if ($action[0] === 'filterBy' && $action[3] === 'notStartWith') {
+                } else {
                     $processPendingNotStartWithFilters();
                 }
                 if ($action[0] === 'filter') {

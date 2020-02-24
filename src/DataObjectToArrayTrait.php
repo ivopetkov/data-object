@@ -44,7 +44,9 @@ trait DataObjectToArrayTrait
             }
             if (isset($object->internalDataObjectData)) {
                 foreach ($object->internalDataObjectData as $name => $value) {
-                    $result[substr($name, 1)] = null;
+                    if ($name !== 'c') {
+                        $result[substr($name, 1)] = null;
+                    }
                 }
             }
             ksort($result);

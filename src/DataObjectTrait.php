@@ -20,7 +20,7 @@ trait DataObjectTrait
      * 
      * @var array 
      */
-    private $internalDataObjectData = [];
+    private $internalDataObjectData = ['c' => []];
 
     /**
      * Defines a new property.
@@ -45,24 +45,28 @@ trait DataObjectTrait
                 throw new \InvalidArgumentException('The \'init\' option must be of type callable, ' . gettype($options['init']) . ' given');
             }
             $data[1] = $options['init'];
+            $this->internalDataObjectData['c'][] = [$name, 1];
         }
         if (isset($options['get'])) {
             if (!is_callable($options['get'])) {
                 throw new \InvalidArgumentException('The \'get\' option must be of type callable, ' . gettype($options['get']) . ' given');
             }
             $data[2] = $options['get'];
+            $this->internalDataObjectData['c'][] = [$name, 2];
         }
         if (isset($options['set'])) {
             if (!is_callable($options['set'])) {
                 throw new \InvalidArgumentException('The \'set\' option must be of type callable, ' . gettype($options['set']) . ' given');
             }
             $data[3] = $options['set'];
+            $this->internalDataObjectData['c'][] = [$name, 3];
         }
         if (isset($options['unset'])) {
             if (!is_callable($options['unset'])) {
                 throw new \InvalidArgumentException('The \'unset\' option must be of type callable, ' . gettype($options['unset']) . ' given');
             }
             $data[4] = $options['unset'];
+            $this->internalDataObjectData['c'][] = [$name, 4];
         }
         if (isset($options['readonly'])) {
             if (!is_bool($options['readonly'])) {
@@ -81,23 +85,23 @@ trait DataObjectTrait
                 if (isset($data[1]) || isset($data[2], $data[4])) {
                     // has init or get and unset callbacks
                 } elseif ($type === 'array') {
-                    $data[0] = function() {
+                    $data[0] = function () {
                         return [];
                     };
                 } elseif ($type === 'float') {
-                    $data[0] = function() {
+                    $data[0] = function () {
                         return 0.0;
                     };
                 } elseif ($type === 'int') {
-                    $data[0] = function() {
+                    $data[0] = function () {
                         return 0;
                     };
                 } elseif ($type === 'string') {
-                    $data[0] = function() {
+                    $data[0] = function () {
                         return '';
                     };
                 } else {
-                    $data[0] = function() use ($type, $name) {
+                    $data[0] = function () use ($type, $name) {
                         if (class_exists($type)) {
                             return new $type();
                         } else {
@@ -257,4 +261,10 @@ trait DataObjectTrait
         }
     }
 
+    public function __clone()
+    {
+        foreach ($this->internalDataObjectData['c'] as $data) {
+            $this->internalDataObjectData['p' . $data[0]][$data[1]] = \Closure::bind($this->internalDataObjectData['p' . $data[0]][$data[1]], $this);
+        }
+    }
 }
