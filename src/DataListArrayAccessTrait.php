@@ -80,5 +80,4 @@ trait DataListArrayAccessTrait
             $this->internalDataListData = array_values($this->internalDataListData);
         }
     }
-
 }

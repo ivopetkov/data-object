@@ -21,5 +21,4 @@ trait DataListSlicePropertiesActionTrait
      * @var array
      */
     public $properties = null;
-
 }

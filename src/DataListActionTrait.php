@@ -21,5 +21,4 @@ trait DataListActionTrait
      * @var string
      */
     public $name = null;
-
 }

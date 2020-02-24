@@ -33,5 +33,4 @@ class DataObject implements \ArrayAccess
             $this->$name = $value;
         }
     }
-
 }

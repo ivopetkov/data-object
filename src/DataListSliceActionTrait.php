@@ -28,5 +28,4 @@ trait DataListSliceActionTrait
      * @var int
      */
     public $limit = null;
-
 }

@@ -28,5 +28,4 @@ trait DataListSortByActionTrait
      * @var string
      */
     public $order = null;
-
 }

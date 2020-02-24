@@ -64,5 +64,4 @@ trait DataListIteratorTrait
         $this->internalDataListUpdate();
         return isset($this->internalDataListData[$this->internalDataListPointer]);
     }
-
 }

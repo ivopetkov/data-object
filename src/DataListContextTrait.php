@@ -21,5 +21,4 @@ trait DataListContextTrait
      * @var array 
      */
     public $actions;
-
 }

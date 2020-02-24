@@ -35,5 +35,4 @@ trait DataListFilterByActionTrait
      * @var string
      */
     public $operator = null;
-
 }

@@ -55,5 +55,4 @@ trait DataObjectArrayAccessTrait
     {
         unset($this->$offset);
     }
-
 }

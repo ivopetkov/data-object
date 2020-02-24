@@ -33,5 +33,4 @@ class DataList implements \ArrayAccess, \Iterator, \Countable
             $this->setDataSource($dataSource);
         }
     }
-
 }

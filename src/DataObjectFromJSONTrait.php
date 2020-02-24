@@ -128,5 +128,4 @@ trait DataObjectFromJSONTrait
             }
         }
     }
-
 }
