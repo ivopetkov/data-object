@@ -43,10 +43,10 @@ trait DataObjectFromArrayTrait
             $currentValueIsSet = false;
             $isReadOnly = false;
             if (isset($this->internalDataObjectData['p'][$name])) {
-                $propertyData = $this->internalDataObjectData['p'][$name];
+                $propertyDefinition = $this->internalDataObjectData['p'][$name];
                 $valueIsSet = false;
-                if (isset($propertyData[6])) { // type
-                    $type = $propertyData[6];
+                if (isset($propertyDefinition[6])) { // type
+                    $type = $propertyDefinition[6];
                     $isNullable = $type[0] === '?';
                     if ($isNullable) {
                         $type = substr($type, 1);
@@ -55,11 +55,11 @@ trait DataObjectFromArrayTrait
                     $type = null;
                     $isNullable = true;
                 }
-                if (isset($propertyData[5])) { // readonly
+                if (isset($propertyDefinition[5])) { // readonly
                     $currentValue = $this->$name;
                     $currentValueIsSet = true;
                     $isReadOnly = true;
-                } elseif (isset($propertyData[1])) { // init
+                } elseif (isset($propertyDefinition[1])) { // init
                     $currentValue = $this->$name;
                     $currentValueIsSet = true;
                 } elseif ($type !== null && $type !== 'array' && $type !== 'float' && $type !== 'int' && $type !== 'string') {
@@ -88,7 +88,7 @@ trait DataObjectFromArrayTrait
                         }
                     }
                 }
-                if (!$currentValueIsSet && isset($propertyData[0])) { // default init
+                if (!$currentValueIsSet && isset($propertyDefinition[0])) { // default init
                     $currentValue = $this->$name;
                 }
                 if (!$valueIsSet && is_object($currentValue)) {
