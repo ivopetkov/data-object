@@ -134,7 +134,8 @@ trait DataObjectTrait
         if (isset($this->internalDataObjectData['p'][$name])) {
             $propertyDefinition = $this->internalDataObjectData['p'][$name];
             if (isset($propertyDefinition[2])) { // get exists
-                return call_user_func($propertyDefinition[2]);
+                $value = call_user_func($propertyDefinition[2]);
+                return $value; // Only variable references should be returned by reference
             }
             if (array_key_exists($name, $this->internalDataObjectData['d'])) {
                 return $this->internalDataObjectData['d'][$name];
@@ -147,7 +148,8 @@ trait DataObjectTrait
                 $this->internalDataObjectData['d'][$name] = call_user_func($propertyDefinition[0]);
                 return $this->internalDataObjectData['d'][$name];
             }
-            return null;
+            $value = null;
+            return $value; // Only variable references should be returned by reference
         }
         if (array_key_exists($name, $this->internalDataObjectData['d'])) {
             return $this->internalDataObjectData['d'][$name];
