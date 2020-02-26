@@ -264,6 +264,9 @@ trait DataObjectTrait
         }
     }
 
+    /**
+     * 
+     */
     public function __clone()
     {
         foreach ($this->internalDataObjectData['c'] as $data) {
