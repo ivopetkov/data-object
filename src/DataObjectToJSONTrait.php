@@ -73,7 +73,7 @@ trait DataObjectToJSONTrait
                     }
                     $result[$name] = json_encode($value);
                     if ($result[$name] === false) {
-                        throw new \Exception('Invalid characters in ' . $name . '! Cannot JSON encode the value: ' . print_r($value, true));
+                        throw new \Exception('JSON encode error (' . json_last_error_msg() . ') for: ' . print_r($value, true));
                     }
                 }
             }
