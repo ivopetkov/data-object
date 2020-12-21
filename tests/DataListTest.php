@@ -542,6 +542,52 @@ class DataListTest extends PHPUnit\Framework\TestCase
     /**
      *
      */
+    public function testFilterContext()
+    {
+        $internalResult = [];
+        $list = new DataList(function ($context) use (&$internalResult) {
+            $filterCallbacks = [];
+            foreach ($context->actions as $action) {
+                if ($action->name === 'filter') {
+                    $filterCallbacks[] = $action->callback;
+                }
+            }
+            $items = [];
+            $items[] = ['value' => 'a'];
+            $items[] = ['value' => 'b'];
+            $items[] = ['value' => 'c'];
+
+            $result = [];
+            foreach ($items as $itemData) {
+                $object = new DataObject($itemData);
+                $add = true;
+                foreach ($filterCallbacks as $filterCallback) {
+                    if (call_user_func($filterCallback, $object) !== true) {
+                        $add = false;
+                        break;
+                    }
+                }
+                if ($add) {
+                    $result[] = $object;
+                }
+            }
+            $internalResult = $result;
+            return $result;
+        });
+        $list
+            ->filter(function ($object) {
+                return isset($object->value) && $object->value !== 'b';
+            });
+        $list->toArray(); // trigger list update
+        $this->assertEquals(sizeof($internalResult), 2);
+        $this->assertEquals($list[0]->value, 'a');
+        $this->assertEquals($list[1]->value, 'c');
+        $this->assertEquals(count($list), 2);
+    }
+
+    /**
+     *
+     */
     public function testSort()
     {
         $data = [
@@ -929,12 +975,16 @@ class DataListTest extends PHPUnit\Framework\TestCase
             }
             return [];
         });
+        $list->filter(function () {
+            return true;
+        });
         $list->filterBy('property1', 'value1');
         $list->sortBy('property2', 'asc');
         $list->reverse();
         $list->sliceProperties(['property3', 'property4']);
         $expectedLog = [
             'SampleDataList1Context',
+            'SampleDataList1FilterAction',
             'SampleDataList1FilterByAction',
             'SampleDataList1SortByAction',
             'SampleDataList1Action',

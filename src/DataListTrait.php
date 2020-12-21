@@ -43,6 +43,7 @@ trait DataListTrait
     private $internalDataListClasses = [
         'IvoPetkov\DataListContext' => 'IvoPetkov\DataListContext',
         'IvoPetkov\DataListAction' => 'IvoPetkov\DataListAction',
+        'IvoPetkov\DataListFilterAction' => 'IvoPetkov\DataListFilterAction',
         'IvoPetkov\DataListFilterByAction' => 'IvoPetkov\DataListFilterByAction',
         'IvoPetkov\DataListSortByAction' => 'IvoPetkov\DataListSortByAction',
         'IvoPetkov\DataListSlicePropertiesAction' => 'IvoPetkov\DataListSlicePropertiesAction',
@@ -532,7 +533,11 @@ trait DataListTrait
         if (is_callable($data)) {
             $actionsList = [];
             foreach ($actions as $actionData) {
-                if ($actionData[0] === 'filterBy') {
+                if ($actionData[0] === 'filter') {
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListFilterAction'];
+                    $action = new $class();
+                    $action->callback = $actionData[1];
+                } elseif ($actionData[0] === 'filterBy') {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListFilterByAction'];
                     $action = new $class();
                     $action->property = $actionData[1];

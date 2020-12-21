@@ -15,6 +15,7 @@ class SampleDataList1
     public function __construct($dataSource = null)
     {
         $this->registerDataListClass('IvoPetkov\DataListContext', 'SampleDataList1Context');
+        $this->registerDataListClass('IvoPetkov\DataListFilterAction', 'SampleDataList1FilterAction');
         $this->registerDataListClass('IvoPetkov\DataListFilterByAction', 'SampleDataList1FilterByAction');
         $this->registerDataListClass('IvoPetkov\DataListSortByAction', 'SampleDataList1SortByAction');
         $this->registerDataListClass('IvoPetkov\DataListAction', 'SampleDataList1Action');
