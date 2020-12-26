@@ -207,6 +207,9 @@ trait DataObjectTrait
                     $ok = class_exists($type) && is_a($value, $type);
                 }
                 if (!$ok) {
+                    $ok = interface_exists($type) && is_a($value, $type);
+                }
+                if (!$ok) {
                     $valueType = gettype($value);
                     if (array_search($type, ['array', 'callable', 'bool', 'float', 'int', 'string']) === false) {
                         if ($valueType === 'object') {
