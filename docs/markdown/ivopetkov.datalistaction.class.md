@@ -8,6 +8,10 @@ IvoPetkov\DataListAction {
 	/* Properties */
 	public string $name
 
+	/* Methods */
+	public array toArray ( void )
+	public string toJSON ( void )
+
 }
 ```
 
@@ -16,6 +20,16 @@ IvoPetkov\DataListAction {
 ##### public string $name
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the action.
+
+## Methods
+
+##### public array [toArray](ivopetkov.datalistaction.toarray.method.md) ( void )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as an array.
+
+##### public string [toJSON](ivopetkov.datalistaction.tojson.method.md) ( void )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as JSON.
 
 ## Details
 

@@ -12,13 +12,29 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about the actions applied on a data list.
 
+### [IvoPetkov\DataListFilterAction](ivopetkov.datalistfilteraction.class.md)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a filter action applied on a data list.
+
 ### [IvoPetkov\DataListFilterByAction](ivopetkov.datalistfilterbyaction.class.md)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a filterBy action applied on a data list.
 
+### [IvoPetkov\DataListMapAction](ivopetkov.datalistmapaction.class.md)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a map action applied on a data list.
+
 ### [IvoPetkov\DataListObject](ivopetkov.datalistobject.class.md)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about an object in the data list.
+
+### [IvoPetkov\DataListReverseAction](ivopetkov.datalistreverseaction.class.md)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a reverse action applied on a data list.
+
+### [IvoPetkov\DataListShuffleAction](ivopetkov.datalistshuffleaction.class.md)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a shuffle action applied on a data list.
 
 ### [IvoPetkov\DataListSliceAction](ivopetkov.datalistsliceaction.class.md)
 
@@ -27,6 +43,10 @@
 ### [IvoPetkov\DataListSlicePropertiesAction](ivopetkov.datalistslicepropertiesaction.class.md)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a sliceProperties action applied on a data list.
+
+### [IvoPetkov\DataListSortAction](ivopetkov.datalistsortaction.class.md)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about a sort action applied on a data list.
 
 ### [IvoPetkov\DataListSortByAction](ivopetkov.datalistsortbyaction.class.md)
 

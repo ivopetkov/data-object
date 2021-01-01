@@ -8,6 +8,9 @@ IvoPetkov\DataListContext {
 	/* Properties */
 	public array $actions
 
+	/* Methods */
+	public void apply ( $list )
+
 }
 ```
 
@@ -16,6 +19,12 @@ IvoPetkov\DataListContext {
 ##### public array $actions
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An array containing all the actions.
+
+## Methods
+
+##### public void [apply](ivopetkov.datalistcontext.apply.method.md) ( $list )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apply the actions to the data list specified.
 
 ## Details
 

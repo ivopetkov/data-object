@@ -1,14 +1,12 @@
-# IvoPetkov\DataListFilterByAction
+# IvoPetkov\DataListFilterAction
 
-Information about a filterBy action applied on a data list.
+Information about a filter action applied on a data list.
 
 ```php
-IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
+IvoPetkov\DataListFilterAction extends IvoPetkov\DataListAction {
 
 	/* Properties */
-	public string $operator
-	public string $property
-	public string $value
+	public callable $callback
 
 }
 ```
@@ -21,17 +19,9 @@ IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
 
 ## Properties
 
-##### public string $operator
+##### public callable $callback
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
-
-##### public string $property
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name used for the filter.
-
-##### public string $value
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The value to filter on.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The callback function to use.
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
@@ -53,7 +43,7 @@ IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
 
 ## Details
 
-Location: ~/src/DataListFilterByAction.php
+Location: ~/src/DataListFilterAction.php
 
 ---
 

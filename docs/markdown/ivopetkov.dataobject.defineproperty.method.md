@@ -1,6 +1,6 @@
 # IvoPetkov\DataObject::defineProperty
 
-Defines a new property.
+Defines a new property. Use closures with $this->privateProperty instead of local variables in the constructor (thay cannot be cloned).
 
 ```php
 protected self defineProperty ( string $name [, array $options = [] ] )

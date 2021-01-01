@@ -23,7 +23,7 @@ IvoPetkov\DataListObject implements ArrayAccess {
 
 ##### protected self [defineProperty](ivopetkov.datalistobject.defineproperty.method.md) ( string $name [, array $options = [] ] )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defines a new property.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defines a new property. Use closures with $this->privateProperty instead of local variables in the constructor (thay cannot be cloned).
 
 ##### public static object [fromArray](ivopetkov.datalistobject.fromarray.method.md) ( array $data )
 

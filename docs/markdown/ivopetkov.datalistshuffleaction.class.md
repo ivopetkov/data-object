@@ -1,14 +1,9 @@
-# IvoPetkov\DataListFilterByAction
+# IvoPetkov\DataListShuffleAction
 
-Information about a filterBy action applied on a data list.
+Information about a shuffle action applied on a data list.
 
 ```php
-IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
-
-	/* Properties */
-	public string $operator
-	public string $property
-	public string $value
+IvoPetkov\DataListShuffleAction extends IvoPetkov\DataListAction {
 
 }
 ```
@@ -20,18 +15,6 @@ IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Information about an action applied on a data list.
 
 ## Properties
-
-##### public string $operator
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The operator used for the filter. Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
-
-##### public string $property
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The property name used for the filter.
-
-##### public string $value
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The value to filter on.
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
@@ -53,7 +36,7 @@ IvoPetkov\DataListFilterByAction extends IvoPetkov\DataListAction {
 
 ## Details
 
-Location: ~/src/DataListFilterByAction.php
+Location: ~/src/DataListShuffleAction.php
 
 ---
 
