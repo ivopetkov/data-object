@@ -8,6 +8,7 @@
  */
 
 use IvoPetkov\DataList;
+use IvoPetkov\DataListContext;
 use IvoPetkov\DataObject;
 
 /**
@@ -1002,5 +1003,147 @@ class DataListTest extends PHPUnit\Framework\TestCase
             'SampleDataList1SlicePropertiesAction'
         ];
         $this->assertEquals($log, $expectedLog);
+    }
+
+    /**
+     *
+     */
+    public function testContextApply()
+    {
+        $log = [];
+        $list = new DataList(function (DataListContext $context) use (&$log) {
+            $log[] = get_class($context);
+            foreach ($context->actions as $action) {
+                $class = get_class($action);
+                if ($action->name === 'filter') {
+                    $log[] = [$class, gettype($action->callback)];
+                } elseif ($action->name === 'filterBy') {
+                    $log[] = [$class, $action->property, $action->value, $action->operator];
+                } elseif ($action->name === 'map') {
+                    $log[] = [$class, gettype($action->callback)];
+                } elseif ($action->name === 'reverse') {
+                    $log[] = [$class];
+                } elseif ($action->name === 'shuffle') {
+                    $log[] = [$class];
+                } elseif ($action->name === 'sort') {
+                    $log[] = [$class, gettype($action->callback)];
+                } elseif ($action->name === 'sortBy') {
+                    $log[] = [$class, $action->property, $action->order];
+                } elseif ($action->name === 'sliceProperties') {
+                    $log[] = [$class, $action->properties];
+                } elseif ($action->name === 'slice') {
+                    $log[] = [$class, $action->offset, $action->limit];
+                } else {
+                }
+            }
+            return [];
+        });
+        $list->filter(function () {
+            return true;
+        });
+        $list->filterBy('property1', 'value1');
+        $list->map(function ($item) {
+            return $item;
+        });
+        $list->reverse();
+        $list->shuffle();
+        $list->sort(function () {
+            return 0;
+        });
+        $list->sortBy('property2', 'asc');
+        $list->sliceProperties(['property3', 'property4']);
+        $list->slice(1, 4);
+
+        $this->assertEquals($log, array(
+            0 => 'IvoPetkov\\DataListContext',
+            1 =>
+            array(
+                0 => 'IvoPetkov\\DataListFilterAction',
+                1 => 'object',
+            ),
+            2 =>
+            array(
+                0 => 'IvoPetkov\\DataListFilterByAction',
+                1 => 'property1',
+                2 => 'value1',
+                3 => 'equal',
+            ),
+            3 =>
+            array(
+                0 => 'IvoPetkov\\DataListMapAction',
+                1 => 'object',
+            ),
+            4 =>
+            array(
+                0 => 'IvoPetkov\\DataListReverseAction',
+            ),
+            5 =>
+            array(
+                0 => 'IvoPetkov\\DataListShuffleAction',
+            ),
+            6 =>
+            array(
+                0 => 'IvoPetkov\\DataListSortAction',
+                1 => 'object',
+            ),
+            7 =>
+            array(
+                0 => 'IvoPetkov\\DataListSortByAction',
+                1 => 'property2',
+                2 => 'asc',
+            ),
+            8 =>
+            array(
+                0 => 'IvoPetkov\\DataListSlicePropertiesAction',
+                1 =>
+                array(
+                    0 => 'property3',
+                    1 => 'property4',
+                ),
+            ),
+            9 => 'IvoPetkov\\DataListContext',
+            10 =>
+            array(
+                0 => 'IvoPetkov\\DataListFilterAction',
+                1 => 'object',
+            ),
+            11 =>
+            array(
+                0 => 'IvoPetkov\\DataListFilterByAction',
+                1 => 'property1',
+                2 => 'value1',
+                3 => 'equal',
+            ),
+            12 =>
+            array(
+                0 => 'IvoPetkov\\DataListMapAction',
+                1 => 'object',
+            ),
+            13 =>
+            array(
+                0 => 'IvoPetkov\\DataListReverseAction',
+            ),
+            14 =>
+            array(
+                0 => 'IvoPetkov\\DataListShuffleAction',
+            ),
+            15 =>
+            array(
+                0 => 'IvoPetkov\\DataListSortAction',
+                1 => 'object',
+            ),
+            16 =>
+            array(
+                0 => 'IvoPetkov\\DataListSortByAction',
+                1 => 'property2',
+                2 => 'asc',
+            ),
+            17 =>
+            array(
+                0 => 'IvoPetkov\\DataListSliceAction',
+                1 => 1,
+                2 => 4,
+            ),
+        ));
     }
 }
