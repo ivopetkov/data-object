@@ -9,7 +9,6 @@
 
 use IvoPetkov\DataList;
 use IvoPetkov\DataListContext;
-use IvoPetkov\DataObject;
 
 /**
  * @runTestsInSeparateProcesses

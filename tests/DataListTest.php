@@ -979,15 +979,26 @@ class DataListTest extends PHPUnit\Framework\TestCase
             return true;
         });
         $list->filterBy('property1', 'value1');
-        $list->sortBy('property2', 'asc');
+        $list->map(function ($item) {
+            return $item;
+        });
         $list->reverse();
+        $list->shuffle();
+        $list->sort(function () {
+            return 0;
+        });
+        $list->sortBy('property2', 'asc');
         $list->sliceProperties(['property3', 'property4']);
+        //$list->slice(1, 4);
         $expectedLog = [
             'SampleDataList1Context',
             'SampleDataList1FilterAction',
             'SampleDataList1FilterByAction',
+            'SampleDataList1MapAction',
+            'SampleDataList1ReverseAction',
+            'SampleDataList1ShuffleAction',
+            'SampleDataList1SortAction',
             'SampleDataList1SortByAction',
-            'SampleDataList1Action',
             'SampleDataList1SlicePropertiesAction'
         ];
         $this->assertEquals($log, $expectedLog);

@@ -7,7 +7,7 @@
  * Free to use under the MIT license.
  */
 
-class SampleDataList1Action extends IvoPetkov\DataListAction
+class SampleDataList1SliceAction extends IvoPetkov\DataListSliceAction
 {
     
 }

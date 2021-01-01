@@ -42,9 +42,12 @@ trait DataListTrait
      */
     private $internalDataListClasses = [
         'IvoPetkov\DataListContext' => 'IvoPetkov\DataListContext',
-        'IvoPetkov\DataListAction' => 'IvoPetkov\DataListAction',
         'IvoPetkov\DataListFilterAction' => 'IvoPetkov\DataListFilterAction',
         'IvoPetkov\DataListFilterByAction' => 'IvoPetkov\DataListFilterByAction',
+        'IvoPetkov\DataListMapAction' => 'IvoPetkov\DataListMapAction',
+        'IvoPetkov\DataListReverseAction' => 'IvoPetkov\DataListReverseAction',
+        'IvoPetkov\DataListShuffleAction' => 'IvoPetkov\DataListShuffleAction',
+        'IvoPetkov\DataListSortAction' => 'IvoPetkov\DataListSortAction',
         'IvoPetkov\DataListSortByAction' => 'IvoPetkov\DataListSortByAction',
         'IvoPetkov\DataListSlicePropertiesAction' => 'IvoPetkov\DataListSlicePropertiesAction',
         'IvoPetkov\DataListSliceAction' => 'IvoPetkov\DataListSliceAction',
@@ -543,6 +546,10 @@ trait DataListTrait
                     $action->property = $actionData[1];
                     $action->value = $actionData[2];
                     $action->operator = $actionData[3];
+                } else if ($actionData[0] === 'sort') {
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListSortAction'];
+                    $action = new $class();
+                    $action->callback = $actionData[1];
                 } elseif ($actionData[0] === 'sortBy') {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListSortByAction'];
                     $action = new $class();
@@ -552,14 +559,23 @@ trait DataListTrait
                     $class = $this->internalDataListClasses['IvoPetkov\DataListSlicePropertiesAction'];
                     $action = new $class();
                     $action->properties = $actionData[1];
+                } elseif ($actionData[0] === 'reverse') {
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListReverseAction'];
+                    $action = new $class();
                 } elseif ($actionData[0] === 'slice') {
                     $class = $this->internalDataListClasses['IvoPetkov\DataListSliceAction'];
                     $action = new $class();
                     $action->offset = $actionData[1];
                     $action->limit = $actionData[2];
-                } else {
-                    $class = $this->internalDataListClasses['IvoPetkov\DataListAction'];
+                } elseif ($actionData[0] === 'shuffle') {
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListShuffleAction'];
                     $action = new $class();
+                } else if ($actionData[0] === 'map') {
+                    $class = $this->internalDataListClasses['IvoPetkov\DataListMapAction'];
+                    $action = new $class();
+                    $action->callback = $actionData[1];
+                } else {
+                    throw new \Exception('Should not get here for "' . $actionData[0] . '" action!');
                 }
                 $action->name = $actionData[0];
                 $actionsList[] = $action;
