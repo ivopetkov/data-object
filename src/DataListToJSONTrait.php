@@ -61,7 +61,7 @@ trait DataListToJSONTrait
             ksort($result);
             foreach ($result as $name => $null) {
                 $value = $object instanceof \ArrayAccess ? $object[$name] : (isset($object->$name) ? $object->$name : null);
-                if (method_exists($value, 'toJSON')) {
+                if (is_object($value) && method_exists($value, 'toJSON')) {
                     $result[$name] = $value->toJSON();
                 } else {
                     if ($value instanceof \DateTime) {
