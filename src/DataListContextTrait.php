@@ -27,7 +27,7 @@ trait DataListContextTrait
      *
      * @return void
      */
-    public function apply($list)
+    public function apply(&$list)
     {
         foreach ($this->actions as $action) {
             switch ($action->name) {
@@ -44,7 +44,7 @@ trait DataListContextTrait
                     $list->sortBy($action->property, $action->order);
                     break;
                 case 'sliceProperties':
-                    $list->sliceProperties($action->properties);
+                    $list = $list->sliceProperties($action->properties);
                     break;
                 case 'reverse':
                     $list->reverse();
@@ -53,7 +53,7 @@ trait DataListContextTrait
                     $list->shuffle();
                     break;
                 case 'slice':
-                    $list->slice($action->offset, $action->limit);
+                    $list = $list->slice($action->offset, $action->limit);
                     break;
                 case 'map':
                     $list->map($action->callback);
