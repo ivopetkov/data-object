@@ -28,7 +28,7 @@ trait DataListIteratorTrait
      * @return object|null
      * @throws \InvalidArgumentException
      */
-    public function current()
+    public function current(): mixed
     {
         $this->internalDataListUpdate();
         if (isset($this->internalDataListData[$this->internalDataListPointer])) {

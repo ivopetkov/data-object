@@ -21,7 +21,7 @@ trait DataListArrayAccessTrait
      * @return \IvoPetkov\DataObject|null
      * @throws \InvalidArgumentException
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         $this->internalDataListUpdate();
         if (isset($this->internalDataListData[$offset])) {
