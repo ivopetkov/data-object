@@ -21,6 +21,7 @@ trait DataListArrayAccessTrait
      * @return \IvoPetkov\DataObject|null
      * @throws \InvalidArgumentException
      */
+    #[\ReturnTypeWillChange] // Return type "mixed" is invalid in older supported versions.
     public function offsetGet($offset)
     {
         $this->internalDataListUpdate();

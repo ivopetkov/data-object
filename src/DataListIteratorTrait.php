@@ -28,6 +28,7 @@ trait DataListIteratorTrait
      * @return object|null
      * @throws \InvalidArgumentException
      */
+    #[\ReturnTypeWillChange] // Return type "mixed" is invalid in older supported versions.
     public function current()
     {
         $this->internalDataListUpdate();

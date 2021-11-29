@@ -20,6 +20,7 @@ trait DataObjectArrayAccessTrait
      * @param string $offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange] // Return type "mixed" is invalid in older supported versions.
     public function &offsetGet($offset)
     {
         return $this->$offset;
