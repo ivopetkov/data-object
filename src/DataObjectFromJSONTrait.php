@@ -96,7 +96,7 @@ trait DataObjectFromJSONTrait
                     if (method_exists($currentValue, '__fromJSON')) {
                         $currentValue->__fromJSON(json_encode($value));
                     } elseif ($type === 'DateTime') {
-                        $currentValue->setTimestamp(strtotime($value));
+                        $currentValue->setTimestamp(is_numeric($value) ? $value : strtotime($value));
                     } else {
                         if (is_array($value)) {
                             $_hasArrayAccess = $currentValue instanceof \ArrayAccess;
