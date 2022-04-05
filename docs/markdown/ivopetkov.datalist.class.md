@@ -3,7 +3,7 @@
 A list of data objects that can be easily filtered, sorted, etc. The objects can be lazy loaded using a callback in the constructor.
 
 ```php
-IvoPetkov\DataList implements ArrayAccess, Iterator, Traversable, Countable {
+IvoPetkov\DataList implements ArrayAccess, Iterator, Countable, Traversable {
 
 	/* Methods */
 	public __construct ( [ array|iterable|callback $dataSource ] )
@@ -27,8 +27,8 @@ IvoPetkov\DataList implements ArrayAccess, Iterator, Traversable, Countable {
 	public mixed sliceProperties ( array $properties )
 	public self sort ( callable $callback )
 	public self sortBy ( string $property [, string $order = 'asc' ] )
-	public array toArray ( void )
-	public string toJSON ( void )
+	public array toArray ( [ array $options = [] ] )
+	public string toJSON ( [ array $options = [] ] )
 	public self unshift ( object|array $object )
 
 }
@@ -40,9 +40,9 @@ IvoPetkov\DataList implements ArrayAccess, Iterator, Traversable, Countable {
 
 ##### [Iterator](http://php.net/manual/en/class.iterator.php)
 
-##### [Traversable](http://php.net/manual/en/class.traversable.php)
-
 ##### [Countable](http://php.net/manual/en/class.countable.php)
+
+##### [Traversable](http://php.net/manual/en/class.traversable.php)
 
 ## Methods
 
@@ -128,11 +128,11 @@ IvoPetkov\DataList implements ArrayAccess, Iterator, Traversable, Countable {
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sorts the elements of the list by specific property.
 
-##### public array [toArray](ivopetkov.datalist.toarray.method.md) ( void )
+##### public array [toArray](ivopetkov.datalist.toarray.method.md) ( [ array $options = [] ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the list data converted as an array.
 
-##### public string [toJSON](ivopetkov.datalist.tojson.method.md) ( void )
+##### public string [toJSON](ivopetkov.datalist.tojson.method.md) ( [ array $options = [] ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the list data converted as JSON.
 

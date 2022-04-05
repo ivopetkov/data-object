@@ -9,8 +9,8 @@ IvoPetkov\DataListAction {
 	public string $name
 
 	/* Methods */
-	public array toArray ( void )
-	public string toJSON ( void )
+	public array toArray ( [ array $options = [] ] )
+	public string toJSON ( [ array $options = [] ] )
 
 }
 ```
@@ -23,11 +23,11 @@ IvoPetkov\DataListAction {
 
 ## Methods
 
-##### public array [toArray](ivopetkov.datalistaction.toarray.method.md) ( void )
+##### public array [toArray](ivopetkov.datalistaction.toarray.method.md) ( [ array $options = [] ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as an array.
 
-##### public string [toJSON](ivopetkov.datalistaction.tojson.method.md) ( void )
+##### public string [toJSON](ivopetkov.datalistaction.tojson.method.md) ( [ array $options = [] ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as JSON.
 

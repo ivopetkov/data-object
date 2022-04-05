@@ -26,11 +26,11 @@ IvoPetkov\DataListReverseAction extends IvoPetkov\DataListAction {
 
 ### Inherited from [IvoPetkov\DataListAction](ivopetkov.datalistaction.class.md)
 
-##### public array [toArray](ivopetkov.datalistaction.toarray.method.md) ( void )
+##### public array [toArray](ivopetkov.datalistaction.toarray.method.md) ( [ array $options = [] ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as an array.
 
-##### public string [toJSON](ivopetkov.datalistaction.tojson.method.md) ( void )
+##### public string [toJSON](ivopetkov.datalistaction.tojson.method.md) ( [ array $options = [] ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the object data converted as JSON.
 
