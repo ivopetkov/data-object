@@ -18,15 +18,17 @@ trait DataListToArrayTrait
     /**
      * Returns the list data converted as an array.
      * 
+     * @param array $options Available options: ignoreReadonlyProperties
      * @return array The list data converted as an array.
      * @throws \InvalidArgumentException
      */
-    public function toArray(): array
+    public function toArray(array $options = []): array
     {
         $this->internalDataListUpdate();
 
         // Copied from DataObjectToArrayTrait. Do not modify here !!!
-        $toArray = function ($object) use (&$toArray) {
+        $ignoreReadonlyProperties = array_search('ignoreReadonlyProperties', $options) !== false;
+        $toArray = function ($object) use (&$toArray, $ignoreReadonlyProperties): array {
             $result = [];
 
             if ($object instanceof \ArrayObject) {
@@ -47,6 +49,9 @@ trait DataListToArrayTrait
             }
             if (isset($object->internalDataObjectData)) {
                 foreach ($object->internalDataObjectData['p'] as $name => $value) {
+                    if ($ignoreReadonlyProperties && isset($value[5])) { // readonly
+                        continue;
+                    }
                     $result[$name] = null;
                 }
                 foreach ($object->internalDataObjectData['d'] as $name => $value) {

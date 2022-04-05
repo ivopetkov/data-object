@@ -18,16 +18,18 @@ trait DataListToJSONTrait
     /**
      * Returns the list data converted as JSON.
      * 
+     * @param array $options Available options: ignoreReadonlyProperties
      * @return string The list data converted as JSON.
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function toJSON(): string
+    public function toJSON(array $options = []): string
     {
         $this->internalDataListUpdate();
 
         // Copied from DataObjectToJSONTrait. Do not modify here !!!
-        $toJSON = function ($object): string {
+        $ignoreReadonlyProperties = array_search('ignoreReadonlyProperties', $options) !== false;
+        $toJSON = function ($object) use ($ignoreReadonlyProperties): string {
             $result = [];
 
             if ($object instanceof \ArrayObject) {
@@ -49,6 +51,9 @@ trait DataListToJSONTrait
             $propertiesToEncode = [];
             if (isset($object->internalDataObjectData)) {
                 foreach ($object->internalDataObjectData['p'] as $name => $value) {
+                    if ($ignoreReadonlyProperties && isset($value[5])) { // readonly
+                        continue;
+                    }
                     $result[$name] = null;
                     if (isset($value[7])) { // encodeInJSON is set
                         $propertiesToEncode[$name] = true;
