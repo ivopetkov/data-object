@@ -666,6 +666,126 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     }
 
     /**
+     *
+     */
+    public function textExportSpecificProperties()
+    {
+        $object = new class() extends DataObject
+        {
+
+            public $property1 = 1;
+            public $property2 = 2;
+
+            public function __construct()
+            {
+                $this
+                    ->defineProperty('property3', [
+                        'init' => function () {
+                            return 3;
+                        }
+                    ])
+                    ->defineProperty('property4', [
+                        'init' => function () {
+                            return 4;
+                        },
+                        'readonly' => true
+                    ])
+                    ->defineProperty('property5', [
+                        'init' => function () {
+                            return 5;
+                        }
+                    ])
+                    ->defineProperty('property6', [
+                        'init' => function () {
+                            return 6;
+                        },
+                        'readonly' => true
+                    ]);
+                parent::__construct();
+            }
+        };
+        $json = $object->toJSON();
+        $this->assertTrue(json_decode($json, true) === [
+            'property1' => 1,
+            'property2' => 2,
+            'property3' => 3,
+            'property4' => 4,
+            'property5' => 5,
+            'property6' => 6,
+        ]);
+
+        $json = $object->toJSON(['properties' => ['property1', 'property3', 'property4']]);
+        $this->assertTrue(json_decode($json, true) === [
+            'property1' => 1,
+            'property3' => 3,
+            'property4' => 4,
+        ]);
+
+        $array = $object->toArray();
+        $this->assertTrue($array === [
+            'property1' => 1,
+            'property2' => 2,
+            'property3' => 3,
+            'property4' => 4,
+            'property5' => 5,
+            'property6' => 6,
+        ]);
+
+        $array = $object->toArray(['properties' => ['property1', 'property3', 'property4']]);
+        $this->assertTrue($array === [
+            'property1' => 1,
+            'property3' => 3,
+            'property4' => 4,
+        ]);
+
+        $dataList = new DataList(function () use ($object) {
+            return [$object];
+        });
+
+        $json = $dataList->toJSON();
+        $this->assertTrue(json_decode($json, true) === [
+            [
+                'property1' => 1,
+                'property2' => 2,
+                'property3' => 3,
+                'property4' => 4,
+                'property5' => 5,
+                'property6' => 6,
+            ]
+        ]);
+
+        $json = $dataList->toJSON(['properties' => ['property1', 'property3', 'property4']]);
+        $this->assertTrue(json_decode($json, true) === [
+            [
+                'property1' => 1,
+                'property3' => 3,
+                'property4' => 4,
+            ]
+        ]);
+
+        $array = $dataList->toArray();
+        $this->assertTrue($array === [
+            [
+                'property1' => 1,
+                'property2' => 2,
+                'property3' => 3,
+                'property4' => 4,
+                'property5' => 5,
+                'property6' => 6,
+            ]
+        ]);
+
+        $array = $dataList->toArray(['properties' => ['property1', 'property3', 'property4']]);
+        $this->assertTrue($array === [
+            [
+                'property1' => 1,
+                'property3' => 3,
+                'property4' => 4,
+            ]
+        ]);
+    }
+
+    /**
      * 
      */
     public function testPropertiesWithArrayAccessOnly()

@@ -18,7 +18,7 @@ trait DataObjectToJSONTrait
     /**
      * Returns the object data converted as JSON.
      * 
-     * @param array $options Available options: ignoreReadonlyProperties
+     * @param array $options Available options: ignoreReadonlyProperties, properties=>[]
      * @return string The object data converted as JSON.
      * @throws \Exception
      */
@@ -26,17 +26,33 @@ trait DataObjectToJSONTrait
     {
         // Copied to DataList. Copy there when the function is modified !!!
         $ignoreReadonlyProperties = array_search('ignoreReadonlyProperties', $options) !== false;
-        $toJSON = function ($object) use ($ignoreReadonlyProperties, $options): string {
+        $propertiesToReturn = isset($options['properties']) ? $options['properties'] : null;
+        if ($propertiesToReturn !== null && !is_array($propertiesToReturn)) {
+            throw new \Exception('The properties option must be of type array!');
+        }
+        $excludeProperty = function (string $name) use ($propertiesToReturn): bool {
+            if ($propertiesToReturn === null) {
+                return false;
+            }
+            return array_search($name, $propertiesToReturn) === false;
+        };
+        $toJSON = function ($object) use ($ignoreReadonlyProperties, $excludeProperty, $options): string {
             $result = [];
 
             if ($object instanceof \ArrayObject) {
                 $vars = (array) $object; // Needed for PHP 7.4.
                 foreach ($vars as $name => $value) {
+                    if ($excludeProperty($name)) {
+                        continue;
+                    }
                     $result[$name] = null;
                 }
             } else {
                 $vars = get_object_vars($object);
                 foreach ($vars as $name => $value) {
+                    if ($excludeProperty($name)) {
+                        continue;
+                    }
                     if ($name !== 'internalDataObjectData') {
                         $reflectionProperty = new \ReflectionProperty($object, $name);
                         if ($reflectionProperty->isPublic()) {
@@ -47,10 +63,13 @@ trait DataObjectToJSONTrait
             }
             $propertiesToEncode = [];
             if (isset($object->internalDataObjectData)) {
-                $propertiesToSkip = [];
+                $readonlyPropertiesToSkip = [];
                 foreach ($object->internalDataObjectData['p'] as $name => $value) {
+                    if ($excludeProperty($name)) {
+                        continue;
+                    }
                     if ($ignoreReadonlyProperties && isset($value[5])) { // readonly
-                        $propertiesToSkip[$name] = true;
+                        $readonlyPropertiesToSkip[$name] = true;
                         continue;
                     }
                     $result[$name] = null;
@@ -59,7 +78,10 @@ trait DataObjectToJSONTrait
                     }
                 }
                 foreach ($object->internalDataObjectData['d'] as $name => $value) {
-                    if (isset($propertiesToSkip[$name])) {
+                    if ($excludeProperty($name)) {
+                        continue;
+                    }
+                    if (isset($readonlyPropertiesToSkip[$name])) {
                         continue;
                     }
                     $result[$name] = null;
