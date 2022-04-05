@@ -412,7 +412,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
                 ]
             ])
         ];
-        $object = new class ($data) extends DataObject
+        $object = new class($data) extends DataObject
         {
 
             public $property1 = 1;
@@ -520,7 +520,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
                 ]
             ])
         ];
-        $object = new class ($data) extends DataObject
+        $object = new class($data) extends DataObject
         {
 
             public $property1 = 1;
@@ -579,6 +579,89 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
             [
                 'sampleObjectProperty1' => ['1', "'", '"'],
             ],
+        ]);
+    }
+
+    /**
+     *
+     */
+    public function testIgnoreReadonlyProperties()
+    {
+        $object = new class() extends DataObject
+        {
+
+            public function __construct()
+            {
+                $this
+                    ->defineProperty('property1', [
+                        'init' => function () {
+                            return 1;
+                        }
+                    ])
+                    ->defineProperty('property2', [
+                        'init' => function () {
+                            return 2;
+                        },
+                        'readonly' => true
+                    ]);
+                parent::__construct();
+            }
+        };
+
+        $json = $object->toJSON();
+        $this->assertTrue(json_decode($json, true) === [
+            'property1' => 1,
+            'property2' => 2
+        ]);
+
+        $json = $object->toJSON(['ignoreReadonlyProperties']);
+        $this->assertTrue(json_decode($json, true) === [
+            'property1' => 1
+        ]);
+
+        $array = $object->toArray();
+        $this->assertTrue($array === [
+            'property1' => 1,
+            'property2' => 2
+        ]);
+
+        $array = $object->toArray(['ignoreReadonlyProperties']);
+        $this->assertTrue($array === [
+            'property1' => 1
+        ]);
+
+        $dataList = new DataList(function () use ($object) {
+            return [$object];
+        });
+
+        $json = $dataList->toJSON();
+        $this->assertTrue(json_decode($json, true) === [
+            [
+                'property1' => 1,
+                'property2' => 2
+            ]
+        ]);
+
+        $json = $dataList->toJSON(['ignoreReadonlyProperties']);
+        $this->assertTrue(json_decode($json, true) === [
+            [
+                'property1' => 1
+            ]
+        ]);
+
+        $array = $dataList->toArray();
+        $this->assertTrue($array === [
+            [
+                'property1' => 1,
+                'property2' => 2
+            ]
+        ]);
+
+        $array = $dataList->toArray(['ignoreReadonlyProperties']);
+        $this->assertTrue($array === [
+            [
+                'property1' => 1
+            ]
         ]);
     }
 
@@ -727,7 +810,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
      */
     private function getDataObjectWithPropertyType($type, $options = [])
     {
-        return new class ($type, $options) extends DataObject
+        return new class($type, $options) extends DataObject
         {
 
             function __construct($type, $options)

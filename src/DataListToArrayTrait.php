@@ -28,7 +28,7 @@ trait DataListToArrayTrait
 
         // Copied from DataObjectToArrayTrait. Do not modify here !!!
         $ignoreReadonlyProperties = array_search('ignoreReadonlyProperties', $options) !== false;
-        $toArray = function ($object) use (&$toArray, $ignoreReadonlyProperties): array {
+        $toArray = function ($object) use (&$toArray, $ignoreReadonlyProperties, $options): array {
             $result = [];
 
             if ($object instanceof \ArrayObject) {
@@ -48,13 +48,18 @@ trait DataListToArrayTrait
                 }
             }
             if (isset($object->internalDataObjectData)) {
+                $propertiesToSkip = [];
                 foreach ($object->internalDataObjectData['p'] as $name => $value) {
                     if ($ignoreReadonlyProperties && isset($value[5])) { // readonly
+                        $propertiesToSkip[$name] = true;
                         continue;
                     }
                     $result[$name] = null;
                 }
                 foreach ($object->internalDataObjectData['d'] as $name => $value) {
+                    if (isset($propertiesToSkip[$name])) {
+                        continue;
+                    }
                     $result[$name] = null;
                 }
             }
@@ -63,7 +68,7 @@ trait DataListToArrayTrait
                 $value = $object instanceof \ArrayAccess ? $object[$name] : (isset($object->$name) ? $object->$name : null);
                 if (is_object($value)) {
                     if (method_exists($value, 'toArray')) {
-                        $result[$name] = $value->toArray();
+                        $result[$name] = $value->toArray($options);
                     } else {
                         if ($value instanceof \DateTime) {
                             $result[$name] = $value->format('c');
@@ -88,7 +93,7 @@ trait DataListToArrayTrait
         foreach ($this->internalDataListData as $index => $object) {
             $object = $this->internalDataListUpdateValueIfNeeded($this->internalDataListData, $index);
             if (method_exists($object, 'toArray')) {
-                $result[] = $object->toArray();
+                $result[] = $object->toArray($options);
             } else {
                 $result[] = $toArray($object);
             }

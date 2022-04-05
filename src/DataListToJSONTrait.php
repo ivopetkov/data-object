@@ -29,7 +29,7 @@ trait DataListToJSONTrait
 
         // Copied from DataObjectToJSONTrait. Do not modify here !!!
         $ignoreReadonlyProperties = array_search('ignoreReadonlyProperties', $options) !== false;
-        $toJSON = function ($object) use ($ignoreReadonlyProperties): string {
+        $toJSON = function ($object) use ($ignoreReadonlyProperties, $options): string {
             $result = [];
 
             if ($object instanceof \ArrayObject) {
@@ -50,8 +50,10 @@ trait DataListToJSONTrait
             }
             $propertiesToEncode = [];
             if (isset($object->internalDataObjectData)) {
+                $propertiesToSkip = [];
                 foreach ($object->internalDataObjectData['p'] as $name => $value) {
                     if ($ignoreReadonlyProperties && isset($value[5])) { // readonly
+                        $propertiesToSkip[$name] = true;
                         continue;
                     }
                     $result[$name] = null;
@@ -60,6 +62,9 @@ trait DataListToJSONTrait
                     }
                 }
                 foreach ($object->internalDataObjectData['d'] as $name => $value) {
+                    if (isset($propertiesToSkip[$name])) {
+                        continue;
+                    }
                     $result[$name] = null;
                 }
             }
@@ -67,7 +72,7 @@ trait DataListToJSONTrait
             foreach ($result as $name => $null) {
                 $value = $object instanceof \ArrayAccess ? $object[$name] : (isset($object->$name) ? $object->$name : null);
                 if (is_object($value) && method_exists($value, 'toJSON')) {
-                    $result[$name] = $value->toJSON();
+                    $result[$name] = $value->toJSON($options);
                 } else {
                     if ($value instanceof \DateTime) {
                         $value = $value->format('c');
@@ -97,7 +102,7 @@ trait DataListToJSONTrait
         foreach ($this->internalDataListData as $index => $object) {
             $object = $this->internalDataListUpdateValueIfNeeded($this->internalDataListData, $index);
             if (method_exists($object, 'toJSON')) {
-                $json .= $object->toJSON() . ',';
+                $json .= $object->toJSON($options) . ',';
             } else {
                 $json .= $toJSON($object) . ',';
             }
