@@ -10,7 +10,7 @@
 class SampleObject4 extends \IvoPetkov\DataObject
 {
 
-    public function toJSON(): string
+    public function toJSON(array $options = []): string
     {
         return json_encode(['sampleObjectProperty1' => ["1", "'", '"']]);
     }
