@@ -805,4 +805,24 @@ trait DataListTrait
         }
         return $data;
     }
+
+    /**
+     * 
+     */
+    public function __clone()
+    {
+        $data = $this->internalDataListData;
+        if (is_callable($data)) {
+            if ($data instanceof \Closure) {
+                $data = \Closure::bind($data, $this);
+            }
+        } elseif (is_array($data)) {
+            foreach ($data as $index => $item) {
+                if (is_object($item)) {
+                    $data[$index] = clone ($item);
+                }
+            }
+        }
+        $this->internalDataListData = $data;
+    }
 }

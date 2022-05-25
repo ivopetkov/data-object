@@ -1146,4 +1146,41 @@ class DataListTest extends PHPUnit\Framework\TestCase
             ),
         ));
     }
+
+    /**
+     *
+     */
+    public function testClone()
+    {
+        $testList = function ($list) {
+            $clonedList = clone ($list);
+            $this->assertEquals($list[0]->property1, 'value1');
+            //$this->assertEquals($list[0]->property2, 'value2');
+            $this->assertEquals($list[0]->property3, 'value3');
+            $this->assertEquals($list[0]->property4, 'value4');
+            $clonedList[0]->property1 = 'updatedValue1';
+            //$clonedList[0]->property2 = 'updatedValue2';
+            $clonedList[0]->property3 = 'updatedValue3';
+            $clonedList[0]->property4 = 'updatedValue4';
+            $this->assertEquals($list[0]->property1, 'value1');
+            //$this->assertEquals($list[0]->property2, 'updatedValue2'); // expected. Should not use local properties in constructors.
+            $this->assertEquals($list[0]->property3, 'value3');
+            $this->assertEquals($list[0]->property4, 'value4');
+            $this->assertEquals($clonedList[0]->property1, 'updatedValue1');
+            //$this->assertEquals($clonedList[0]->property2, 'updatedValue2');
+            $this->assertEquals($clonedList[0]->property3, 'updatedValue3');
+            $this->assertEquals($clonedList[0]->property4, 'updatedValue4');
+        };
+
+        $list1 = new DataList();
+        $list1[] = new SampleObject9();
+        $testList($list1);
+
+        $list2 = new DataList(function () {
+            return [
+                new SampleObject9()
+            ];
+        });
+        $testList($list2);
+    }
 }
