@@ -14,7 +14,7 @@ class SampleObject1 extends \IvoPetkov\DataObject
     {
         $this->defineProperty('prop1', [
             'type' => 'string',
-            'init' => function() {
+            'init' => function () {
                 return '1';
             }
         ]);
@@ -23,7 +23,7 @@ class SampleObject1 extends \IvoPetkov\DataObject
         ]);
         $this->defineProperty('prop4', [
             'type' => 'ArrayObject',
-            'init' => function() {
+            'init' => function () {
                 return new ArrayObject(['prop4.1' => '4.1']);
             }
         ]);
@@ -32,13 +32,13 @@ class SampleObject1 extends \IvoPetkov\DataObject
         ]);
         $this->defineProperty('prop6', [
             'type' => 'string',
-            'init' => function() {
+            'init' => function () {
                 return '6';
             },
             'readonly' => true
         ]);
         $this->defineProperty('prop7', [
-            'init' => function() {
+            'init' => function () {
                 return new SampleObject3();
             }
         ]);
@@ -48,7 +48,12 @@ class SampleObject1 extends \IvoPetkov\DataObject
         $this->defineProperty('prop9', [
             'type' => 'array'
         ]);
+        $this->defineProperty('prop10', [
+            'type' => 'float'
+        ]);
+        $this->defineProperty('prop11', [
+            'type' => 'float'
+        ]);
         parent::__construct($data);
     }
-
 }

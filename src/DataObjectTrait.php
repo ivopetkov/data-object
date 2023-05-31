@@ -194,6 +194,10 @@ trait DataObjectTrait
                             break;
                         case 'float':
                             $ok = is_float($value);
+                            if (!$ok && is_int($value)) {
+                                $ok = true;
+                                $value = (float)$value;
+                            }
                             break;
                         case 'int':
                             $ok = is_int($value);

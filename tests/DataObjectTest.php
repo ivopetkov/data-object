@@ -480,6 +480,8 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
         $object1->prop7->prop1['prop1.1'] = '1.1';
         $object1->prop7->prop2 = '2';
         $object1->prop8['prop8.1'] = '8.1';
+        $object1->prop10 = 100;
+        $object1->prop11 = 100.50;
 
         $object1Array = $object1->toArray();
         $object1JSON = $object1->toJSON();
@@ -503,7 +505,9 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
             $this->assertTrue(get_class($object2->prop7->prop1) === 'ArrayObject');
             $this->assertTrue(get_class($object2->prop8) === 'SampleObject3');
             $this->assertTrue(get_class($object2->prop8->prop1) === 'ArrayObject');
-            $this->assertTrue(gettype($object1->prop9) === 'array');
+            $this->assertTrue(gettype($object2->prop9) === 'array');
+            $this->assertTrue(is_float($object2->prop10));
+            $this->assertTrue(is_float($object2->prop11));
         }
     }
 
