@@ -2,11 +2,8 @@
 
 A familiar and powerful Data Object abstraction for PHP.
 
-[![Build Status](https://travis-ci.org/ivopetkov/data-object.svg)](https://travis-ci.org/ivopetkov/data-object)
 [![Latest Stable Version](https://poser.pugx.org/ivopetkov/data-object/v/stable)](https://packagist.org/packages/ivopetkov/data-object)
-[![codecov.io](https://codecov.io/github/ivopetkov/data-object/coverage.svg?branch=master)](https://codecov.io/github/ivopetkov/data-object?branch=master)
 [![License](https://poser.pugx.org/ivopetkov/data-object/license)](https://packagist.org/packages/ivopetkov/data-object)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0611e1c16b334baea92c8ba775bbf816)](https://www.codacy.com/app/ivo_2/data-object)
 
 ## Usage
 
