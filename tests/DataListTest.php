@@ -464,6 +464,19 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($list[1]->other === 2);
         $this->assertTrue(count($list) === 2);
 
+        $data = [
+            ['value' => ['a' => 1, 'b' => ['b1' => 1, 'b2' => 2]], 'other' => 1],
+            ['other' => 2],
+            function () {
+                return ['value' => ['b' => ['b2' => 2, 'b1' => 1], 'a' => 1], 'other' => 3];
+            }
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', ['a' => 1, 'b' => ['b1' => 1, 'b2' => 2]], 'equal');
+        $this->assertTrue($list[0]->other === 1);
+        $this->assertTrue($list[1]->other === 3);
+        $this->assertTrue(count($list) === 2);
+
 
         $data = [
             ['value' => null, 'other' => 1],

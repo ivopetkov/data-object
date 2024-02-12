@@ -649,6 +649,21 @@ trait DataListTrait
                 return false;
             };
 
+            $sortAndSerializeArray = function ($data) {
+                $walkData = function ($data) use (&$walkData) {
+                    $result = [];
+                    foreach ($data as $key => $value) {
+                        if (is_array($value)) {
+                            $value = $walkData($value);
+                        }
+                        $result[$key] = $value;
+                    }
+                    ksort($result);
+                    return $result;
+                };
+                return serialize($walkData($data));
+            };
+
             $pendingNotStartWithFilters = [];
             $processPendingNotStartWithFilters = function () use (&$data, &$pendingNotStartWithFilters, &$buildPrefixesIndex, &$existsInPrefixesIndex) {
                 if (!empty($pendingNotStartWithFilters)) {
@@ -721,9 +736,17 @@ trait DataListTrait
                             if (!$add) {
                                 $value = $object->$propertyName;
                                 if ($operator === 'equal') {
-                                    $add = $value === $targetValue;
+                                    if (is_array($value) && is_array($targetValue)) {
+                                        $add = $sortAndSerializeArray($value) === $sortAndSerializeArray($targetValue);
+                                    } else {
+                                        $add = $value === $targetValue;
+                                    }
                                 } elseif ($operator === 'notEqual') {
-                                    $add = $value !== $targetValue;
+                                    if (is_array($value) && is_array($targetValue)) {
+                                        $add = $sortAndSerializeArray($value) !== $sortAndSerializeArray($targetValue);
+                                    } else {
+                                        $add = $value !== $targetValue;
+                                    }
                                 } elseif ($operator === 'regExp') {
                                     $add = preg_match('/' . $targetValue . '/', $value) === 1;
                                 } elseif ($operator === 'notRegExp') {
