@@ -175,7 +175,7 @@ trait DataListTrait
     public function filterBy(string $property, $value, string $operator = 'equal'): self
     {
         if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray']) === false) {
-            throw new \InvalidArgumentException('Invalid operator (' . $operator . ')');
+            throw new \InvalidArgumentException('Invalid operator specified (' . $operator . ')');
         }
         $this->internalDataListActions[] = ['filterBy', $property, $value, $operator];
         return $this;
@@ -197,14 +197,14 @@ trait DataListTrait
      * Sorts the elements of the list by specific property.
      * 
      * @param string $property The property name.
-     * @param string $order The sort order.
+     * @param string $order The sort order. Available values: asc and desc
      * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
     public function sortBy(string $property, string $order = 'asc'): self
     {
         if ($order !== 'asc' && $order !== 'desc') {
-            throw new \InvalidArgumentException('The order argument must be \'asc\' or \'desc\'');
+            throw new \InvalidArgumentException('Invalid order specified (' . $order . ')');
         }
         $this->internalDataListActions[] = ['sortBy', $property, $order];
         return $this;
