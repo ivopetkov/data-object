@@ -204,7 +204,7 @@ trait DataListTrait
     public function sortBy(string $property, string $order = 'asc'): self
     {
         if ($order !== 'asc' && $order !== 'desc') {
-            throw new \InvalidArgumentException('The order argument \'asc\' or \'desc\'');
+            throw new \InvalidArgumentException('The order argument must be \'asc\' or \'desc\'');
         }
         $this->internalDataListActions[] = ['sortBy', $property, $order];
         return $this;
