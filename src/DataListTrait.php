@@ -324,11 +324,11 @@ trait DataListTrait
      * Extract a slice of the list.
      * 
      * @param int $offset The index position where the extraction should begin
-     * @param int $length The max length of the items in the extracted slice.
+     * @param int|null $length The max length of the items in the extracted slice.
      * @return mixed Returns a slice of the list.
      * @throws \InvalidArgumentException
      */
-    public function slice(int $offset, int $length = null)
+    public function slice(int $offset, ?int $length = null)
     {
         $actions = $this->internalDataListActions;
         $actions[] = ['slice', $offset, $length];
