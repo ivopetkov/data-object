@@ -520,6 +520,33 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($list[0]->other === 1);
         $this->assertTrue($list[1]->value === 'aac');
         $this->assertTrue(count($list) === 2);
+
+        $data = [
+            ['value' => "Текст на КИРИЛИЦА"],
+            ['other' => 2],
+            ['value' => "Some TEXT"],
+            ['value' => "Text"],
+            ['value' => "text 1"],
+            ['value' => "te"],
+            function () {
+                return ['value' => 'Текст на кирилица 2'];
+            }
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', 'Кирилица', 'textSearch');
+        $this->assertTrue($list[0]->value === "Текст на КИРИЛИЦА");
+        $this->assertTrue($list[1]->value === 'Текст на кирилица 2');
+        $this->assertTrue(count($list) === 2);
+        $list = new DataList($data);
+        $list->filterBy('value', 'Text', 'textSearch');
+        $this->assertTrue($list[0]->value === "Some TEXT");
+        $this->assertTrue($list[1]->value === 'Text');
+        $this->assertTrue($list[2]->value === 'text 1');
+        $this->assertTrue(count($list) === 3);
+        $list = new DataList($data);
+        $list->filterBy('value', 'me te', 'textSearch');
+        $this->assertTrue($list[0]->value === "Some TEXT");
+        $this->assertTrue(count($list) === 1);
     }
 
     /**

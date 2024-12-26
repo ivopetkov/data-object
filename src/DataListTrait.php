@@ -168,13 +168,13 @@ trait DataListTrait
      * 
      * @param string $property The property name.
      * @param mixed $value The value of the property.
-     * @param string $operator Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray.
+     * @param string $operator Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray, textSearch.
      * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
     public function filterBy(string $property, $value, string $operator = 'equal'): self
     {
-        if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray']) === false) {
+        if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray', 'textSearch']) === false) {
             throw new \InvalidArgumentException('Invalid operator specified (' . $operator . ')');
         }
         $this->internalDataListActions[] = ['filterBy', $property, $value, $operator];
@@ -761,6 +761,8 @@ trait DataListTrait
                                     $add = is_array($targetValue) && array_search($value, $targetValue) !== false;
                                 } elseif ($operator === 'notInArray') {
                                     $add = !(is_array($targetValue) && array_search($value, $targetValue) !== false);
+                                } elseif ($operator === 'textSearch') {
+                                    $add = is_string($targetValue) && is_string($value) && mb_strpos(mb_strtolower($value), mb_strtolower($targetValue)) !== false;
                                 }
                             }
                             if ($add) {
