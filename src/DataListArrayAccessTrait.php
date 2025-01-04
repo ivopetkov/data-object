@@ -49,7 +49,7 @@ trait DataListArrayAccessTrait
             $this->internalDataListData[] = $value;
             return;
         }
-        if (is_int($offset) && $offset >= 0 && (isset($this->internalDataListData[$offset]) || $offset === sizeof($this->internalDataListData))) {
+        if (is_int($offset) && $offset >= 0 && (isset($this->internalDataListData[$offset]) || $offset === count($this->internalDataListData))) {
             $this->internalDataListData[$offset] = $value;
             return;
         }

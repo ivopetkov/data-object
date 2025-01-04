@@ -620,7 +620,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
                 return isset($object->value) && $object->value !== 'b';
             });
         $list->toArray(); // trigger list update
-        $this->assertEquals(sizeof($internalResult), 2);
+        $this->assertEquals(count($internalResult), 2);
         $this->assertEquals($list[0]->value, 'a');
         $this->assertEquals($list[1]->value, 'c');
         $this->assertEquals(count($list), 2);
@@ -1192,7 +1192,7 @@ class DataListTest extends PHPUnit\Framework\TestCase
      */
     public function testClone()
     {
-        $testList = function ($list) {
+        $testList = function ($list): void {
             $clonedList = clone ($list);
             $this->assertEquals($list[0]->property1, 'value1');
             //$this->assertEquals($list[0]->property2, 'value2');

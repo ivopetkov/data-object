@@ -125,7 +125,7 @@ trait DataListTrait
     public function getLast()
     {
         $this->internalDataListUpdate();
-        $count = sizeof($this->internalDataListData);
+        $count = count($this->internalDataListData);
         if (isset($this->internalDataListData[$count - 1])) {
             return $this->internalDataListUpdateValueIfNeeded($this->internalDataListData, $count - 1);
         }
@@ -141,7 +141,7 @@ trait DataListTrait
     public function getRandom()
     {
         $this->internalDataListUpdate();
-        $count = sizeof($this->internalDataListData);
+        $count = count($this->internalDataListData);
         if ($count > 0) {
             $index = rand(0, $count - 1);
             if (isset($this->internalDataListData[$index])) {
@@ -298,7 +298,7 @@ trait DataListTrait
     {
         $this->internalDataListUpdate();
         if (isset($this->internalDataListData[0])) {
-            $this->internalDataListUpdateValueIfNeeded($this->internalDataListData, sizeof($this->internalDataListData) - 1);
+            $this->internalDataListUpdateValueIfNeeded($this->internalDataListData, count($this->internalDataListData) - 1);
             return array_pop($this->internalDataListData);
         }
         return null;
@@ -376,7 +376,7 @@ trait DataListTrait
     public function count(): int
     {
         $this->internalDataListUpdate();
-        return sizeof($this->internalDataListData);
+        return count($this->internalDataListData);
     }
 
     /**
@@ -469,7 +469,7 @@ trait DataListTrait
                             }
                         }
                         $startWith = array_diff($startWith, $lessSpecific);
-                        if (sizeof($startWith) > 1) { // impossible case
+                        if (count($startWith) > 1) { // impossible case
                             return true;
                         }
                         $startWith = array_values($startWith);
@@ -609,12 +609,12 @@ trait DataListTrait
                     $keysToRemove = [];
                     $keysToAdd = [];
                     foreach ($index as $k => $indexPrefixes) {
-                        if (sizeof($indexPrefixes) === 1) {
+                        if (count($indexPrefixes) === 1) {
                             $keysToRemove[] = $k;
                             $keysToAdd[$indexPrefixes[0][1]] = true;
                         } else {
                             $index[$k] = $getIndex($indexPrefixes);
-                            if (sizeof($index[$k]) === 1) {
+                            if (count($index[$k]) === 1) {
                                 $keysToRemove[] = $k;
                                 $keysToAdd[key($index[$k])] = current($index[$k]);
                             }
@@ -665,7 +665,7 @@ trait DataListTrait
             };
 
             $pendingNotStartWithFilters = [];
-            $processPendingNotStartWithFilters = function () use (&$data, &$pendingNotStartWithFilters, &$buildPrefixesIndex, &$existsInPrefixesIndex) {
+            $processPendingNotStartWithFilters = function () use (&$data, &$pendingNotStartWithFilters, &$buildPrefixesIndex, &$existsInPrefixesIndex): void {
                 if (!empty($pendingNotStartWithFilters)) {
                     $this->internalDataListUpdateAllValuesIfNeeded($data);
                     foreach ($pendingNotStartWithFilters as $propertyName => $prefixes) {

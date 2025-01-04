@@ -21,7 +21,7 @@ class SampleObject9 extends \IvoPetkov\DataObject
                 'get' => function () {
                     return $this->prop1;
                 },
-                'set' => function ($value) {
+                'set' => function ($value): void {
                     $this->prop1 = $value;
                 }
             ])
@@ -30,7 +30,7 @@ class SampleObject9 extends \IvoPetkov\DataObject
                 'get' => function () use (&$prop2) {
                     return $prop2;
                 },
-                'set' => function ($value)  use (&$prop2) {
+                'set' => function ($value)  use (&$prop2): void {
                     $prop2 = $value;
                 }
             ])

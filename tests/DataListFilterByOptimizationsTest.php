@@ -150,7 +150,7 @@ class DataListFilterByOptimizationsTest extends PHPUnit\Framework\TestCase
         });
         $list->filterBy('value', 'countries/', 'startWith');
         $this->assertEquals($list->count(), 1);
-        $this->assertEquals(sizeof($passedContext->actions), 1);
+        $this->assertEquals(count($passedContext->actions), 1);
         $this->assertEquals($passedContext->actions[0]->toArray(), array(
             'name' => 'filterBy',
             'operator' => 'startWith',
@@ -190,7 +190,7 @@ class DataListFilterByOptimizationsTest extends PHPUnit\Framework\TestCase
         $list->filterBy('value', 'food/b', 'notStartWith');
         $list->filterBy('value', 'food/c', 'notStartWith');
         $this->assertEquals($list->count(), 1);
-        $this->assertEquals(sizeof($passedContext->actions), 1);
+        $this->assertEquals(count($passedContext->actions), 1);
         $this->assertEquals($passedContext->actions[0]->toArray(), array(
             'name' => 'filterBy',
             'operator' => 'startWith',

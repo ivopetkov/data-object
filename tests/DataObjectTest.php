@@ -190,7 +190,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
                             return $this->property1raw;
                         }
                     },
-                    'set' => function ($value) {
+                    'set' => function ($value): void {
                         $this->property1raw = $value;
                     }
                 ]);
@@ -269,10 +269,10 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
                     'get' => function () use (&$temp) {
                         return $temp;
                     },
-                    'set' => function ($value) use (&$temp) {
+                    'set' => function ($value) use (&$temp): void {
                         $temp = $value;
                     },
-                    'unset' => function () use (&$temp) {
+                    'unset' => function () use (&$temp): void {
                         $temp = 0;
                     }
                 ]);
@@ -1054,11 +1054,11 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     {
         $object = $this->getDataObjectWithPropertyType('callable', [
             'init' => function () {
-                return function () {
+                return function (): void {
                 };
             }
         ]);
-        $temp = function () {
+        $temp = function (): void {
         };
         $object->property1 = $temp;
         $this->assertEquals($object->property1, $temp);
@@ -1075,7 +1075,7 @@ class DataObjectTest extends PHPUnit\Framework\TestCase
     {
         $object = $this->getDataObjectWithPropertyType('callable', [
             'init' => function () {
-                return function () {
+                return function (): void {
                 };
             }
         ]);
