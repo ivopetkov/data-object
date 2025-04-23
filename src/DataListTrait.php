@@ -458,7 +458,7 @@ trait DataListTrait
                         $previous = null;
                         foreach ($prefixes as $prefix) {
                             if ($fromStart) {
-                                if ($previous === null || ($less ? strncmp($previous, $prefix, strlen($prefix)) !== 0 : strncmp($prefix, $previous, strlen($previous)) !== 0)) {
+                                if ($previous === null || ($less ? !str_starts_with($previous, $prefix) : !str_starts_with($prefix, $previous))) {
                                     $result[] = $prefix;
                                     $previous = $prefix;
                                 }
@@ -477,7 +477,7 @@ trait DataListTrait
                             $found = false;
                             foreach ($prefixes2 as $prefix2) {
                                 if ($fromStart) {
-                                    if (strncmp($prefix1, $prefix2, strlen($prefix2)) === 0) {
+                                    if (str_starts_with($prefix1, $prefix2)) {
                                         $found = true;
                                         break;
                                     }
@@ -500,7 +500,7 @@ trait DataListTrait
                             $found = false;
                             foreach ($prefixes2 as $prefix2) {
                                 if ($fromStart) {
-                                    if (strncmp($prefix1, $prefix2, strlen($prefix2)) === 0) {
+                                    if (str_starts_with($prefix1, $prefix2)) {
                                         $found = true;
                                         break;
                                     }
@@ -750,13 +750,13 @@ trait DataListTrait
                                 }
                             } elseif ($operator === 'startWith') {
                                 if (is_string($targetValue)) {
-                                    $add = strncmp($value, $targetValue, strlen($targetValue)) === 0;
+                                    $add = str_starts_with($value, $targetValue);
                                 } else {
                                     throw new \Exception('The target value for ' . $operator . ' must be of type string!');
                                 }
                             } elseif ($operator === 'notStartWith') {
                                 if (is_string($targetValue)) {
-                                    $add = strncmp($value, $targetValue, strlen($targetValue)) !== 0;
+                                    $add = !str_starts_with($value, $targetValue);
                                 } else {
                                     throw new \Exception('The target value for ' . $operator . ' must be of type string!');
                                 }
@@ -764,7 +764,7 @@ trait DataListTrait
                                 $add = false;
                                 if (is_array($targetValue)) {
                                     foreach ($targetValue as $targetValueItem) {
-                                        if (strncmp($value, $targetValueItem, strlen($targetValueItem)) === 0) {
+                                        if (str_starts_with($value, $targetValueItem)) {
                                             $add = true;
                                             break;
                                         }
