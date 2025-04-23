@@ -422,9 +422,31 @@ class DataListTest extends PHPUnit\Framework\TestCase
         ];
         $list = new DataList($data);
         $list->filterBy('value', 'aa', 'notStartWith');
+        $list->filterBy('value', 'xx', 'notStartWith');
         $this->assertTrue($list[0]->value === 'baaa');
         $this->assertTrue($list[1]->value === 'caaa');
         $this->assertTrue(count($list) === 2);
+
+        $data = [
+            ['value' => 'aa1'],
+            ['value' => 'bb1'],
+            ['value' => 'cc1'],
+            ['value' => 'cc2'],
+            ['value' => 'dd1'],
+            function () {
+                return ['value' => 'aa2'];
+            },
+            function () {
+                return ['value' => 'aa3'];
+            }
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', ['aa', 'bb'], 'startWithAny');
+        $this->assertTrue($list[0]->value === 'aa1');
+        $this->assertTrue($list[1]->value === 'bb1');
+        $this->assertTrue($list[2]->value === 'aa2');
+        $this->assertTrue($list[3]->value === 'aa3');
+        $this->assertTrue(count($list) === 4);
 
         $data = [
             ['value' => 'aaa'],
@@ -450,6 +472,27 @@ class DataListTest extends PHPUnit\Framework\TestCase
         $list->filterBy('value', 'aa', 'notEndWith');
         $this->assertTrue($list[0]->value === 'aac');
         $this->assertTrue(count($list) === 1);
+
+        $data = [
+            ['value' => '1aa'],
+            ['value' => '1bb'],
+            ['value' => '1cc'],
+            ['value' => '1cc'],
+            ['value' => '1dd'],
+            function () {
+                return ['value' => '2aa'];
+            },
+            function () {
+                return ['value' => '3aa'];
+            }
+        ];
+        $list = new DataList($data);
+        $list->filterBy('value', ['aa', 'bb'], 'endWithAny');
+        $this->assertTrue($list[0]->value === '1aa');
+        $this->assertTrue($list[1]->value === '1bb');
+        $this->assertTrue($list[2]->value === '2aa');
+        $this->assertTrue($list[3]->value === '3aa');
+        $this->assertTrue(count($list) === 4);
 
         $data = [
             ['value' => null, 'other' => 1],

@@ -168,13 +168,13 @@ trait DataListTrait
      * 
      * @param string $property The property name.
      * @param mixed $value The value of the property.
-     * @param string $operator Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, endWith, notEndWith, inArray, notInArray, textSearch.
+     * @param string $operator Available values: equal, notEqual, regExp, notRegExp, startWith, notStartWith, startWithAny, endWith, notEndWith, endWithAny, inArray, notInArray, textSearch.
      * @return self A reference to the list.
      * @throws \InvalidArgumentException
      */
     public function filterBy(string $property, $value, string $operator = 'equal'): self
     {
-        if (array_search($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'endWith', 'notEndWith', 'inArray', 'notInArray', 'textSearch']) === false) {
+        if (!in_array($operator, ['equal', 'notEqual', 'regExp', 'notRegExp', 'startWith', 'notStartWith', 'startWithAny', 'endWith', 'notEndWith', 'endWithAny', 'inArray', 'notInArray', 'textSearch'])) {
             throw new \InvalidArgumentException('Invalid operator specified (' . $operator . ')');
         }
         $this->internalDataListActions[] = ['filterBy', $property, $value, $operator];
@@ -433,10 +433,94 @@ trait DataListTrait
         if (!empty($actions)) {
             $optimizedActions = [];
             $actionsToOptimize = [];
-            $optimizeAndAddActions = function () use (&$optimizedActions, &$actionsToOptimize): bool {
+            $optimizeAndAddActions = function () use (&$optimizedActions, &$actionsToOptimize): bool { // return false if conflicting actions and result is empty
                 if (!empty($actionsToOptimize)) {
+                    $removeLessOrMoreSpecificPrefixes = function (bool $less, array $prefixes, bool $fromStart) {
+                        $prefixes = array_values(array_unique($prefixes));
+                        if ($fromStart) {
+                            if ($less) {
+                                rsort($prefixes);
+                            } else {
+                                sort($prefixes);
+                            }
+                        } else {
+                            if ($less) {
+                                usort($prefixes, function ($a, $b) {
+                                    return strcmp(strrev($b), strrev($a));
+                                });
+                            } else {
+                                usort($prefixes, function ($a, $b) {
+                                    return strcmp(strrev($a), strrev($b));
+                                });
+                            }
+                        }
+                        $result = [];
+                        $previous = null;
+                        foreach ($prefixes as $prefix) {
+                            if ($fromStart) {
+                                if ($previous === null || ($less ? strncmp($previous, $prefix, strlen($prefix)) !== 0 : strncmp($prefix, $previous, strlen($previous)) !== 0)) {
+                                    $result[] = $prefix;
+                                    $previous = $prefix;
+                                }
+                            } else {
+                                if ($previous === null || ($less ? !str_ends_with($previous, $prefix) : str_ends_with($prefix, $previous))) {
+                                    $result[] = $prefix;
+                                    $previous = $prefix;
+                                }
+                            }
+                        }
+                        return $result;
+                    };
+                    $removeMatchingPrefixes = function (array $prefixes1, array $prefixes2, bool $fromStart) { // Removes all prefixes from $prefixes1 that exist in $prefixes2
+                        $result = [];
+                        foreach ($prefixes1 as $prefix1) {
+                            $found = false;
+                            foreach ($prefixes2 as $prefix2) {
+                                if ($fromStart) {
+                                    if (strncmp($prefix1, $prefix2, strlen($prefix2)) === 0) {
+                                        $found = true;
+                                        break;
+                                    }
+                                } else {
+                                    if (str_ends_with($prefix1, $prefix2)) {
+                                        $found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!$found) {
+                                $result[] = $prefix1;
+                            }
+                        }
+                        return $result;
+                    };
+                    $removeMissingPrefixes = function (array $prefixes1, array $prefixes2, bool $fromStart) { // Removes all prefixes from $prefixes1 that do not exist in $prefixes2
+                        $result = [];
+                        foreach ($prefixes1 as $prefix1) {
+                            $found = false;
+                            foreach ($prefixes2 as $prefix2) {
+                                if ($fromStart) {
+                                    if (strncmp($prefix1, $prefix2, strlen($prefix2)) === 0) {
+                                        $found = true;
+                                        break;
+                                    }
+                                } else {
+                                    if (str_ends_with($prefix1, $prefix2)) {
+                                        $found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if ($found) {
+                                $result[] = $prefix1;
+                            }
+                        }
+                        return $result;
+                    };
                     $startWith = [];
                     $notStartWith = [];
+                    $endWith = [];
+                    $notEndWith = [];
                     $targetProperty = null;
                     foreach ($actionsToOptimize as $actionToOptimize) {
                         if ($targetProperty === null) {
@@ -446,70 +530,66 @@ trait DataListTrait
                             $startWith[] = $actionToOptimize[2];
                         } elseif ($actionToOptimize[3] === 'notStartWith') {
                             $notStartWith[] = $actionToOptimize[2];
+                        } elseif ($actionToOptimize[3] === 'endWith') {
+                            $endWith[] = $actionToOptimize[2];
+                        } elseif ($actionToOptimize[3] === 'notEndWith') {
+                            $notEndWith[] = $actionToOptimize[2];
                         } else {
                             throw new \Exception('Should not get here for ' . $actionToOptimize[3]);
                         }
                     }
+                    if (!empty($notStartWith)) {
+                        $notStartWith = $removeLessOrMoreSpecificPrefixes(false, $notStartWith, true);
+                    }
                     if (!empty($startWith)) {
-                        $startWith = array_values(array_unique($startWith));
-                        $isLessSpecific = function ($index, $prefix) use ($startWith) {
-                            foreach ($startWith as $_index => $_prefix) {
-                                if ($_index !== $index) {
-                                    if (strpos($prefix, $_prefix) === 0) {
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        };
-                        $lessSpecific = [];
-                        foreach ($startWith as $index => $prefix) {
-                            if ($isLessSpecific($index, $prefix)) {
-                                $lessSpecific[] = $prefix;
-                            }
-                        }
-                        $startWith = array_diff($startWith, $lessSpecific);
+                        $startWith = $removeLessOrMoreSpecificPrefixes(true, $startWith, true);
                         if (count($startWith) > 1) { // impossible case
-                            return true;
+                            return false;
                         }
-                        $startWith = array_values($startWith);
+                        $startWith = $removeMatchingPrefixes($startWith, $notStartWith, true);
+                        if (sizeof($startWith) === 0) { // confict with notStartWith
+                            return false;
+                        }
+                        $notStartWith = $removeMissingPrefixes($notStartWith, $startWith, true);
                     }
-                    if (isset($startWith[0])) {
-                        foreach ($notStartWith as $_notStartWith) {
-                            if (strpos($startWith[0], $_notStartWith) === 0) { // confict with notStartWith
-                                return true;
-                            }
-                        }
-                        if (!empty($notStartWith)) { // remove not needed prefixes (outside the startWith)
-                            $temp = [];
-                            foreach ($notStartWith as $_notStartWith) {
-                                if (strpos($_notStartWith, $startWith[0]) === 0) {
-                                    $temp[] = $_notStartWith;
-                                }
-                            }
-                            $notStartWith = $temp;
-                        }
+                    if (!empty($notEndWith)) {
+                        $notEndWith = $removeLessOrMoreSpecificPrefixes(false, $notEndWith, false);
                     }
-                    $actionsToOptimize = [];
+                    if (!empty($endWith)) {
+                        $endWith = $removeLessOrMoreSpecificPrefixes(true, $endWith, false);
+                        if (count($endWith) > 1) { // impossible case
+                            return false;
+                        }
+                        $endWith = $removeMatchingPrefixes($endWith, $notEndWith, false);
+                        if (sizeof($endWith) === 0) { // confict with notEndWith
+                            return false;
+                        }
+                        $notEndWith = $removeMissingPrefixes($notEndWith, $endWith, false);
+                    }
                     foreach ($startWith as $value) {
-                        $actionsToOptimize[] = ['filterBy', $targetProperty, $value, 'startWith'];
+                        $optimizedActions[] = ['filterBy', $targetProperty, $value, 'startWith'];
                     }
                     foreach ($notStartWith as $value) {
-                        $actionsToOptimize[] = ['filterBy', $targetProperty, $value, 'notStartWith'];
+                        $optimizedActions[] = ['filterBy', $targetProperty, $value, 'notStartWith'];
                     }
-                    $optimizedActions = array_merge($optimizedActions, $actionsToOptimize);
+                    foreach ($endWith as $value) {
+                        $optimizedActions[] = ['filterBy', $targetProperty, $value, 'endWith'];
+                    }
+                    foreach ($notEndWith as $value) {
+                        $optimizedActions[] = ['filterBy', $targetProperty, $value, 'notEndWith'];
+                    }
                 }
-                return false;
+                return true;
             };
             foreach ($actions as $action) {
                 $canBeOptimized = false;
                 if ($action[0] === 'filterBy') {
-                    if (array_search($action[3], ['startWith', 'notStartWith']) !== false) {
+                    if (in_array($action[3], ['startWith', 'notStartWith', 'endWith', 'notEndWith'])) {
                         if (empty($actionsToOptimize)) {
                             $canBeOptimized = true;
                         } else {
                             foreach ($actionsToOptimize as $actionToOptimize) {
-                                if ($action[1] === $actionToOptimize[1]) {
+                                if ($action[1] === $actionToOptimize[1]) { // if the same property
                                     $canBeOptimized = true;
                                     break;
                                 }
@@ -521,14 +601,14 @@ trait DataListTrait
                     }
                 }
                 if (!$canBeOptimized) {
-                    if ($optimizeAndAddActions()) {
+                    if (!$optimizeAndAddActions()) {
                         return [];
                     }
                     $actionsToOptimize = [];
                     $optimizedActions[] = $action;
                 }
             }
-            if ($optimizeAndAddActions()) {
+            if (!$optimizeAndAddActions()) {
                 return [];
             }
             $actions = $optimizedActions;
@@ -595,60 +675,6 @@ trait DataListTrait
         }
 
         if (!empty($actions)) {
-            $buildPrefixesIndex = function (array $prefixes) {
-                $getIndex = function (array $prefixes) use (&$getIndex) {
-                    $index = [];
-                    foreach ($prefixes as $prefix) {
-                        $length = $prefix[0] + 1;
-                        $start = substr($prefix[1], 0, $length);
-                        if (!isset($index[$start])) {
-                            $index[$start] = [];
-                        }
-                        $index[$start][] = [$length, $prefix[1]];
-                    }
-                    $keysToRemove = [];
-                    $keysToAdd = [];
-                    foreach ($index as $k => $indexPrefixes) {
-                        if (count($indexPrefixes) === 1) {
-                            $keysToRemove[] = $k;
-                            $keysToAdd[$indexPrefixes[0][1]] = true;
-                        } else {
-                            $index[$k] = $getIndex($indexPrefixes);
-                            if (count($index[$k]) === 1) {
-                                $keysToRemove[] = $k;
-                                $keysToAdd[key($index[$k])] = current($index[$k]);
-                            }
-                        }
-                    }
-                    foreach ($keysToRemove as $keyToRemove) {
-                        unset($index[$keyToRemove]);
-                    }
-                    foreach ($keysToAdd as $keyToAdd => $value) {
-                        $index[$keyToAdd] = $value;
-                    }
-                    return $index;
-                };
-                foreach ($prefixes as $i => $prefix) {
-                    $prefixes[$i] = [0, $prefix];
-                }
-                return $getIndex($prefixes);
-            };
-
-            $existsInPrefixesIndex = function (string $prefix, array $index) use (&$existsInPrefixesIndex) {
-                foreach ($index as $key => $value) {
-                    if (strpos($prefix, $key) === 0) {
-                        if ($value === true) {
-                            return true;
-                        } else {
-                            if ($existsInPrefixesIndex($prefix, $value)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
-            };
-
             $sortAndSerializeArray = function ($data) {
                 $walkData = function ($data) use (&$walkData) {
                     $result = [];
@@ -664,38 +690,7 @@ trait DataListTrait
                 return serialize($walkData($data));
             };
 
-            $pendingNotStartWithFilters = [];
-            $processPendingNotStartWithFilters = function () use (&$data, &$pendingNotStartWithFilters, &$buildPrefixesIndex, &$existsInPrefixesIndex): void {
-                if (!empty($pendingNotStartWithFilters)) {
-                    $this->internalDataListUpdateAllValuesIfNeeded($data);
-                    foreach ($pendingNotStartWithFilters as $propertyName => $prefixes) {
-                        $pendingNotStartWithFilters[$propertyName] = $buildPrefixesIndex($prefixes);
-                    }
-                    $temp = [];
-                    foreach ($data as $object) {
-                        $add = true;
-                        foreach ($pendingNotStartWithFilters as $propertyName => $prefixesIndex) {
-                            if (isset($object->$propertyName)) {
-                                if ($existsInPrefixesIndex($object->$propertyName, $prefixesIndex)) {
-                                    $add = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if ($add) {
-                            $temp[] = $object;
-                        }
-                    }
-                    $data = $temp;
-                    unset($temp);
-                    $pendingNotStartWithFilters = [];
-                }
-            };
             foreach ($actions as $action) {
-                if ($action[0] === 'filterBy' && $action[3] === 'notStartWith') {
-                } else {
-                    $processPendingNotStartWithFilters();
-                }
                 if ($action[0] === 'filter') {
                     $this->internalDataListUpdateAllValuesIfNeeded($data);
                     $temp = [];
@@ -710,68 +705,115 @@ trait DataListTrait
                     $propertyName = $action[1];
                     $targetValue = $action[2];
                     $operator = $action[3];
-                    if ($operator === 'notStartWith') {
-                        if (!isset($pendingNotStartWithFilters[$propertyName])) {
-                            $pendingNotStartWithFilters[$propertyName] = [];
+                    $this->internalDataListUpdateAllValuesIfNeeded($data);
+                    $temp = [];
+                    foreach ($data as $object) {
+                        $add = false;
+                        if (!isset($object->$propertyName)) {
+                            if ($operator === 'equal' && $targetValue === null) {
+                                $add = true;
+                            } elseif ($operator === 'notEqual' && $targetValue !== null) {
+                                $add = true;
+                            } elseif ($operator === 'inArray' && is_array($targetValue) && in_array(null, $targetValue)) {
+                                $add = true;
+                            } elseif ($operator === 'notInArray' && !(is_array($targetValue) && in_array(null, $targetValue))) {
+                                $add = true;
+                            } else {
+                                continue;
+                            }
                         }
-                        $pendingNotStartWithFilters[$propertyName][] = $targetValue;
-                    } else {
-                        $this->internalDataListUpdateAllValuesIfNeeded($data);
-                        $temp = [];
-                        foreach ($data as $object) {
-                            $add = false;
-                            if (!isset($object->$propertyName)) {
-                                if ($operator === 'equal' && $targetValue === null) {
-                                    $add = true;
-                                } elseif ($operator === 'notEqual' && $targetValue !== null) {
-                                    $add = true;
-                                } elseif ($operator === 'inArray' && is_array($targetValue) && array_search(null, $targetValue) !== false) {
-                                    $add = true;
-                                } elseif ($operator === 'notInArray' && !(is_array($targetValue) && array_search(null, $targetValue) !== false)) {
-                                    $add = true;
+                        if (!$add) {
+                            $value = $object->$propertyName;
+                            if ($operator === 'equal') {
+                                if (is_array($value) && is_array($targetValue)) {
+                                    $add = $sortAndSerializeArray($value) === $sortAndSerializeArray($targetValue);
                                 } else {
-                                    continue;
+                                    $add = $value === $targetValue;
                                 }
-                            }
-                            if (!$add) {
-                                $value = $object->$propertyName;
-                                if ($operator === 'equal') {
-                                    if (is_array($value) && is_array($targetValue)) {
-                                        $add = $sortAndSerializeArray($value) === $sortAndSerializeArray($targetValue);
-                                    } else {
-                                        $add = $value === $targetValue;
-                                    }
-                                } elseif ($operator === 'notEqual') {
-                                    if (is_array($value) && is_array($targetValue)) {
-                                        $add = $sortAndSerializeArray($value) !== $sortAndSerializeArray($targetValue);
-                                    } else {
-                                        $add = $value !== $targetValue;
-                                    }
-                                } elseif ($operator === 'regExp') {
+                            } elseif ($operator === 'notEqual') {
+                                if (is_array($value) && is_array($targetValue)) {
+                                    $add = $sortAndSerializeArray($value) !== $sortAndSerializeArray($targetValue);
+                                } else {
+                                    $add = $value !== $targetValue;
+                                }
+                            } elseif ($operator === 'regExp') {
+                                if (is_string($targetValue)) {
                                     $add = preg_match('/' . $targetValue . '/', $value) === 1;
-                                } elseif ($operator === 'notRegExp') {
-                                    $add = preg_match('/' . $targetValue . '/', $value) === 0;
-                                } elseif ($operator === 'startWith') {
-                                    $add = substr($value, 0, strlen($targetValue)) === $targetValue;
-                                } elseif ($operator === 'endWith') {
-                                    $add = substr($value, -strlen($targetValue)) === $targetValue;
-                                } elseif ($operator === 'notEndWith') {
-                                    $add = substr($value, -strlen($targetValue)) !== $targetValue;
-                                } elseif ($operator === 'inArray') {
-                                    $add = is_array($targetValue) && array_search($value, $targetValue) !== false;
-                                } elseif ($operator === 'notInArray') {
-                                    $add = !(is_array($targetValue) && array_search($value, $targetValue) !== false);
-                                } elseif ($operator === 'textSearch') {
-                                    $add = is_string($targetValue) && is_string($value) && mb_strpos(mb_strtolower($value), mb_strtolower($targetValue)) !== false;
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type string!');
                                 }
-                            }
-                            if ($add) {
-                                $temp[] = $object;
+                            } elseif ($operator === 'notRegExp') {
+                                if (is_string($targetValue)) {
+                                    $add = preg_match('/' . $targetValue . '/', $value) === 0;
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type string!');
+                                }
+                            } elseif ($operator === 'startWith') {
+                                if (is_string($targetValue)) {
+                                    $add = strncmp($value, $targetValue, strlen($targetValue)) === 0;
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type string!');
+                                }
+                            } elseif ($operator === 'notStartWith') {
+                                if (is_string($targetValue)) {
+                                    $add = strncmp($value, $targetValue, strlen($targetValue)) !== 0;
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type string!');
+                                }
+                            } elseif ($operator === 'startWithAny') {
+                                $add = false;
+                                if (is_array($targetValue)) {
+                                    foreach ($targetValue as $targetValueItem) {
+                                        if (strncmp($value, $targetValueItem, strlen($targetValueItem)) === 0) {
+                                            $add = true;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type array!');
+                                }
+                            } elseif ($operator === 'endWith') {
+                                if (is_string($targetValue)) {
+                                    $add = str_ends_with($value, $targetValue);
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type string!');
+                                }
+                            } elseif ($operator === 'notEndWith') {
+                                if (is_string($targetValue)) {
+                                    $add = !str_ends_with($value, $targetValue);
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type string!');
+                                }
+                            } elseif ($operator === 'endWithAny') {
+                                $add = false;
+                                if (is_array($targetValue)) {
+                                    foreach ($targetValue as $targetValueItem) {
+                                        if (str_ends_with($value, $targetValueItem)) {
+                                            $add = true;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type array!');
+                                }
+                            } elseif ($operator === 'inArray') {
+                                $add = is_array($targetValue) && in_array($value, $targetValue);
+                            } elseif ($operator === 'notInArray') {
+                                $add = !(is_array($targetValue) && in_array($value, $targetValue));
+                            } elseif ($operator === 'textSearch') {
+                                if (is_string($targetValue)) {
+                                    $add = is_string($value) && mb_strpos(mb_strtolower($value), mb_strtolower($targetValue)) !== false;
+                                } else {
+                                    throw new \Exception('The target value for ' . $operator . ' must be of type string!');
+                                }
                             }
                         }
-                        $data = $temp;
-                        unset($temp);
+                        if ($add) {
+                            $temp[] = $object;
+                        }
                     }
+                    $data = $temp;
+                    unset($temp);
                 } elseif ($action[0] === 'sort') {
                     $this->internalDataListUpdateAllValuesIfNeeded($data);
                     usort($data, $action[1]);
@@ -826,7 +868,6 @@ trait DataListTrait
                     $data = array_map($action[1], $data);
                 }
             }
-            $processPendingNotStartWithFilters();
         }
         return $data;
     }

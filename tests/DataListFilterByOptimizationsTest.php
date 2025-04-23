@@ -214,4 +214,72 @@ class DataListFilterByOptimizationsTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($list->count(), 0);
         $this->assertEquals($passedContext, null);
     }
+
+    /**
+     *
+     */
+    public function testCallbackOptimizations5()
+    {
+        $passedContext = null;
+        $list = new DataList(function (DataListContext $context) use (&$passedContext) {
+            $passedContext = $context;
+            return [
+                ['value' => 'apple', 'count' => 1],
+                ['value' => 'ant', 'count' => 2],
+                ['value' => 'bear', 'count' => 3],
+                ['value' => 'dog', 'count' => 4],
+                ['value' => 'donkey', 'count' => 5],
+                ['value' => 'dogs', 'count' => 6],
+            ];
+        });
+        $list->filterBy('value', 'd', 'startWith');
+        $list->filterBy('value', 'do', 'startWith');
+        $list->filterBy('value', 'doxxxx', 'notStartWith');
+        $list->filterBy('value', 'x', 'notStartWith');
+        $list->filterBy('value', 'xx', 'notStartWith');
+        $list->filterBy('count', '[0-9]', 'regExp');
+        $list->filterBy('value', 'gs', 'endWith');
+        $list->filterBy('value', 's', 'endWith');
+        $list->filterBy('value', 'ggs', 'notEndWith');
+        $list->filterBy('value', 'y', 'notEndWith');
+        $list->filterBy('value', 'zy', 'notEndWith');
+        $this->assertEquals($list->toArray(), array(
+            0 =>
+            array(
+                'value' => 'dogs',
+                'count' => 6,
+            ),
+        ));
+        $this->assertEquals(sizeof($passedContext->actions), 5);
+        $this->assertEquals($passedContext->actions[0]->toArray(), array(
+            'name' => 'filterBy',
+            'property' => 'value',
+            'value' => 'do',
+            'operator' => 'startWith',
+        ));
+        $this->assertEquals($passedContext->actions[1]->toArray(), array(
+            'name' => 'filterBy',
+            'property' => 'value',
+            'value' => 'doxxxx',
+            'operator' => 'notStartWith',
+        ));
+        $this->assertEquals($passedContext->actions[2]->toArray(), array(
+            'name' => 'filterBy',
+            'property' => 'count',
+            'value' => '[0-9]',
+            'operator' => 'regExp',
+        ));
+        $this->assertEquals($passedContext->actions[3]->toArray(), array(
+            'name' => 'filterBy',
+            'property' => 'value',
+            'value' => 'gs',
+            'operator' => 'endWith',
+        ));
+        $this->assertEquals($passedContext->actions[4]->toArray(), array(
+            'name' => 'filterBy',
+            'property' => 'value',
+            'value' => 'ggs',
+            'operator' => 'notEndWith',
+        ));
+    }
 }
