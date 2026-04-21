@@ -37,7 +37,7 @@ trait DataObjectFromJSONTrait
      */
     public function __fromJSON(string $data): void
     {
-        $data = json_decode($data, true);
+        $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         $hasArrayAccess = $this instanceof \ArrayAccess;
         foreach ($data as $name => $value) {
             $currentValue = null;
